@@ -1,8 +1,10 @@
 #!/bin/bash
 
+nRats=15
+
 # Set the source and destination directories
-source_dir="/Users/lkc3-admin/Library/CloudStorage/Box-Box/MovementAnalysisData_DLC/3_completed"
-dest_dir="/Users/lkc3-admin/Documents/GitHub/rat-clustering/data/3Rats"
+source_dir="/Users/lkc3-admin/Library/CloudStorage/Box-Box/MovementAnalysisData_DLC/${nRats}_completed"
+dest_dir="/Users/lkc3-admin/Documents/GitHub/rat-clustering/data/${nRats}Rats"
 
 # Initialize a counter
 counter=1
@@ -16,4 +18,5 @@ for sub_dir in "${source_dir}"/*/Average_Position; do
         # Increment the counter
         counter=$((counter + 1))
     fi
+    echo "${sub_dir}"
 done
