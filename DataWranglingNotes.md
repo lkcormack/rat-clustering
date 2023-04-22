@@ -1,18 +1,26 @@
 #There seems to be a big(ish) problem with NaNs.
 
+There are a lot of NaNs, and they seem to be interspersed in the data; like not just at the beginning and end. This presents a challange.
+
 I think that, for each experiment, we drop frames in which any frame has a NaN for a rat.
 
-These will result in "time jumps" in the data".
+This will result in "time jumps" in the data.
 
 Current thoughts:
 - for each data file of a session, we mark all rows where any rat has a NaN
 - we then generate a new file with NaN rows dropped, with a column indicating time drops and number of frames dropped
-- we analyse the time dropped data for spatial proximity
-- for calculating the movement statistics, we need to seperate out the data by time drops
+- we analyze the time dropped data for spatial proximity
+- for calculating the movement statistics, we need to separate out the data by time drops
 -In other words, to calculates the movement stats, we can't include the sudden changes due to time drops. 
 
-## OMG
+## OMG, I'm so dumb.
 
-I just realized that we can simple drop the NaNs and use the first difference of the frames column to identify the time drops and how much time was dropped
+I just realized that we can simply drop the NaNs (any frames where either x and y are NaN) and use the first difference of the frames column to identify the time drops and how much time was dropped. Like, we don't need a `for()` loop or complex logical indexing.
 
-### I'm so dumb.
+## Definitions
+
+Each time rats are released into the box, I'm calling that a "trial"
+
+A set of identical trials (e.g. n=3 rats), I'm calling that that a "block"
+
+If rats are ID'd as part of a triad or not or whatever, I'm calling that an "experiment".
