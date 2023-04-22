@@ -11,7 +11,7 @@ Current thoughts:
 - we then generate a new file with NaN rows dropped, with a column indicating time drops and number of frames dropped
 - we analyze the time dropped data for spatial proximity
 - for calculating the movement statistics, we need to separate out the data by time drops
--In other words, to calculates the movement stats, we can't include the sudden changes due to time drops. 
+- In other words, to calculates the movement stats, we can't include the sudden changes due to time drops. 
 
 ## OMG, I'm so dumb.
 
