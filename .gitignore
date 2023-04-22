@@ -12,6 +12,9 @@
 # Raw data folder
 data/
 
+# Zipped copy of data files or whatever
+*.zip
+
 # User-specific files
 .Ruserdata
 
