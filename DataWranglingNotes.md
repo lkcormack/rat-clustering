@@ -1,4 +1,4 @@
-#There seems to be a big(ish) problem with NaNs.
+# There seems to be a big(ish) problem with NaNs.
 
 There are a lot of NaNs, and they seem to be interspersed in the data; like not just at the beginning and end. This presents a challange.
 
