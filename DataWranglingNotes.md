@@ -23,4 +23,4 @@ Each time rats are released into the box, I'm calling that a "trial"
 
 A set of identical trials (e.g. n=3 rats), I'm calling that that a "block"
 
-If rats are ID'd as part of a triad or not or whatever, I'm calling that an "experiment".
+If rats are ID'd as part of a triad or not or whatever, I'm calling that an "experiment". So, the data we're working on now is one experiment, the "baseline experiment".
