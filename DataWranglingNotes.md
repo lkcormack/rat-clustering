@@ -1,4 +1,4 @@
-#There seems to be a big(ish) problem with NaNs.
+# There seems to be a big(ish) problem with NaNs.
 
 There are a lot of NaNs, and they seem to be interspersed in the data; like not just at the beginning and end. This presents a challange.
 
@@ -11,7 +11,7 @@ Current thoughts:
 - we then generate a new file with NaN rows dropped, with a column indicating time drops and number of frames dropped
 - we analyze the time dropped data for spatial proximity
 - for calculating the movement statistics, we need to separate out the data by time drops
--In other words, to calculates the movement stats, we can't include the sudden changes due to time drops. 
+    - In other words, to calculates the movement stats, we can't include the sudden changes due to time drops. 
 
 ## OMG, I'm so dumb.
 
@@ -23,4 +23,4 @@ Each time rats are released into the box, I'm calling that a "trial"
 
 A set of identical trials (e.g. n=3 rats), I'm calling that that a "block"
 
-If rats are ID'd as part of a triad or not or whatever, I'm calling that an "experiment".
+If rats are ID'd as part of a triad or not or whatever, I'm calling that an "experiment". So, the data we're working on now is one experiment, the "baseline experiment".
