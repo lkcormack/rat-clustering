@@ -27,6 +27,8 @@ xyt_dat <- xyt_dat %>%
 
 xyt_dat$rat_num <- as.factor(xyt_dat$rat_num)
   
+save(xyt_dat, file = 'spaceTimeRats.RData')
+
 ## Plotting ##
 n_frms_plt = 10000
 b_frms_plt = 1
