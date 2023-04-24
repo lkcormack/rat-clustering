@@ -1,9 +1,9 @@
-library(ggplot2)
+library(tidyverse)
 
-# load data
+# load data created by CombineRatDataInASession.R
 load('spaceTimeRats.RData')
 
-# compute a tibble of frame vs. 
+# compute a tibble of frame vs. max. distance
 dist_df <- xyt_dat %>% 
   group_by(frame) %>%
   summarize(
@@ -15,9 +15,15 @@ dist_df <- xyt_dat %>%
             ) # max of the three distances
     ) # summarize
 
-# plot largest distance between any two rats
-# note that thresholding on this number would be equivalent to
-# saying all 3 rats were within a circle of that diameter
 
-ggplot(dist_df, aes(x = frame, y = dist)) +  
-  geom_point(size = 1, alpha = 0.1)           
+# note that thresholding on this number is equivalent to
+# saying all 3 rats were within a circle of that diameter
+thresh = 250 # 
+
+dist_df <- dist_df %>% 
+  mutate(cluster = dist < thresh)
+
+# plot largest distance between any two rats of the three
+dist_plot <- ggplot(dist_df, aes(x = frame, y = dist, color = cluster)) +  
+  geom_point(size = 1, alpha = 0.3)           
+show(dist_plot)

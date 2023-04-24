@@ -23,6 +23,7 @@ nan_frames = xyt_dat[is.na(xyt_dat$x) & is.na(xyt_dat$y), 'frame']
 xyt_dat <- xyt_dat[!xyt_dat$frame %in% nan_frames$frame, ]
 
 xyt_dat <- xyt_dat %>%
+  group_by(rat_num) %>% 
   mutate(f_diff = c(1, diff(frame)))
 
 xyt_dat$rat_num <- as.factor(xyt_dat$rat_num)
