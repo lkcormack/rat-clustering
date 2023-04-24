@@ -17,7 +17,7 @@ dist_df <- xyt_dat %>%
 
 # plot largest distance between any two rats
 # note that thresholding on this number would be equivalent to
-# saying all 3 rats were within a circle of that radius.
+# saying all 3 rats were within a circle of that diameter
 
 ggplot(dist_df, aes(x = frame, y = dist)) +  
   geom_point(size = 1, alpha = 0.1)           
