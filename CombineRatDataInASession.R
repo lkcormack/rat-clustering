@@ -1,4 +1,5 @@
 library(tidyverse)
+library(plotly)
 
 # set directory path
 dir_path <- "./data/3Rats/Average_Position_01"
