@@ -19,7 +19,7 @@ dist_df <- xyt_dat %>%
 # note that thresholding on this number is equivalent to
 # saying all 3 rats were within a vesca piscis; the intersection
 # of two circles around two rats of that diameter
-thresh = 250 # 
+thresh = 300 # 
 
 dist_df <- dist_df %>% 
   mutate(cluster = dist < thresh)
