@@ -31,3 +31,22 @@ fig <- xyt_dat %>%
 # display plot
 show(fig)
 
+# NaN diagnostics 
+
+# How many NaN frames were there?
+totNans <-  length(xyt_data_raw$frame) - length(xyt_dat$frame)
+
+# How many not counting the initial ones?
+midNans <- sum(xyt_dat$f_diff[xyt_dat$f_diff>1])
+
+# so how many initial NaNs?
+initNans = totNans - midNans
+
+print(paste("There were", initNans, "initial NaNs"))
+print(paste("and", midNans, "NaNs scattered about after that."))
+
+# Look at these mid-run NaN frame jumps
+print("The plot at the right shows where the middle ones were,")
+print("and how big the gaps were (how many NaNs in a row")
+plot(xyt_dat$f_diff)
+
