@@ -14,7 +14,6 @@ xyt_dat = data.frame()
 for (i in 1:n_files) {
   tmp <-  read_csv(file_list[i], col_names = c("frame", "x", "y"), skip = 1)
   tmp <- tmp %>% 
-    #filter(!is.na(x) & !is.na(y)) %>% 
     mutate(rat_num = i)
   xyt_dat <- rbind(xyt_dat, tmp)
 }
