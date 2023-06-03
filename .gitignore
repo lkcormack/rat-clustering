@@ -9,6 +9,9 @@
 .RData
 .RDataTmp
 
+# Saved data files
+*.RData
+
 # Raw data folder
 data/
 
