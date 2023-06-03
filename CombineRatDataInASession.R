@@ -2,7 +2,7 @@ library(tidyverse)
 library(plotly)
 
 # set directory path
-dir_path <- "./data/3Rats/Average_Position_01"
+dir_path <- "./data/9Rats/Average_Position_01"
 
 # get list of csv files in directory
 file_list <- list.files(path = dir_path, pattern = ".csv", full.names = TRUE)
@@ -28,7 +28,7 @@ xyt_dat <- xyt_dat %>%
 
 xyt_dat$rat_num <- as.factor(xyt_dat$rat_num)
   
-save(xyt_dat, file = 'spaceTimeRats.RData')
+save(xyt_dat, file = 'spaceTime9Rats.RData')
 
 ## Plotting ##
 # n_frms_plt = 10000

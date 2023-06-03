@@ -7,7 +7,7 @@ load('spaceTimeRats.RData')
 dist_df <- xyt_dat %>% 
   group_by(frame) %>%
   summarize(
-    dist = max(dist(rbind(c(x[rat_num == "1"], y[rat_num == "1"]),
+    max_dist = max(dist(rbind(c(x[rat_num == "1"], y[rat_num == "1"]),
                            c(x[rat_num == "2"], y[rat_num == "2"]),
                            c(x[rat_num == "3"], x[rat_num == "3"])
                     ) # rbind
@@ -22,7 +22,7 @@ dist_df <- xyt_dat %>%
 thresh = 300 # 
 
 dist_df <- dist_df %>% 
-  mutate(cluster = dist < thresh)
+  mutate(cluster = max_dist < thresh)
 
 # plot largest distance between any two rats of the three
 dist_plot <- ggplot(dist_df, aes(x = frame, y = dist, color = cluster)) +  
