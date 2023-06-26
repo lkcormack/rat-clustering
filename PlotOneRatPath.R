@@ -1,4 +1,5 @@
 # Visualize a single rat's data in x,y,t space
+# Need to convert to cm. Conversion is 7.0627 pixel/cm.
 
 # load the essentials
 library(tidyverse)
