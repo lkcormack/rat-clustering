@@ -1,8 +1,17 @@
 library(tidyverse)
 library(plotly)
 
+# Pick a run to look at (in my vocab, a "run" is single
+# instance of recording rats running around in the box - 
+# in other words, a single video recording)
+dir_path <- rstudioapi::selectDirectory(caption = "Select Directory",
+                                        label = "Select",
+                                        path = rstudioapi::getActiveProject()
+                                        )
+
+
 # set directory path
-dir_path <- "./data/3Rats/Average_Position_01"
+#dir_path <- "./data/3Rats/Average_Position_01"
 
 # get list of csv files in directory
 file_list <- list.files(path = dir_path, pattern = ".csv", full.names = TRUE)
@@ -18,9 +27,12 @@ for (i in 1:n_files) {
   xyt_dat <- rbind(xyt_dat, tmp)
 }
 
-nan_frames = xyt_dat[is.na(xyt_dat$x) & is.na(xyt_dat$y), 'frame']
+# Find the frames with NaNs in either data column
+nan_frames = xyt_dat[is.na(xyt_dat$x) | is.na(xyt_dat$y), 'frame']
 
+# Keep the frames that are *not* a member of nan_frames
 xyt_dat <- xyt_dat[!xyt_dat$frame %in% nan_frames$frame, ]
+
 
 xyt_dat <- xyt_dat %>%
   group_by(rat_num) %>% 

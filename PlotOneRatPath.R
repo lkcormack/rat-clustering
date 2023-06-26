@@ -5,7 +5,10 @@ library(tidyverse)
 library(plotly)
 
 # Pick your rat! (i.e. define the file path to single rat's data)
-file_path <- "./data/3Rats/Average_Position_01/rat1_avg.csv"
+file_path <- rstudioapi::selectFile(caption = "Select CSV File",
+                               filter = "CSV Files (*.csv)",
+                               existing = TRUE)
+#file_path <- "./data/3Rats/Average_Position_01/rat1_avg.csv"
 # to do: have vars for condition, run, and rat then build path from that
 
 # Read the .csv file into a data frame, skipping the first (header) row
@@ -31,7 +34,7 @@ fig <- xyt_dat %>%
 # display plot
 show(fig)
 
-# NaN diagnostics 
+# NaN diagnostics - need to double check these, 22 Jun 23, -lkc
 
 # How many NaN frames were there?
 totNans <-  length(xyt_data_raw$frame) - length(xyt_dat$frame)
