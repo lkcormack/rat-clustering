@@ -8,8 +8,6 @@ library(plotly)
 file_path <- rstudioapi::selectFile(caption = "Select CSV File",
                                filter = "CSV Files (*.csv)",
                                existing = TRUE)
-#file_path <- "./data/3Rats/Average_Position_01/rat1_avg.csv"
-# to do: have vars for condition, run, and rat then build path from that
 
 # Read the .csv file into a data frame, skipping the first (header) row
 xyt_data_raw <- read_csv(file_path, col_names = c("frame", "x", "y"), skip = 1)
@@ -20,7 +18,10 @@ xyt_dat <- xyt_data_raw %>%
 
 # Add a column indicating how many frames have elapsed since the last
 # valid frame - i.e. how many NaN frames (minus 1) were skipped, if any.
-# It's essentially a time step column.
+# It's essentially a time jump or time increment column, with a "1" 
+# meaning that no frames were skipped between the current and previous
+# valid frame.
+
 xyt_dat <- xyt_dat %>% 
   mutate(f_diff = c(1, diff(frame))) # tack on a 1 at first time step
 
@@ -34,16 +35,21 @@ fig <- xyt_dat %>%
 # display plot
 show(fig)
 
-# NaN diagnostics - need to double check these, 22 Jun 23, -lkc
+# NaN diagnostics - need to double check these!! 22 Jun 23, -lkc
 
 # How many NaN frames were there?
 totNans <-  length(xyt_data_raw$frame) - length(xyt_dat$frame)
 
 # How many not counting the initial ones?
+# sums all the values in the frame jump column that 
+# are greater than 1.
 midNans <- sum(xyt_dat$f_diff[xyt_dat$f_diff>1])
 
 # so how many initial NaNs?
 initNans = totNans - midNans
+
+# this should be the same as:
+initNans2 <- xyt_dat$frame[1]
 
 print(paste("There were", initNans, "initial NaNs"))
 print(paste("and", midNans, "NaNs scattered about after that."))

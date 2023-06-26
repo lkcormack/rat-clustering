@@ -1,6 +1,8 @@
-library(plotly)
+# NB: THIS CODE CURRENTLY ASSUMES THAT THE DATAFRAME "xyt_dat" 
+# EXISTS IN THE CURRENT ENVIRONMENT! 
+# Sorry...
 
-# 
+library(plotly)
 
 ## Plotting ##
 n_frms_plt = 10000
