@@ -1,3 +1,5 @@
+# Script to simulate rats grouping and ungrouping in a known fashion.
+
 # install.packages("ggplot2")
 library(ggplot2)
 
@@ -8,24 +10,20 @@ df <- data.frame(
   time = rep(1:n_steps, 3),
   x = rep(NA, n_steps*3),
   y = rep(NA, n_steps*3),
-  id = rep(c("obj1", "obj2", "obj3"), each = n_steps)
+  id = rep(c("rat1", "rat2", "rat3"), each = n_steps)
 )
 
 # Simulate coordinates
 for (i in 1:n_steps) {
   
-  # Objects start apart, come together, and move apart again in a sinusoidal pattern
-  df$x[df$time == i] = c(
-    100 * sin(i / 100) + 10,  # obj1
-    100 * sin(i / 100) + 20,  # obj2
-    100 * sin(i / 100) + 30   # obj3
-  )
+  # rats start apart, come together, and move apart again in a sinusoidal pattern
+  df$x[df$time == i] = 100 * sin(i / 100) + c(1, 2, 3) * cos(i / 100)
+  df$y[df$time == i] = 100 * cos(i / 100) + c(1, 2, 3) * sin(i / 100)
   
-  df$y[df$time == i] = c(
-    100 * cos(i / 100) + 1,  # obj1
-    100 * cos(i / 100) + 2,  # obj2
-    100 * cos(i / 100) + 3   # obj3
-  )
+  if (i %% 100 == 0) {  # every 100 steps, rats converge
+    df$x[df$time == i] = mean(df$x[df$time == i])
+    df$y[df$time == i] = mean(df$y[df$time == i])
+  }
 }
 
 # Plot
@@ -33,6 +31,6 @@ myplot <-
 ggplot(df, aes(x = x, y = y, color = id)) +
   geom_path() +
   theme_minimal() +
-  labs(x = "X", y = "Y", title = "Silly Simulated Rats", color = "Object")
+  labs(x = "X", y = "Y", title = "Silly Simulated Rats", color = "rat num")
 
 show(myplot)
