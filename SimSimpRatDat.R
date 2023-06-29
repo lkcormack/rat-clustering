@@ -1,7 +1,8 @@
 # Script to simulate rats grouping and ungrouping in a known fashion.
 
-# install.packages("ggplot2")
+# packages
 library(ggplot2)
+library(plotly)
 
 n_steps <- 1000
 
@@ -17,6 +18,7 @@ df <- data.frame(
 for (i in 1:n_steps) {
   
   # rats start apart, come together, and move apart again in a sinusoidal pattern
+  # need to clean this up
   df$x[df$time == i] = 100 * sin(i / 100) + c(1, 2, 3) * cos(i / 100)
   df$y[df$time == i] = 100 * cos(i / 100) + c(1, 2, 3) * sin(i / 100)
   
@@ -34,3 +36,20 @@ ggplot(df, aes(x = x, y = y, color = id)) +
   labs(x = "X", y = "Y", title = "Silly Simulated Rats", color = "rat num")
 
 show(myplot)
+
+## mo plotting ##
+
+fig <- df %>% 
+  plot_ly(x = ~x, y = ~y, z = ~time, color = ~id,
+          type = 'scatter3d', mode = 'lines', 
+          colors = c("blue", "green", "red"),
+          opacity = 0.3, 
+          line = list(width = 6, opacity = 0.3)) %>% 
+  layout(title = "Rats!",
+         scene = list(
+           xaxis = list(title = "x position"),
+           yaxis = list(title = "y position"),
+           zaxis = list(title = "time")
+         ))
+
+show(fig)
