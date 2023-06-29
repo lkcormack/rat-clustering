@@ -1,5 +1,5 @@
 # Script to simulate rats grouping and ungrouping in a known fashion.
-
+# Hi Marie!
 # packages
 library(ggplot2)
 library(plotly)
