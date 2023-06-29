@@ -5,7 +5,7 @@
 library(plotly)
 
 ## Plotting ##
-n_frms_plt = 10000
+n_frms_plt = 10000 # number of frames to plot
 b_frms_plt = 1
 e_frms_plt = b_frms_plt + n_frms_plt
 z_range = c(xyt_dat$frame[b_frms_plt], xyt_dat$frame[e_frms_plt])

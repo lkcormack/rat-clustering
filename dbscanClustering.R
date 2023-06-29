@@ -1,9 +1,14 @@
+# This is the script that does the clustering.
+
 library(tidyverse)
 library(fpc)
 
 # load xyt_dat
+# Need to upgrade to file selection for stand-alone clustering
+# and/or automate as part of a pipeline
 load('spaceTime9Rats.RData')
 
+###########################
 # Define the function to perform DBSCAN clustering
 # It takes the group labels (0 for no group), and adds
 # them on as additional column
@@ -16,10 +21,14 @@ perform_dbscan <- function(data, min_objects, eps) {
   
   return(data)
 }
+###########################
 
 # Set parameters
 min_objects <- 3 # Minimum number of objects in a cluster
-eps <- 100 # Maximum distance between two samples for them to be considered as in the same neighborhood
+eps <- 100       # Maximum distance between two samples for 
+                 # them to be considered as in the same neighborhood
+
+# preform the clustering on each video frame
 
 # Group data by time and apply the perform_dbscan function
 results <- xyt_dat %>%
