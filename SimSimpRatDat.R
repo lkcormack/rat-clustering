@@ -5,6 +5,7 @@ library(ggplot2)
 library(plotly)
 
 n_steps <- 1000
+sd_delta <- 1
 
 # Initialize data frame for storing coordinates
 df <- data.frame(
