@@ -74,7 +74,10 @@ for (i in 600:800) {
 }
 ##########
 
-save(xyt_dat, file = 'spaceTimeSimRats.RData')
+# Name the file
+file_name <- file.choose(new = TRUE)
+file_name <- paste0(file_name, '.RData')
+save(xyt_dat, file = file_name)
 
 # Plot
 myplot <- 
