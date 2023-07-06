@@ -18,6 +18,7 @@ y_min <- 0
 y_max <- 1260
 
 n_rats <- 3 # number of rats: 3, 6, 9, or 15
+n_groups <- 1 # not implemented yet!
 
 # Create vector of rat IDs
 base_string <- "rat"
@@ -74,15 +75,16 @@ for (i in 600:800) {
 }
 ##########
 
-# Name the file
+##### Name and save the file #######
 file_name <- file.choose(new = TRUE)
 file_name <- paste0(file_name, '.RData')
 save(xyt_dat, file = file_name)
+##########
 
 # Plot
 myplot <- 
 ggplot(xyt_dat, aes(x = x, y = y, color = rat_num)) +
-  geom_path() +
+  geom_path(alpha = 0.2) +
   theme_minimal() +
   labs(x = "X", y = "Y", title = "Silly Simulated Rats", color = "rat num")
 
@@ -94,8 +96,8 @@ fig <- xyt_dat %>%
   plot_ly(x = ~x, y = ~y, z = ~frame, color = ~rat_num,
           type = 'scatter3d', mode = 'lines', 
           colors = c("blue", "green", "red"),
-          opacity = 0.3, 
-          line = list(width = 6, opacity = 0.3)) %>% 
+          opacity = 0.1, 
+          line = list(width = 6, opacity = 0.1)) %>% 
   layout(title = "Rats!",
          scene = list(
            xaxis = list(title = "x position"),
