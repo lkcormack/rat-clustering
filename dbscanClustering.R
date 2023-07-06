@@ -6,7 +6,7 @@ library(fpc)
 # load xyt_dat
 # Need to upgrade to file selection for stand-alone clustering
 # and/or automate as part of a pipeline
-load('spaceTime9Rats.RData')
+load('spaceTimeSimRats.RData')
 
 ###########################
 # Define the function to perform DBSCAN clustering
@@ -38,11 +38,11 @@ results <- xyt_dat %>%
                                 eps = eps))
 
 # plot of some sort
-# all_dat_plot <- results %>% 
-# ggplot(aes(x = frame, y = cluster, color = cluster)) +
-#   geom_jitter(size = 2, alpha = 0.1)
-#   
-# show(all_dat_plot)
+all_dat_plot <- results %>%
+ggplot(aes(x = frame, y = cluster, color = cluster)) +
+  geom_jitter(size = 2, alpha = 0.1)
+
+show(all_dat_plot)
 
 # make a tibble with just the clustered data
 clustered_data <- results[results$cluster != 0, ]
