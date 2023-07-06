@@ -17,14 +17,19 @@ x_max <- 1260
 y_min <- 0
 y_max <- 1260
 
-### Initialize data frame for storing coordinates ###
-n_rats <- 3 # need to code building of ID list.. only 3 allowed for now
+n_rats <- 3 # number of rats: 3, 6, 9, or 15
 
+# Create vector of rat IDs
+base_string <- "rat"
+int_seq <- 1:n_rats  
+rat_ids <- paste0(base_string, int_seq)
+
+### Initialize data frame for storing coordinates ###
 xyt_dat <- data.frame(
   frame = rep(1:n_steps, n_rats),
   x = rep(NA, n_steps*n_rats),
   y = rep(NA, n_steps*n_rats),
-  rat_num = rep(c("rat1", "rat2", "rat3"), each = n_steps)
+  rat_num = rep(rat_ids, each = n_steps)
 )
 ########
 

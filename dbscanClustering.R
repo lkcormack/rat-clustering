@@ -40,17 +40,17 @@ results <- xyt_dat %>%
 # plot of some sort
 all_dat_plot <- results %>%
 ggplot(aes(x = frame, y = cluster, color = cluster)) +
-  geom_jitter(size = 2, alpha = 0.1)
+  geom_jitter(height = 0.1, size = 2, alpha = 0.1)
 
 show(all_dat_plot)
 
 # make a tibble with just the clustered data
-clustered_data <- results[results$cluster != 0, ]
+# clustered_data <- results[results$cluster != 0, ]
 
 # plot of some sort
-clstr_dat_plot <- clustered_data %>% 
-  ggplot(aes(x = frame, y = cluster, color = cluster)) +
-  geom_jitter(size = 1, alpha = 0.1)
-
-show(clstr_dat_plot)
+# clstr_dat_plot <- clustered_data %>% 
+#   ggplot(aes(x = frame, y = cluster, color = cluster)) +
+#   geom_jitter(height = 0.2, size = 1, alpha = 0.1)
+# 
+# show(clstr_dat_plot)
 
