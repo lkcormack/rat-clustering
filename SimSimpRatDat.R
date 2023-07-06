@@ -5,6 +5,18 @@
 library(ggplot2)
 library(plotly)
 
+debug_flag <- TRUE # if TRUE, no file is saved.
+
+n_rats <- 3 # number of rats: 3, 6, 9, or 15
+n_groups <- 2 # not implemented yet!
+
+# check for valid combo of rats & groups
+if (n_rats %% n_groups != 0) {
+  warning("n_groups should divide evenly into n_rats,
+          setting n_groups to 1")
+  n_groups <- 1
+}
+
 # number of time steps
 n_steps <- 1000
 
@@ -16,9 +28,6 @@ x_min <- 0
 x_max <- 1260
 y_min <- 0
 y_max <- 1260
-
-n_rats <- 3 # number of rats: 3, 6, 9, or 15
-n_groups <- 1 # not implemented yet!
 
 # Create vector of rat IDs
 base_string <- "rat"
@@ -76,9 +85,11 @@ for (i in 600:800) {
 ##########
 
 ##### Name and save the file #######
-file_name <- file.choose(new = TRUE)
-file_name <- paste0(file_name, '.RData')
-save(xyt_dat, file = file_name)
+if (!debug_flag) {
+  file_name <- file.choose(new = TRUE)
+  file_name <- paste0(file_name, '.RData')
+  save(xyt_dat, file = file_name)
+}
 ##########
 
 # Plot

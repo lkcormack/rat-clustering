@@ -3,15 +3,15 @@
 library(tidyverse)
 library(fpc)
 
-# load xyt_dat
-# Need to upgrade to file selection for stand-alone clustering
-# and/or automate as part of a pipeline
-load('spaceTimeSimRats.RData')
+# Select .RData file for analysis
+# The file must contain a data frame "xyt_dat" with 4 columns:
+# | frame | x | y | rat_num |
 
-# file_path <- rstudioapi::selectFile(caption = "Select RData File",
-#                                     filter = "RData Files (*.RData)",
-#                                     existing = TRUE)
-#load(file_path)
+file_path <- rstudioapi::selectFile(caption = "Select RData File",
+                                   filter = "RData Files (*.RData)",
+                                   existing = TRUE)
+
+load(file_path)
 
 ###########################
 # Define the function to perform DBSCAN clustering
