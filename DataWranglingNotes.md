@@ -31,3 +31,4 @@ pixel/inch: 17.9394
 pixel/cm: 7.0627
 
 ### Cage Dimensions
+45" x 41" in 

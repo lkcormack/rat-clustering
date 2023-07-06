@@ -8,6 +8,11 @@ library(fpc)
 # and/or automate as part of a pipeline
 load('spaceTimeSimRats.RData')
 
+# file_path <- rstudioapi::selectFile(caption = "Select RData File",
+#                                     filter = "RData Files (*.RData)",
+#                                     existing = TRUE)
+#load(file_path)
+
 ###########################
 # Define the function to perform DBSCAN clustering
 # It takes the group labels (0 for no group), and adds
