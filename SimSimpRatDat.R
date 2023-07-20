@@ -16,6 +16,8 @@ if (n_rats %% n_groups != 0) {
           setting n_groups to 1")
   n_groups <- 1
 }
+# Wait, this isn't really necessary is it? Could have different
+# group sizes, etc... Keeping is simple for now though.
 
 # number of time steps
 n_steps <- 1000
