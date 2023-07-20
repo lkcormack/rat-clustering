@@ -1,21 +1,24 @@
-n <- 3  # number of points
+n <- 6  # number of points
 
-# Calculate the size of the grid
-grid_size <- ceiling(sqrt(n)) + 1
+# Calculate the size (side_length) of the grid
+# need the central part of the grid to hold
+# whatever the next perfect square is above n
+grid_size <- ceiling(sqrt(n)) # grid is grid_size x grid_size
 
 # Create all possible grid points, leaving out the edges
-grid_points <- expand.grid(x = seq(1000/(grid_size-1), 
-                                   1000 - 1000/(grid_size-1), length.out = grid_size - 2), 
-                           y = seq(1000/(grid_size-1), 
-                                   1000 - 1000/(grid_size-1), length.out = grid_size - 2))
+grid_points <- expand.grid(x = seq(0, 1000, 
+                                   length.out = grid_size), 
+                           y = seq(0, 1000, 
+                                   length.out = grid_size))
 
 # If there are more grid points than needed, select a subset
-if (nrow(grid_points) > n) {
-  set.seed(42)  # set seed for reproducibility
-  points <- grid_points[sample(nrow(grid_points), n), ]
-} else {
-  points <- grid_points
-}
+ if (nrow(grid_points) > n) {
+   set.seed(42)  # set seed for reproducibility
+   points <- grid_points[sample(nrow(grid_points), n), ]
+ } else {
+   points <- grid_points
+ }
 
 # See the points
-points
+print(grid_points)
+print(points)
