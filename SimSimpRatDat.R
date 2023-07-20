@@ -8,7 +8,7 @@ library(plotly)
 debug_flag <- TRUE # if TRUE, no file is saved.
 
 n_rats <- 3 # number of rats: 3, 6, 9, or 15
-n_groups <- 2 # not implemented yet!
+n_groups <- 2 # currently ongoing!
 
 # check for valid combo of rats & groups
 if (n_rats %% n_groups != 0) {
