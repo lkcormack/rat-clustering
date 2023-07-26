@@ -1,23 +1,30 @@
 # Script to simulate rats grouping and ungrouping in a known fashion.
 # They will do a random walk for a while, come together, walk, repeat
 
-# packages
+# ------ Packages ------
+# plotting
 library(ggplot2)
 library(plotly)
+# string printing
+library(glue)
 
 debug_flag <- TRUE # if TRUE, no file is saved.
 
-n_rats <- 3 # number of rats: 3, 6, 9, or 15
+n_rats <- 6 # number of rats: 3, 6, 9, or 15
 n_groups <- 2 # currently ongoing!
 
+# Minimum group size is 3 rats (by MM def.)
+# Maximum number of groups is thus
+# n_rats %/% n_groups (quotient of n_rats/n_groups)
+max_n_groups <- n_rats %/% n_groups
+
 # check for valid combo of rats & groups
-if (n_rats %% n_groups != 0) {
-  warning("n_groups should divide evenly into n_rats,
-          setting n_groups to 1")
-  n_groups <- 1
+if (n_groups > max_n_groups) {
+  warn_str <- glue("Too many groups requested!
+                   Setting n_groups to {max_n_groups}.")
+  warning(warn_str)
+  n_groups <- max_n_groups
 }
-# Wait, this isn't really necessary is it? Could have different
-# group sizes, etc... Keeping is simple for now though.
 
 # number of time steps
 n_steps <- 1000
