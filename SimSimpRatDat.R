@@ -10,13 +10,20 @@ library(glue)
 
 debug_flag <- TRUE # if TRUE, no file is saved.
 
-n_rats <- 6 # number of rats: 3, 6, 9, or 15
-n_groups <- 2 # currently ongoing!
+n_rats <- 9 # number of rats: 3, 6, 9, or 15
+n_groups <- 4 # requested number of groups
 
-# Minimum group size is 3 rats (by MM def.)
+#####
+# perhaps let user enter group sizes in a list. Like
+# grp_sizes = c(4, 3) for a group of 4 and a group of 3...
+#####
+
+# Minimum group size is 3 rats (by in-house def.)
+min_grp_sz <- 3
+
 # Maximum number of groups is thus
-# n_rats %/% n_groups (quotient of n_rats/n_groups)
-max_n_groups <- n_rats %/% n_groups
+# n_rats %/% min_grp_sz (quotient of n_rats/min_grp_sz)
+max_n_groups <- n_rats %/% min_grp_sz
 
 # check for valid combo of rats & groups
 if (n_groups > max_n_groups) {
@@ -32,11 +39,14 @@ n_steps <- 1000
 # sd of random walk step sizse
 sd_delta <- 20
 
-# cage boundaries (in pixels - ask Marie for real ones)
+# video dims (in pixels)
 x_min <- 0
-x_max <- 1260
+x_max <- 1280
 y_min <- 0
-y_max <- 1260
+y_max <- 720
+# It's more complicated for the real data
+# (cage is a subset of frame and is at an angle)
+# It doesn't matter for this though
 
 # Create vector of rat IDs
 base_string <- "rat"
@@ -52,46 +62,78 @@ xyt_dat <- data.frame(
 )
 ########
 
-#### Set initial coordinates for the little critters ###
-init_x <- c(300, 1000, 1000)
-init_y <- c(300, 300, 1000)
+##### Set initial coordinates for the little critters #####
+# Compute starting coordinates on a grid in the cage.
+# Calculate the size (side length) of the grid.
+# We need the central part of the grid to hold
+# whatever the next perfect square is above n_rats.
+grid_size <- ceiling(sqrt(n_rats)) # grid is grid_size x grid_size big
 
-for (j in 0:(n_rats-1)) {
-  xyt_dat$x[j*n_steps+1] <- init_x[j+1]
-  xyt_dat$y[j*n_steps+1] <- init_y[j+1]
+# Calculate grid coordinates.
+grid_points <- expand.grid(x = seq(0, 1000, 
+                                   length.out = grid_size), 
+                           y = seq(0, 1000, 
+                                   length.out = grid_size))
+
+# If there are more grid points than needed, select a subset.
+if (nrow(grid_points) > n_rats) {
+  set.seed(42)  # set seed for reproducibility
+  points <- grid_points[sample(nrow(grid_points), n), ]
+} else {
+  points_un <- grid_points
 }
-########
+# `points` is now an n_rats x 2 data frame of 
+# x, y starting point coordinates
 
-### Simulate coordinates for a random walk ###
+# insert starting coords into main data frame
+for (j in 0:(n_rats-1)) { #skip to first row for each rat
+  xyt_dat$x[j*n_steps+1] <- points_un[j+1, 'x']
+  xyt_dat$y[j*n_steps+1] <- points_un[j+1, 'y']
+}
+##### Done setting starting coordinates
+
+##### Simulate coordinates for the random walks #####
 for (i in 2:n_steps) {
   for (j in 0:(n_rats-1)) {
     xyt_dat$x[j*n_steps+i] <- xyt_dat$x[j*n_steps+1] + rnorm(1,0,sd_delta)
     xyt_dat$y[j*n_steps+i] <- xyt_dat$y[j*n_steps+1] + rnorm(1,0,sd_delta)
   }
 }
-##########
+# each rat is now doing a random walk "staying in their lanes"
+##### Done setting random walks
 
-### Have the rats group in a couple of places ###
-rendezvous = c(500, 500)
-# subtract starting coord for each rat and add 500
+##### Now for the tricky bit...                 #####
+##### Have the rats group in a couple of places #####
+rendezvous_un = c(200, 200)
+rendezvouses <- data.frame(x = numeric(n_groups), 
+                           y = numeric(n_groups))
+for (i in 1:n_groups) {
+  rendezvouses[i, ] <- rendezvous_un + i*100
+}
+
+# subtract starting coord for each rat and add group offset
 for (i in 200:400) {
-  for (j in 0:(n_rats-1)) {
-    xyt_dat$x[j*n_steps+i] <- xyt_dat$x[j*n_steps+i] -
-                              init_x[j+1] + rendezvous[1]
-    xyt_dat$y[j*n_steps+i] <- xyt_dat$y[j*n_steps+i] -
-                              init_y[j+1] + rendezvous[2]
+  for (k in 0:n_groups) {
+    for (j in 0:(n_rats-1)) {
+      xyt_dat$x[j*n_steps+i] <- xyt_dat$x[j*n_steps+i] -
+        points_un[j+1, 'x'] + rendezvouses[k, 'x']
+      xyt_dat$y[j*n_steps+i] <- xyt_dat$y[j*n_steps+i] -
+        points_un[j+1, 'y'] + rendezvouses[k, 'y']
+    }
   }
 }
 
 for (i in 600:800) {
-  for (j in 0:(n_rats-1)) {
-    xyt_dat$x[j*n_steps+i] <- xyt_dat$x[j*n_steps+i] -
-                              init_x[j+1] + rendezvous[1]
-    xyt_dat$y[j*n_steps+i] <- xyt_dat$y[j*n_steps+i] -
-                              init_y[j+1] + rendezvous[2]
+  for (k in 0:n_groups) {
+    for (j in 0:(n_rats-1)) {
+      xyt_dat$x[j*n_steps+i] <- xyt_dat$x[j*n_steps+i] -
+        init_x[j+1] + rendezvous[1]
+      xyt_dat$y[j*n_steps+i] <- xyt_dat$y[j*n_steps+i] -
+        init_y[j+1] + rendezvous[2]
+    }
   }
 }
-##########
+#####
 
 ##### Name and save the file #######
 if (!debug_flag) {
