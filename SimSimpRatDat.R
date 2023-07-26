@@ -11,19 +11,21 @@ library(glue)
 debug_flag <- TRUE # if TRUE, no file is saved.
 
 n_rats <- 9 # number of rats: 3, 6, 9, or 15
-n_groups <- 4 # requested number of groups
+n_groups <- 2 # requested number of groups
 
 #####
 # perhaps let user enter group sizes in a list. Like
 # grp_sizes = c(4, 3) for a group of 4 and a group of 3...
+# for now though, we'll do groups of 3
 #####
+rats_per_grp <- 3 # this is a constant for now
 
 # Minimum group size is 3 rats (by in-house def.)
 min_grp_sz <- 3
 
 # Maximum number of groups is thus
 # n_rats %/% min_grp_sz (quotient of n_rats/min_grp_sz)
-max_n_groups <- n_rats %/% min_grp_sz
+max_n_groups <- n_rats %/% rats_per_grp
 
 # check for valid combo of rats & groups
 if (n_groups > max_n_groups) {
@@ -82,7 +84,7 @@ if (nrow(grid_points) > n_rats) {
 } else {
   points_un <- grid_points
 }
-# `points` is now an n_rats x 2 data frame of 
+# `points_un` is now an n_rats x 2 data frame of 
 # x, y starting point coordinates
 
 # insert starting coords into main data frame
@@ -111,25 +113,42 @@ for (i in 1:n_groups) {
   rendezvouses[i, ] <- rendezvous_un + i*100
 }
 
+# First group will rats 1, 2, 3, next will be 4, 5, 6, etc.
 # subtract starting coord for each rat and add group offset
-for (i in 200:400) {
-  for (k in 0:n_groups) {
-    for (j in 0:(n_rats-1)) {
-      xyt_dat$x[j*n_steps+i] <- xyt_dat$x[j*n_steps+i] -
-        points_un[j+1, 'x'] + rendezvouses[k, 'x']
-      xyt_dat$y[j*n_steps+i] <- xyt_dat$y[j*n_steps+i] -
-        points_un[j+1, 'y'] + rendezvouses[k, 'y']
+for (i in 200:400) {                             # cycle through frames
+  for (k in 0:(n_groups-1)) {                      # and through groups
+    for (j in 0:(rats_per_grp-1)) {              # and through rats w/in group
+      # Each rat's set of rows is n_steps long
+      le_index <- k*rats_per_grp*n_steps + j*n_steps + i
+      
+      xyt_dat$x[le_index] <-                    # new current coord equal
+        xyt_dat$x[le_index] -                   # orig. current coord
+        points_un[j+1, 'x'] +                   # minus starting coord
+        rendezvouses[k+1, 'x']                  # plus rendezvous point
+      
+      xyt_dat$y[le_index] <-                    # new current coord equal
+        xyt_dat$y[le_index] -                   # orig. current coord
+        points_un[j+1, 'y'] +                   # minus starting coord
+        rendezvouses[k+1, 'y']                  # plus rendezvous point
     }
   }
 }
 
 for (i in 600:800) {
-  for (k in 0:n_groups) {
-    for (j in 0:(n_rats-1)) {
-      xyt_dat$x[j*n_steps+i] <- xyt_dat$x[j*n_steps+i] -
-        init_x[j+1] + rendezvous[1]
-      xyt_dat$y[j*n_steps+i] <- xyt_dat$y[j*n_steps+i] -
-        init_y[j+1] + rendezvous[2]
+  for (k in 0:(n_groups-1)) {                      # and through groups
+    for (j in 0:(rats_per_grp-1)) {              # and through rats w/in group
+      # Each rat's set of rows is n_steps long
+      le_index <- k*rats_per_grp*n_steps + j*n_steps + i
+      
+      xyt_dat$x[le_index] <-                    # new current coord equal
+        xyt_dat$x[le_index] -                   # orig. current coord
+        points_un[j+1, 'x'] +                   # minus starting coord
+        rendezvouses[k+1, 'x']                  # plus rendezvous point
+      
+      xyt_dat$y[le_index] <-                    # new current coord equal
+        xyt_dat$y[le_index] -                   # orig. current coord
+        points_un[j+1, 'y'] +                   # minus starting coord
+        rendezvouses[k+1, 'y']                  # plus rendezvous point
     }
   }
 }
