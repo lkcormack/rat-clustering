@@ -10,7 +10,7 @@ library(glue)
 
 debug_flag <- TRUE # if TRUE, no file is saved.
 
-n_rats <- 9 # number of rats: 3, 6, 9, or 15
+n_rats <- 6 # number of rats: 3, 6, 9, or 15
 n_groups <- 2 # requested number of groups
 
 #####
@@ -39,7 +39,7 @@ if (n_groups > max_n_groups) {
 n_steps <- 1000
 
 # sd of random walk step sizse
-sd_delta <- 20
+sd_delta <- 3
 
 # video dims (in pixels)
 x_min <- 0
@@ -80,7 +80,7 @@ grid_points <- expand.grid(x = seq(0, 1000,
 # If there are more grid points than needed, select a subset.
 if (nrow(grid_points) > n_rats) {
   set.seed(42)  # set seed for reproducibility
-  points <- grid_points[sample(nrow(grid_points), n), ]
+  points_un <- grid_points[sample(nrow(grid_points), n_rats), ]
 } else {
   points_un <- grid_points
 }
@@ -97,8 +97,8 @@ for (j in 0:(n_rats-1)) { #skip to first row for each rat
 ##### Simulate coordinates for the random walks #####
 for (i in 2:n_steps) {
   for (j in 0:(n_rats-1)) {
-    xyt_dat$x[j*n_steps+i] <- xyt_dat$x[j*n_steps+1] + rnorm(1,0,sd_delta)
-    xyt_dat$y[j*n_steps+i] <- xyt_dat$y[j*n_steps+1] + rnorm(1,0,sd_delta)
+    xyt_dat$x[j*n_steps+i] <- xyt_dat$x[j*n_steps+(i-1)] + rnorm(1,0,sd_delta)
+    xyt_dat$y[j*n_steps+i] <- xyt_dat$y[j*n_steps+(i-1)] + rnorm(1,0,sd_delta)
   }
 }
 # each rat is now doing a random walk "staying in their lanes"
