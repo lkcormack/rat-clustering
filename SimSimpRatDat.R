@@ -41,15 +41,6 @@ n_steps <- 1000
 # sd of random walk step sizse
 sd_delta <- 3
 
-# video dims (in pixels)
-x_min <- 0
-x_max <- 1280
-y_min <- 0
-y_max <- 720
-# It's more complicated for the real data
-# (cage is a subset of frame and is at an angle)
-# It doesn't matter for this though
-
 # Create vector of rat IDs
 base_string <- "rat"
 int_seq <- 1:n_rats  
@@ -71,10 +62,17 @@ xyt_dat <- data.frame(
 # whatever the next perfect square is above n_rats.
 grid_size <- ceiling(sqrt(n_rats)) # grid is grid_size x grid_size big
 
+# Spatial extent of video (not currently respected, but whatever)
+# video dims (in pixels)
+x_min <- 0
+x_max <- 1280
+y_min <- 0
+y_max <- 720
+
 # Calculate grid coordinates.
-grid_points <- expand.grid(x = seq(0, 1000, 
+grid_points <- expand.grid(x = seq(x_min, x_max, 
                                    length.out = grid_size), 
-                           y = seq(0, 1000, 
+                           y = seq(y_min, y_max, 
                                    length.out = grid_size))
 
 # If there are more grid points than needed, select a subset.
@@ -88,9 +86,9 @@ if (nrow(grid_points) > n_rats) {
 # x, y starting point coordinates
 
 # insert starting coords into main data frame
-for (j in 0:(n_rats-1)) { #skip to first row for each rat
-  xyt_dat$x[j*n_steps+1] <- points_un[j+1, 'x']
-  xyt_dat$y[j*n_steps+1] <- points_un[j+1, 'y']
+for (j in 0:(n_rats-1)) { 
+  xyt_dat$x[j*n_steps+1] <- points_un[j+1, 'x'] # skip to first row for each rat
+  xyt_dat$y[j*n_steps+1] <- points_un[j+1, 'y'] # ditto
 }
 ##### Done setting starting coordinates
 
@@ -106,11 +104,11 @@ for (i in 2:n_steps) {
 
 ##### Now for the tricky bit...                 #####
 ##### Have the rats group in a couple of places #####
-rendezvous_un = c(200, 200)
+rendezvous_un = c(200, 200).                      # coords of first group
 rendezvouses <- data.frame(x = numeric(n_groups), 
                            y = numeric(n_groups))
 for (i in 1:n_groups) {
-  rendezvouses[i, ] <- rendezvous_un + i*100
+  rendezvouses[i, ] <- rendezvous_un + i*100.     # coords of subsequent groups
 }
 
 # First group will rats 1, 2, 3, next will be 4, 5, 6, etc.
