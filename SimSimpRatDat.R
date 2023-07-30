@@ -13,14 +13,20 @@ debug_flag <- TRUE # if TRUE, no file is saved.
 ##### Things with which to play #####
 ### rats
 n_rats <- 6        # number of rats: 3, 6, 9, or 15
-n_groups <- 2      # requested number of groups
+n_groups <- 1      # requested number of groups
+
+### sd for the random walks
+sd_delta <- 3      # sd of random walk step size
 
 ### time
 n_steps <- 1000.   # number of time steps
 n_grp_periods <- 2 # number of time periods when grouping occurs
+####
 
-### random walk
-sd_delta <- 3      # sd of random walk step size
+##### Compute temporal split points for groups #####
+n_breaks <-  2*n_grp_periods + 2 # split points and end points
+t_breaks <- seq(0, n_steps, length.out = n_breaks)
+t_breaks <- t_breaks[2:(n_breaks-1)]
 
 #####
 # perhaps let user enter group sizes in a list. Like
@@ -106,7 +112,7 @@ for (i in 2:n_steps) {
 
 ##### Now for the tricky bit...                 #####
 ##### Have the rats group in a couple of places #####
-rendezvous_un = c(200, 200).                      # coords of first group
+rendezvous_un = c(200, 200)                       # coords of first group
 rendezvouses <- data.frame(x = numeric(n_groups), 
                            y = numeric(n_groups))
 for (i in 1:n_groups) {
@@ -115,40 +121,26 @@ for (i in 1:n_groups) {
 
 # First group will rats 1, 2, 3, next will be 4, 5, 6, etc.
 # subtract starting coord for each rat and add group offset
-for (i in 200:400) {                             # cycle through frames
-  for (k in 0:(n_groups-1)) {                      # and through groups
-    for (j in 0:(rats_per_grp-1)) {              # and through rats w/in group
-      # Each rat's set of rows is n_steps long
-      le_index <- k*rats_per_grp*n_steps + j*n_steps + i
-      
-      xyt_dat$x[le_index] <-                    # new current coord equal
-        xyt_dat$x[le_index] -                   # orig. current coord
-        points_un[j+1, 'x'] +                   # minus starting coord
-        rendezvouses[k+1, 'x']                  # plus rendezvous point
-      
-      xyt_dat$y[le_index] <-                    # new current coord equal
-        xyt_dat$y[le_index] -                   # orig. current coord
-        points_un[j+1, 'y'] +                   # minus starting coord
-        rendezvouses[k+1, 'y']                  # plus rendezvous point
-    }
-  }
-}
-
-for (i in 600:800) {
-  for (k in 0:(n_groups-1)) {                      # and through groups
-    for (j in 0:(rats_per_grp-1)) {              # and through rats w/in group
-      # Each rat's set of rows is n_steps long
-      le_index <- k*rats_per_grp*n_steps + j*n_steps + i
-      
-      xyt_dat$x[le_index] <-                    # new current coord equal
-        xyt_dat$x[le_index] -                   # orig. current coord
-        points_un[j+1, 'x'] +                   # minus starting coord
-        rendezvouses[k+1, 'x']                  # plus rendezvous point
-      
-      xyt_dat$y[le_index] <-                    # new current coord equal
-        xyt_dat$y[le_index] -                   # orig. current coord
-        points_un[j+1, 'y'] +                   # minus starting coord
-        rendezvouses[k+1, 'y']                  # plus rendezvous point
+for (time_grp in 1:(length(t_breaks)/2)) {
+  strt <- floor(t_breaks[2*time_grp - 1]) # odd elements (start points)
+  stp <- floor(t_breaks[2*time_grp]) # even elements (stopping points)
+  
+  for (i in strt:stp) {                             # cycle through frames
+    for (k in 0:(n_groups-1)) {                      # and through groups
+      for (j in 0:(rats_per_grp-1)) {              # and through rats w/in group
+        # Each rat's set of rows is n_steps long
+        le_index <- k*rats_per_grp*n_steps + j*n_steps + i
+        
+        xyt_dat$x[le_index] <-                    # new current coord equal
+          xyt_dat$x[le_index] -                   # orig. current coord
+          points_un[j+1, 'x'] +                   # minus starting coord
+          rendezvouses[k+1, 'x']                  # plus rendezvous point
+        
+        xyt_dat$y[le_index] <-                    # new current coord equal
+          xyt_dat$y[le_index] -                   # orig. current coord
+          points_un[j+1, 'y'] +                   # minus starting coord
+          rendezvouses[k+1, 'y']                  # plus rendezvous point
+      }
     }
   }
 }
