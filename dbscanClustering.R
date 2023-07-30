@@ -23,6 +23,7 @@ perform_dbscan <- function(data, min_objects, eps) {
   
   # Assign cluster labels to new "cluster" column
   data$cluster <- cluster_result$cluster
+  data$iscore <- cluster_result$isseed
   
   return(data)
 }

@@ -21,7 +21,8 @@ sd_delta <- 3      # sd of random walk step size
 ### time
 n_steps <- 1000   # number of time steps
 n_grp_periods <- 3 # number of time periods when grouping occurs
-####
+
+#### End of adjustable parameters or "knobs" ####
 
 ##### Compute temporal split points for groups #####
 n_breaks <-  2*n_grp_periods + 2 # split points and end points
