@@ -10,36 +10,38 @@ library(glue)
 
 debug_flag <- TRUE # if TRUE, no file is saved.
 
-n_rats <- 6 # number of rats: 3, 6, 9, or 15
-n_groups <- 2 # requested number of groups
+##### Things with which to play #####
+### rats
+n_rats <- 6        # number of rats: 3, 6, 9, or 15
+n_groups <- 2      # requested number of groups
+
+### time
+n_steps <- 1000.   # number of time steps
+n_grp_periods <- 2 # number of time periods when grouping occurs
+
+### random walk
+sd_delta <- 3      # sd of random walk step size
 
 #####
 # perhaps let user enter group sizes in a list. Like
 # grp_sizes = c(4, 3) for a group of 4 and a group of 3...
 # for now though, we'll do groups of 3
-#####
 rats_per_grp <- 3 # this is a constant for now
 
 # Minimum group size is 3 rats (by in-house def.)
 min_grp_sz <- 3
 
+##### 
+# check for valid combo of rats & groups
 # Maximum number of groups is thus
-# n_rats %/% min_grp_sz (quotient of n_rats/min_grp_sz)
 max_n_groups <- n_rats %/% rats_per_grp
 
-# check for valid combo of rats & groups
 if (n_groups > max_n_groups) {
   warn_str <- glue("Too many groups requested!
                    Setting n_groups to {max_n_groups}.")
   warning(warn_str)
   n_groups <- max_n_groups
 }
-
-# number of time steps
-n_steps <- 1000
-
-# sd of random walk step sizse
-sd_delta <- 3
 
 # Create vector of rat IDs
 base_string <- "rat"
