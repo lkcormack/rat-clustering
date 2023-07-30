@@ -12,15 +12,15 @@ debug_flag <- TRUE # if TRUE, no file is saved.
 
 ##### Things with which to play #####
 ### rats
-n_rats <- 6        # number of rats: 3, 6, 9, or 15
-n_groups <- 1      # requested number of groups
+n_rats <- 15        # number of rats: 3, 6, 9, or 15
+n_groups <- 4      # requested number of groups
 
 ### sd for the random walks
 sd_delta <- 3      # sd of random walk step size
 
 ### time
-n_steps <- 1000.   # number of time steps
-n_grp_periods <- 2 # number of time periods when grouping occurs
+n_steps <- 1000   # number of time steps
+n_grp_periods <- 3 # number of time periods when grouping occurs
 ####
 
 ##### Compute temporal split points for groups #####
@@ -126,20 +126,18 @@ for (time_grp in 1:(length(t_breaks)/2)) {
   stp <- floor(t_breaks[2*time_grp]) # even elements (stopping points)
   
   for (i in strt:stp) {                             # cycle through frames
-    for (k in 0:(n_groups-1)) {                      # and through groups
+    for (k in 0:(n_groups-1)) {                     # and through groups
       for (j in 0:(rats_per_grp-1)) {              # and through rats w/in group
         # Each rat's set of rows is n_steps long
         le_index <- k*rats_per_grp*n_steps + j*n_steps + i
         
-        xyt_dat$x[le_index] <-                    # new current coord equal
-          xyt_dat$x[le_index] -                   # orig. current coord
-          points_un[j+1, 'x'] +                   # minus starting coord
-          rendezvouses[k+1, 'x']                  # plus rendezvous point
+        xyt_dat$x[le_index] <-                    # new current coord equals the
+          rendezvouses[k+1, 'x'] +                # rendezvous point plus
+          rnorm(1, 0, 10)                         # some random noise
         
-        xyt_dat$y[le_index] <-                    # new current coord equal
-          xyt_dat$y[le_index] -                   # orig. current coord
-          points_un[j+1, 'y'] +                   # minus starting coord
-          rendezvouses[k+1, 'y']                  # plus rendezvous point
+        xyt_dat$y[le_index] <-                    # new current coord equals the
+          rendezvouses[k+1, 'y'] +                # rendezvous point plus
+          rnorm(1, 0, 10)                         # some random noise
       }
     }
   }
