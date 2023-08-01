@@ -1,5 +1,8 @@
 # This is the script that does the clustering.
 
+save_flag == TRUE # save out the tibble with the cluster columns?
+plot_flag == TRUE # make plot?
+
 library(tidyverse)
 library(fpc)
 
@@ -37,26 +40,26 @@ eps <- 100       # Maximum distance between two samples for
 # preform the clustering on each video frame
 
 # Group data by time and apply the perform_dbscan function
-results <- xyt_dat %>%
+xyt_dat <- xyt_dat %>%
   group_by(frame) %>% # group data by frame number
   group_modify(~ perform_dbscan(.x, 
                                 min_objects = min_objects, 
                                 eps = eps))
 
-# plot of some sort
-all_dat_plot <- results %>%
-ggplot(aes(x = frame, y = cluster, color = cluster)) +
-  geom_jitter(height = 0.1, size = 2, alpha = 0.1)
+##### Name and save the file #######
+if (save_flag) {
+  file_name <- file.choose(new = TRUE)
+  file_name <- paste0(file_name, '.RData')
+  save(xyt_dat, file = file_name)
+}
+##########
 
-show(all_dat_plot)
-
-# make a tibble with just the clustered data
-# clustered_data <- results[results$cluster != 0, ]
-
-# plot of some sort
-# clstr_dat_plot <- clustered_data %>% 
-#   ggplot(aes(x = frame, y = cluster, color = cluster)) +
-#   geom_jitter(height = 0.2, size = 1, alpha = 0.1)
-# 
-# show(clstr_dat_plot)
+if (plot_flag) {
+  # plot of some sort
+  all_dat_plot <- results %>%
+    ggplot(aes(x = frame, y = cluster, color = cluster)) +
+    geom_jitter(height = 0.1, size = 2, alpha = 0.1)
+  
+  show(all_dat_plot)
+}
 
