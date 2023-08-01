@@ -1,10 +1,10 @@
 # This is the script that does the clustering.
 
-save_flag == TRUE # save out the tibble with the cluster columns?
-plot_flag == TRUE # make plot?
-
 library(tidyverse)
 library(fpc)
+
+save_flag = TRUE # save out the tibble with the cluster columns?
+plot_flag = TRUE # make plot?
 
 # Select .RData file for analysis
 # The file must contain a data frame "xyt_dat" with 4 columns:
