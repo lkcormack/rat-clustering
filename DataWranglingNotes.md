@@ -1,4 +1,5 @@
-# There seems to be a big(ish) problem with NaNs.
+# Dealing with NaNs.
+## Can ignore this – problem solved
 
 There are a lot of NaNs, and they seem to be interspersed in the data; like not just at the beginning and end. This presents a challange.
 
@@ -14,12 +15,13 @@ Current thoughts:
     - In other words, to calculates the movement stats, we can't include the sudden changes due to time drops. 
 
 ## OMG, I'm so dumb.
+### solution to above
 
 I just realized that we can simply drop the NaNs (any frames where either x and y are NaN) and use the first difference of the frames column to identify the time drops and how much time was dropped. Like, we don't need a `for()` loop or complex logical indexing.
 
 ## Definitions
 
-Each time rats are released into the box, I'm calling that a "trial"
+Each time rats are released into the box, I'm calling that a "run" – a single video recording
 
 A set of identical trials (e.g. n=3 rats), I'm calling that that a "block"
 
