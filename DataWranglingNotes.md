@@ -25,7 +25,7 @@ Each time rats are released into the box, I'm calling that a "run" – a single 
 
 A set of identical runs (e.g. n=3 rats), I'm calling that that a "block"
 
-If rats are ID'd as part of a triad or not or whatever, I'm calling that an "experiment". So, the data we're working on now is one experiment, the "baseline experiment".
+A set of blocks with different rat numbers in each block is an "expermient". So, the data we're working on now is one experiment, the "baseline experiment".
 
 ## General Info
 ### Camera conversion
@@ -34,3 +34,7 @@ pixel/cm: 7.0627
 
 ### Cage Dimensions
 45" x 41" in 
+
+### rotation might be nice
+The camera is not square with respect to the cage, so if we want to have x,y data that aligns with the cage sides, we'll need to apply a rotation matrix to the data.
+
