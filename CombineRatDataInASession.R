@@ -5,6 +5,7 @@
 # to do: perhaps have a "raw" data frame and then another one 
 # with NaNs removed for debugging/reality-checking
 # like in PlotOneRatPath.R
+# currently removes NaNs without apology or explanation.
 
 library(tidyverse)
 library(plotly)

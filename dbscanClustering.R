@@ -56,7 +56,7 @@ if (save_flag) {
 
 if (plot_flag) {
   # plot of some sort
-  all_dat_plot <- results %>%
+  all_dat_plot <- xyt_dat %>%
     ggplot(aes(x = frame, y = cluster, color = cluster)) +
     geom_jitter(height = 0.1, size = 2, alpha = 0.1)
   
