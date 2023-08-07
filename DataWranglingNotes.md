@@ -36,5 +36,5 @@ pixel/cm: 7.0627
 45" x 41" in 
 
 ### rotation might be nice
-The camera is not square with respect to the cage, so if we want to have x,y data that aligns with the cage sides, we'll need to apply a rotation matrix to the data.
+The camera is not square with respect to the cage, so if we want to have x,y data that aligns with the cage sides, we'll need to rotate the data. So I guess that would look like: offset by camera center coordinates, apply rotation matrix, reverse offset.
 
