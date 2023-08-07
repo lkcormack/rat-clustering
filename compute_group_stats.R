@@ -60,3 +60,5 @@ for (i in 1:max_grp_number) {    # loop through the groups labels
 }
 
 cluster_lengths_sizes <- rle_raw[rle_raw$value != 0 ,]
+
+# save...
