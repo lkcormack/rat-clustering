@@ -10,6 +10,8 @@
 library(tidyverse)
 library(plotly)
 
+save_flag = TRUE # save out the tibble with the cluster columns?
+plot_flag = FALSE # make plot?
 
 # Pick a run to look at (in my vocab, a "run" is single
 # instance of recording rats running around in the box - 
@@ -51,31 +53,43 @@ xyt_dat <- xyt_dat %>%
 xyt_dat$rat_num <- as.factor(xyt_dat$rat_num)
 
 # write out the data. 
-# To do: make this a dialog. Or, better, just build a filename
+# For the automated version, build a filename
 # based on the condition and run #
-save(xyt_dat, file = 'spaceTimeRats.RData')
+# format: [num rats/condition]r_r[run num]_merged.RData
+##### Name and save the file #######
+if (save_flag) {
+  file_name <- file.choose(new = TRUE)
+  file_name <- paste0(file_name, '.RData')
+  save(xyt_dat, file = file_name)
+}
+##########
+
+if (plot_flag) {
+  n_frms_plt = 10000
+  b_frms_plt = 1
+  e_frms_plt = b_frms_plt + n_frms_plt
+  z_range = c(xyt_dat$frame[b_frms_plt], xyt_dat$frame[e_frms_plt])
+
+  fig <- xyt_dat %>%
+    plot_ly(x = ~x, y = ~y, z = ~frame, color = ~rat_num,
+            type = 'scatter3d', mode = 'lines',
+            colors = c("blue", "green", "red"),
+            opacity = 0.3,
+            line = list(width = 6, opacity = 0.3)) %>%
+    layout(title = "Rats!",
+           scene = list(
+             xaxis = list(title = "x position"),
+             yaxis = list(title = "y position"),
+             zaxis = list(title = "video frame", range = z_range)
+             ))
+
+  show(fig)
+}
+
 
 # reality checks
 print(summary(xyt_dat))
 
 ## Plotting ##
-# n_frms_plt = 10000
-# b_frms_plt = 1
-# e_frms_plt = b_frms_plt + n_frms_plt
-# z_range = c(xyt_dat$frame[b_frms_plt], xyt_dat$frame[e_frms_plt])
-# 
-# fig <- xyt_dat %>% 
-#   plot_ly(x = ~x, y = ~y, z = ~frame, color = ~rat_num,
-#           type = 'scatter3d', mode = 'lines', 
-#           colors = c("blue", "green", "red"),
-#           opacity = 0.3, 
-#           line = list(width = 6, opacity = 0.3)) %>% 
-#   layout(title = "Rats!",
-#          scene = list(
-#            xaxis = list(title = "x position"),
-#            yaxis = list(title = "y position"),
-#            zaxis = list(title = "video frame", range = z_range)
-#            ))
-# 
-# show(fig)
+
 

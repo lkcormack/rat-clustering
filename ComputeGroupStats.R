@@ -12,7 +12,7 @@ load(file_path)
 # make data frame without unneeded columns
 cluster_dat <- xyt_dat %>% select(rat_num, frame, cluster)
 
-# cleaning up
+# remove unneeded Big Kahuna data frame
 rm('xyt_dat')
 
 # pivot such that rats are rows, frames are columns, and entries are cluster
