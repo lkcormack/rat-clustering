@@ -44,9 +44,9 @@ The camera is not square with respect to the cage, so if we want to have x,y dat
 ## Workflow
 The "by hand" workflow is in place. At each step, the user is prompted to open a file, that step of the analysis is done, and then the user is prompted to save a file.
 
-CombineRatDataInASession.R
-dbscanClustering.R
-compute_group_stats.R
+CombineRatDataInASession.R  
+DBScanClustering.R  
+ComputeGroupzstats.R  
 
 
 
