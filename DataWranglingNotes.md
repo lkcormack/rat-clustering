@@ -1,4 +1,7 @@
-# Dealing with NaNs.
+# Data analysis Notes
+This is just "as we go" notes and thoughts on the data analysis in roughly chronological order.
+
+## Dealing with NaNs.
 ## Can ignore this – problem solved
 
 There are a lot of NaNs, and they seem to be interspersed in the data; like not just at the beginning and end. This presents a challange.
@@ -27,7 +30,7 @@ A set of identical runs (e.g. n=3 rats), I'm calling that that a "block"
 
 A set of blocks with different rat numbers in each block is an "expermient". So, the data we're working on now is one experiment, the "baseline experiment".
 
-## General Info
+## Physical layout Info
 ### Camera conversion
 pixel/inch: 17.9394
 pixel/cm: 7.0627
@@ -37,4 +40,27 @@ pixel/cm: 7.0627
 
 ### rotation might be nice
 The camera is not square with respect to the cage, so if we want to have x,y data that aligns with the cage sides, we'll need to rotate the data. So I guess that would look like: offset by camera center coordinates, apply rotation matrix, reverse offset.
+
+## Workflow
+The "by hand" workflow is in place. At each step, the user is prompted to open a file, that step of the analysis is done, and then the user is prompted to save a file.
+
+CombineRatDataInASession.R
+dbscanClustering.R
+compute_group_stats.R
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
