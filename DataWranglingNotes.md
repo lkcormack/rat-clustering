@@ -44,9 +44,9 @@ The camera is not square with respect to the cage, so if we want to have x,y dat
 ## Workflow
 The "by hand" workflow is in place. At each step, the user is prompted to open a file, that step of the analysis is done, and then the user is prompted to save a file.
 
-CombineRatDataInASession.R  
-DBScanClustering.R  
-ComputeGroupzstats.R  
+CombineRatDataInARun.R – combine rat files from a single run into a single xyt_dat data frame  
+DBScanClustering.R – do the clustering and add cluster and seed labels to xyt_dat  
+ComputeGroupStats.R – compute group sizes, lengths in time, etc.
 
 
 
