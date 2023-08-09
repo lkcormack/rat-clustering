@@ -39,16 +39,28 @@ pixel/cm: 7.0627
 45" x 41" in 
 
 ### rotation might be nice
-The camera is not square with respect to the cage, so if we want to have x,y data that aligns with the cage sides, we'll need to rotate the data. So I guess that would look like: offset by camera center coordinates, apply rotation matrix, reverse offset.
+7-Aug-23 lkc – The camera is not square with respect to the cage, so if we want to have x,y data that aligns with the cage sides, we'll need to rotate the data. So I guess that would look like: offset by camera center coordinates, apply rotation matrix, reverse offset.
 
 ## Workflow
-The "by hand" workflow is in place. At each step, the user is prompted to open a file, that step of the analysis is done, and then the user is prompted to save a file.
+### "By hand" single run analysis workflow  
+7-Aug-23 lkc The "by hand" workflow is in place. At each step, the user is prompted to open a file, that step of the analysis is done, and then the user is prompted to save a file.
 
 CombineRatDataInARun.R – combine rat files from a single run into a single xyt_dat data frame  
 DBScanClustering.R – do the clustering and add cluster and seed labels to xyt_dat  
 ComputeGroupStats.R – compute group sizes, lengths in time, etc.
 
+### Data wrangling insight!
+7-Aug-23 lkc  Combining the data for each run need only be done once, and should not clutter up the actual analysis workflow.
+So today's goal is to write a script that can go through a session and do the combination run by run.  
+(or, if I'm ambitions, for all sessions in an experiment in one go.
 
+Note: for the bootstrapping, we can't pre-combine the data from a run, but it might speed things up to still have .RData files for each rat to avoid having to load .csv files in the bootstrapping loop.
+
+### One possible puzzle to solve
+Let's say there are two groups running simultaneously, groups "1" and "2", and then group 1 disperses. The former group 2 would then become group 1, so we have to check for that and adjust the labels for continuity.
+
+### Automated whole-session workflow
+7-Aug-23 lkc  
 
 
 
