@@ -54,6 +54,7 @@ if (save_flag) {
 }
 ##########
 
+##### optional plotting #####
 if (plot_flag) {
   # plot of some sort
   all_dat_plot <- xyt_dat %>%
@@ -62,4 +63,5 @@ if (plot_flag) {
   
   show(all_dat_plot)
 }
+#####
 
