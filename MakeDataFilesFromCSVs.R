@@ -51,16 +51,18 @@ for (i in 1:n_runs) {
     xyt_dat <-
       read_csv(file_list[j],
                col_names = c("frame", "x", "y"),
-               skip = 1)
+               skip = 1,
+               show_col_types = FALSE)
     # add a rat ID column
     xyt_dat <- xyt_dat %>%
       mutate(rat_num = j)
     
     # construct a file name
     file_name <- paste0(rat, j, run, i, cond, ext)
+    full_name <- paste0(dir_list[i], "/", file_name)
     
     # save out the data frame
-    save(xyt_dat, file = file_name)
+    save(xyt_dat, file = full_name)
     
 
   } # end of looping through files in a run
