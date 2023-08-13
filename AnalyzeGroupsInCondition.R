@@ -3,12 +3,14 @@
 # This code (will...) 
 #  let the user pick a condition (number of rats)
 #  loop through the runs in that condition
+#     load each rat's .RData file
 #     combine the rat data files into one data frame
 #     compute the group lengths
 #     compute a histogram of the lengths
 #     add the histogram to list 
 #  save out the histogram data for this condition
 ####
+
 
 library(tidyverse)
 
@@ -23,12 +25,20 @@ for (i in 1:length(dir_list)) {
   # load the list of files in this directory
   # file_list <-  ...
   
+  # create an empty data frame to hold the combined data
+  xyt_dat = data.frame()
+  
   # load the .RData files for the rats in this run
   for (j in 1:length(file_list)) {
     # combine into one data frame
-    # temp <-  ...
+    tmp <- load(file_list[j])
+    xyt_dat <- rbind(xyt_dat, tmp)
     
   } # end of looping through files for this run
+  
+  # run DBScan
+  
+  # run rle analysis
   
   # compute the histograms of group lengths for this run and store
   h <- hist(temp, probability = TRUE, plot = FALSE)
