@@ -1,3 +1,4 @@
+##### CombineRatDataInARun.R
 # Takes all the data from a single "run" or recording, and combines
 # them into a single data frame with a rat ID column.
 # Need to convert to cm. Conversion is 7.0627 pixel/cm.
