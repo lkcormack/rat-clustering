@@ -69,8 +69,8 @@ for (i in 1:max_grp_number) {    # loop through the groups labels
 
 # need to add a cumulative sum column of the lengths
 # to code the frame number at which clusters start
-rle_raw <- rle_raw %>% 
-  group_by(as.factor(grp_label)) %>% 
+rle_with_frames <- rle_raw %>% 
+  group_by(grp_label) %>% 
   mutate(frame_num = cumsum(lengths))
 
 # Runs of zeros are runs of "no cluster" for that cluster ID
@@ -94,7 +94,7 @@ if (plot_flag) {
 
   # plot of some sort
   clstr_len_plot <- t %>%
-    ggplot(aes(x = t$lengths)) +
+    ggplot(aes(x = lengths)) +
     geom_histogram(bins = 30, alpha = 0.5)
   
   show(clstr_len_plot)
