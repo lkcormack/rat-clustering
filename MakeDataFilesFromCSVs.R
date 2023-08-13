@@ -29,7 +29,7 @@ dir_path <- selectDirectory(caption = "Select Directory",
 dir_list <- list.dirs(path = dir_path, 
                       recursive = FALSE, 
                       full.names = TRUE)
-n_runs <- length(dir_list)
+n_runs <- length(dir_list) # should always be 15
 
 # loop through the runs (directories) for this condition
 for (i in 1:n_runs) {

@@ -11,7 +11,7 @@
 library(tidyverse)
 library(plotly)
 
-save_flag = TRUE # save out the tibble with the cluster columns?
+save_flag = FALSE # save out the tibble with the cluster columns?
 plot_flag = FALSE # make plot?
 
 # Pick a run to look at (in my vocab, a "run" is single
@@ -31,20 +31,26 @@ xyt_dat = data.frame()
 
 # now read the files, tacking them on to xyt_dat as we go
 for (i in 1:n_files) {
-  tmp <-  read_csv(file_list[i], col_names = c("frame", "x", "y"), skip = 1)
+  tmp <-  read_csv(file_list[i], 
+                   col_names = c("frame", "x", "y"), 
+                   skip = 1,
+                   show_col_types = FALSE)
   # add a rat ID column
   tmp <- tmp %>% 
     mutate(rat_num = i)
   xyt_dat <- rbind(xyt_dat, tmp)
 }
 
-# Find the frames with NaNs in either data column
-nan_frames = xyt_dat[is.na(xyt_dat$x) | is.na(xyt_dat$y), 'frame']
+# # Find the frames with NaNs in either data column
+# nan_frames = xyt_dat[is.na(xyt_dat$x) | is.na(xyt_dat$y), 'frame']
+# 
+# # Keep the frames that are *not* a member of nan_frames
+# xyt_dat <- xyt_dat[!xyt_dat$frame %in% nan_frames$frame, ]
 
-# Keep the frames that are *not* a member of nan_frames
-xyt_dat <- xyt_dat[!xyt_dat$frame %in% nan_frames$frame, ]
+# omit rows with NA values
+xyt_dat <- xyt_dat[complete.cases(xyt_dat$x, xyt_dat$y), ]
 
-# compute the frame jump column separatly per rat
+# compute the frame jump column separately per rat
 # these should end up identical for each rat
 xyt_dat <- xyt_dat %>%
   group_by(rat_num) %>% 
