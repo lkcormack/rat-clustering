@@ -38,7 +38,6 @@ eps <- 100       # Maximum distance between two samples for
                  # them to be considered as in the same neighborhood
 
 # preform the clustering on each video frame
-
 # Group data by time and apply the perform_dbscan function
 xyt_dat <- xyt_dat %>%
   group_by(frame) %>% # group data by frame number

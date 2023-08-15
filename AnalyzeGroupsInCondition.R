@@ -13,7 +13,25 @@
 
 
 library(tidyverse)
+library(rstudioapi)
 library(progress) # this script is going to take a while to run...
+library(fpc)
+
+######### function definitions ##################
+# Define the function to perform DBSCAN clustering
+# It takes the group labels (0 for no group), and adds
+# them on as additional column
+perform_dbscan <- function(data, min_objects, eps) {
+  # Perform DBSCAN clustering
+  cluster_result <- dbscan(data[, c("x", "y")], eps = eps, MinPts = min_objects)
+  
+  # Assign cluster labels to new "cluster" column
+  data$cluster <- cluster_result$cluster
+  data$iscore <- cluster_result$isseed
+  
+  return(data)
+}
+######### end function definitions ##################
 
 # Initialize an empty list to store the histogram data
 hist_data_list <- list()
@@ -47,21 +65,36 @@ for (i in 1:length(dir_list)) {
   cond <- paste0('n_Rats', n_files)
   
   # create an empty data frame to hold the combined data
-  xyt_dat = data.frame()
+  tmp = data.frame()
   
   # load the .RData files for the rats in this run
   for (j in 1:length(file_list)) {
     # print(paste("Loading rat", j)) # for debugging
     # combine into one data frame
-    tmp <- load(file_list[j])
-    xyt_dat <- rbind(xyt_dat, tmp)
+    load(file_list[j])
+    tmp <- rbind(tmp, xyt_dat)
     
   } # end of looping through files for this run
+  
+  # rename the combined file back to xyt_dat
+  xyt_dat <- tmp
   
   # omit rows with NA values
   xyt_dat <- xyt_dat[complete.cases(xyt_dat$x, xyt_dat$y), ]
   
-  # run DBScan
+  ##### run DBScan
+  # Set parameters
+  min_objects <- 3 # Minimum number of objects in a cluster
+  eps <- 100       # Maximum distance between two samples for 
+  # them to be considered as in the same neighborhood
+  
+  # preform the clustering on each video frame
+  # Group data by time and apply the perform_dbscan function
+  xyt_dat <- xyt_dat %>%
+    group_by(frame) %>% # group data by frame number
+    group_modify(~ perform_dbscan(.x, 
+                                  min_objects = min_objects, 
+                                  eps = eps))
   
   # run rle analysis
   
