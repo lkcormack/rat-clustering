@@ -18,24 +18,27 @@ cluster_dat <- xyt_dat %>% select(rat_num, frame, cluster)
 # remove unneeded Big Kahuna data frame
 rm('xyt_dat')
 
-# pivot such that rats are rows, frames are columns, and entries are cluster
+# pivot such that 
+# - rats are rows, 
+# - frames are columns, 
+# - and entries are cluster ID number
 # this will allow us to detect frame-to-frame continuity of clusters more
 # easily
 grps_tibble <- cluster_dat %>%
   pivot_wider(names_from = frame, values_from = cluster)
 
-# convert to a matrix
-grps_matrix <- as.matrix(grps_tibble[,-1])
+# convert to a matrix so we can do maths more directly
+grps_matrix <- as.matrix(grps_tibble[,-1]) # drop column 1 ("-1") (the rat num factor)
 mat_dims <- dim(grps_matrix)
 n_frames = mat_dims[2]
 
 # get maximum integer group label for the `for()` loop below
 max_grp_number <- max(grps_matrix)
 
-# Initialize array for group member counts
+# Initialize group label x frame array for group member counts
 member_counts <- array(0, dim=c(max_grp_number, n_frames))
 
-# construct group label x frame array whose values are the number of 
+# fill group label x frame array whose values are the number of 
 # members in that group
 for (i in 1:max_grp_number) {    # loop through the groups labels
   temp <- grps_matrix    # make a matrix whose entries are

@@ -96,8 +96,74 @@ for (i in 1:length(dir_list)) {
                                   min_objects = min_objects, 
                                   eps = eps))
   
-  # run rle analysis
+  ##### run rle analysis
+  # make data frame without unneeded columns
+  cluster_dat <- xyt_dat %>% select(rat_num, frame, cluster)
+  # rat number cycles fast, frame cycles slowly
   
+  # remove unneeded Big Kahuna data frame
+  rm('xyt_dat')
+  
+  # pivot such that 
+  # - rats are rows, 
+  # - frames are columns, 
+  # - and entries are cluster ID number
+  # this will allow us to detect frame-to-frame continuity of clusters more
+  # easily
+  grps_tibble <- cluster_dat %>%
+    pivot_wider(names_from = frame, values_from = cluster)
+  
+  # convert to a matrix so we can do maths more directly
+  grps_matrix <- as.matrix(grps_tibble[,-1])
+  mat_dims <- dim(grps_matrix)
+  n_frames = mat_dims[2]
+  
+  # get maximum integer group label for the `for()` loop below
+  max_grp_number <- max(grps_matrix)
+  
+  # Initialize group label x frame array for group member counts
+  member_counts <- array(0, dim=c(max_grp_number, n_frames))
+  
+  # fill group label x frame array whose values are the number of 
+  # members in that group
+  for (i in 1:max_grp_number) {    # loop through the groups labels
+    temp <- grps_matrix    # make a matrix whose entries are
+    temp[temp == i] <- 1   # 1 for this group and
+    temp[temp != i] <- 0.  # 0 for the other groups
+    member_counts[i, ] <- colSums(temp) # number of members of this group for each frame
+  }
+  # We now have a matrix indicating whether a group (row) is present
+  # on a given frame (column)
+  
+  # Now perform run length encoding (rle) to get a data frame of group lengths 
+  # (in frames) and group sizes (# of rats).   
+  # NB: doing this in separate `for()` loop from above for clarity.
+  rle_raw <- tibble() # empty tibble to hold results
+  for (i in 1:max_grp_number) {    # loop through the groups labels
+    # Perform the run-length encoding for this row
+    rle_output <- rle(member_counts[i, ])
+    
+    # the output of rle() is a list, so
+    # convert the RLE result to a temporary tibble
+    rle_tibble <- tibble(
+      lengths = rle_output$lengths,
+      values = rle_output$values,
+      grp_label = i
+    )
+    
+    # Append to the results to the main output tibble
+    rle_raw <- bind_rows(rle_raw, rle_tibble)
+    
+  }
+  
+  # need to add a cumulative sum column of the lengths
+  # to code the frame number at which clusters start
+  
+  
+  
+  
+  
+  ##################
   # compute the histograms of group lengths for this run and store
 #  h <- hist(temp, probability = TRUE, plot = FALSE)
   

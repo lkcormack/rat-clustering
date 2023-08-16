@@ -13,6 +13,7 @@
 
 library(tidyverse)
 library(rstudioapi)
+library(progress) # for the progress bar...
 
 # file name strings
 rat <- 'Rat'
@@ -30,6 +31,9 @@ dir_list <- list.dirs(path = dir_path,
                       recursive = FALSE, 
                       full.names = TRUE)
 n_runs <- length(dir_list) # should always be 15
+
+# Create a progress bar object
+pb <- progress_bar$new(total = n_runs, clear = FALSE)
 
 # loop through the runs (directories) for this condition
 for (i in 1:n_runs) {
@@ -67,5 +71,7 @@ for (i in 1:n_runs) {
 
   } # end of looping through files in a run
   
+  # Update the progress bar
+  pb$tick()
   
 } # end of looping through runs!
