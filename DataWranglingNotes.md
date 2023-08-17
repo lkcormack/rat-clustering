@@ -56,11 +56,39 @@ So today's goal is to write a script that can go through a session and do the co
 
 Note: for the bootstrapping, we can't pre-combine the data from a run, but it might speed things up to still have .RData files for each rat to avoid having to load .csv files in the bootstrapping loop.
 
+**17-Aug-23 update** - MakeDataFilesFromCSVs.R now converts the raw files to formatted data frames in .RData files, rat by rat (file by file).
+
 ### One possible puzzle to solve
 Let's say there are two groups running simultaneously, groups "1" and "2", and then group 1 disperses. The former group 2 would then become group 1, so we have to check for that and adjust the labels for continuity.
 
+This would bias the averages towards shorter groups, but it will do the exact same thing for the bootstrapping.
+
 ### Automated whole-session workflow
-7-Aug-23 lkc  
+17-Aug-23 lkc  Pieces in place, but...
+
+### Bug Alert!!!
+I'm getting a wierd bug when transforming the data into wide array form for the rle encoding step. It's weird enough that I'm going back to the beginning to make sure everything is working exactly as exprected step by step.
+Starting with
+#### CombineRatDataInARun.R
+Comine…R:
+Orig stacked = 139968 rows
+Each = 46656 
+3 x 46656 = 139968 - check!
+
+After nan removal
+xyt_dat = 86485 rows
+
+> `any(is.na(xyt_dat))`
+[1] FALSE
+
+Loading saved file gives
+xyt_dat = 86485 rows - check!
+
+*I’m considering Combine…R to be fully vetted unless no other possibility exists.*
+
+
+
+
 
 
 
