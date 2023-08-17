@@ -11,7 +11,7 @@
 library(tidyverse)
 library(plotly)
 
-save_flag = FALSE # save out the tibble with the cluster columns?
+save_flag = TRUE # save out the tibble with the cluster columns?
 plot_flag = FALSE # make plot?
 
 # Pick a run to look at (in my vocab, a "run" is single
@@ -42,6 +42,7 @@ for (i in 1:n_files) {
 }
 
 # omit rows with NA values
+orig <- xyt_dat
 xyt_dat <- xyt_dat[complete.cases(xyt_dat$x, xyt_dat$y), ]
 
 # compute the frame jump column separately per rat
