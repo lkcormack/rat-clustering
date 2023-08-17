@@ -79,10 +79,16 @@ for (i in 1:length(dir_list)) {
   # rename the combined file back to xyt_dat
   xyt_dat <- tmp
   
-  # omit rows with NA values
-  xyt_dat <- xyt_dat[complete.cases(xyt_dat$x, xyt_dat$y), ]
+  # Find the frames with NaNs in either data column
+  nan_frames = xyt_dat[is.na(xyt_dat$x) | is.na(xyt_dat$y), 'frame']
   
-  ##### run DBScan
+  # Keep the frames that are *not* a member of nan_frames
+  # this will omit a rat's data for a given frame if one of its
+  # buddies has a NA on that frame, even if the first rat's data is valid...
+  # Which is what we need.
+  xyt_dat <- xyt_dat[!xyt_dat$frame %in% nan_frames$frame, ]
+  
+  ##### run DBScan #########################################
   # Set parameters
   min_objects <- 3 # Minimum number of objects in a cluster
   eps <- 100       # Maximum distance between two samples for 
@@ -96,7 +102,7 @@ for (i in 1:length(dir_list)) {
                                   min_objects = min_objects, 
                                   eps = eps))
   
-  ##### run rle analysis
+  ##### run rle analysis #########################################
   # make data frame without unneeded columns
   cluster_dat <- xyt_dat %>% select(rat_num, frame, cluster)
   # rat number cycles fast, frame cycles slowly

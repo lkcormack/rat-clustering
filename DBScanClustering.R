@@ -3,10 +3,10 @@
 library(tidyverse)
 library(fpc)
 
-save_flag = TRUE # save out the tibble with the cluster columns?
+save_flag = FALSE # save out the tibble with the cluster columns?
 plot_flag = TRUE # make plot?
 
-# Select .RData file for analysis
+# Select .RData file for analysis 
 # The file must contain a data frame "xyt_dat" with 4 columns:
 # | frame | x | y | rat_num |
 
@@ -25,11 +25,11 @@ perform_dbscan <- function(data, min_objects, eps) {
   cluster_result <- dbscan(data[, c("x", "y")], 
                            eps = eps, 
                            MinPts = min_objects,
-                           seeds = FALSE) # seeds column has NAs wtf?
+                           seeds = TRUE) # seeds has NAs when no cluster
   
   # Assign cluster labels to new "cluster" column
-  data$cluster <- cluster_result$cluster
-  # data$iscore <- cluster_result$isseed  # seems broken...wtf?
+  data$cluster <- cluster_result$cluster # cluster ID; 0 for no cluster
+  data$iscore <- cluster_result$isseed   # seed values; 0, 1, or NA
   
   return(data)
 }

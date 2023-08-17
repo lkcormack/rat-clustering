@@ -45,9 +45,12 @@ for (i in 1:n_files) {
 nan_frames = xyt_dat[is.na(xyt_dat$x) | is.na(xyt_dat$y), 'frame']
 
 # Keep the frames that are *not* a member of nan_frames
+# this will omit a rat's data for a given frame if one of its
+# buddies has a NA on that frame, even if the first rat's data is valid...
+# Which is what we need.
 xyt_dat <- xyt_dat[!xyt_dat$frame %in% nan_frames$frame, ]
 
-# omit rows with NA values
+# omit rows with NA values - DON'T DO IT THIS WAY :(
 # orig <- xyt_dat
 # xyt_dat <- xyt_dat[complete.cases(xyt_dat$x, xyt_dat$y), ]
 

@@ -2,7 +2,7 @@
 
 library(tidyverse)
 
-save_flag = TRUE # save out the rle results?
+save_flag = FALSE # save out the rle results?
 plot_flag = TRUE # make plot?
 
 file_path <- rstudioapi::selectFile(caption = "Select RData File",
