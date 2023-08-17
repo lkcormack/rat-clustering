@@ -41,9 +41,15 @@ for (i in 1:n_files) {
   xyt_dat <- rbind(xyt_dat, tmp)
 }
 
+# Find the frames with NaNs in either data column
+nan_frames = xyt_dat[is.na(xyt_dat$x) | is.na(xyt_dat$y), 'frame']
+
+# Keep the frames that are *not* a member of nan_frames
+xyt_dat <- xyt_dat[!xyt_dat$frame %in% nan_frames$frame, ]
+
 # omit rows with NA values
-orig <- xyt_dat
-xyt_dat <- xyt_dat[complete.cases(xyt_dat$x, xyt_dat$y), ]
+# orig <- xyt_dat
+# xyt_dat <- xyt_dat[complete.cases(xyt_dat$x, xyt_dat$y), ]
 
 # compute the frame jump column separately per rat
 # these should end up identical for each rat
