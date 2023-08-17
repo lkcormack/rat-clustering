@@ -86,7 +86,11 @@ xyt_dat = 86485 rows - check!
 
 *I’m considering Combine…R to be fully vetted unless no other possibility exists.*
 
+*UPDATE* **FFUUUUUUCCCCCCKKKKKK**  
+The bug is here. 3 days ago, I "cleaned" up the removal of NAs. In so doing, I started removing NAs per rat instead of PER FRAME. We need to remove any FRAME where there is an NA for *any* rat. Grrr.
 
+For extra hilariousness, I even added this snarky commit message when I "cleaned" things up.
+"Simplified removal of rows with NaNs. Now doing it, you know, the way I should have done it in the first place."
 
 
 
