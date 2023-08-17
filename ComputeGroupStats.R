@@ -2,7 +2,7 @@
 
 library(tidyverse)
 
-save_flag = FALSE # save out the rle results?
+save_flag = TRUE # save out the rle results?
 plot_flag = TRUE # make plot?
 
 file_path <- rstudioapi::selectFile(caption = "Select RData File",
@@ -16,7 +16,7 @@ cluster_dat <- xyt_dat %>% select(rat_num, frame, cluster)
 # rat number cycles fast, frame cycles slowly
 
 # remove unneeded Big Kahuna data frame
-rm('xyt_dat')
+#rm('xyt_dat')
 
 # pivot such that 
 # - rats are rows, 

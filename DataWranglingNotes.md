@@ -70,18 +70,18 @@ This would bias the averages towards shorter groups, but it will do the exact sa
 I'm getting a wierd bug when transforming the data into wide array form for the rle encoding step. It's weird enough that I'm going back to the beginning to make sure everything is working exactly as exprected step by step.
 Starting with
 #### CombineRatDataInARun.R
-Comine…R:
-Orig stacked = 139968 rows
-Each = 46656 
-3 x 46656 = 139968 - check!
+Comine…R:  
+Orig stacked = 139968 rows  
+Each = 46656   
+3 x 46656 = 139968 - check!  
 
-After nan removal
-xyt_dat = 86485 rows
+After nan removal  
+xyt_dat = 86485 rows  
 
-> `any(is.na(xyt_dat))`
+> `any(is.na(xyt_dat))`  
 [1] FALSE
 
-Loading saved file gives
+Loading saved file gives  
 xyt_dat = 86485 rows - check!
 
 *I’m considering Combine…R to be fully vetted unless no other possibility exists.*

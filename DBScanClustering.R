@@ -22,11 +22,14 @@ load(file_path)
 # them on as additional column
 perform_dbscan <- function(data, min_objects, eps) {
   # Perform DBSCAN clustering
-  cluster_result <- dbscan(data[, c("x", "y")], eps = eps, MinPts = min_objects)
+  cluster_result <- dbscan(data[, c("x", "y")], 
+                           eps = eps, 
+                           MinPts = min_objects,
+                           seeds = FALSE) # seeds column has NAs wtf?
   
   # Assign cluster labels to new "cluster" column
   data$cluster <- cluster_result$cluster
-  data$iscore <- cluster_result$isseed
+  # data$iscore <- cluster_result$isseed  # seems broken...wtf?
   
   return(data)
 }
