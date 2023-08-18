@@ -9,8 +9,11 @@
 #     compute a histogram of the lengths
 #     add the histogram to list 
 #  save out the histogram data for this condition
-####
 
+# NOTE: MakeDataFilesFromCSVs.R must be used to create
+# the .RData files in the directories before running this!
+
+#####
 
 library(tidyverse)
 library(rstudioapi)
@@ -33,10 +36,7 @@ perform_dbscan <- function(data, min_objects, eps) {
 }
 ######### end function definitions ##################
 
-# Initialize an empty list to store the histogram data
-hist_data_list <- list()
-
-##### load list of directory names for this condition
+##### get directory names for this condition ##############
 # Pick a Condition
 dir_path <- selectDirectory(caption = "Select Directory",
                             label = "Select",
@@ -48,9 +48,13 @@ dir_list <- list.dirs(path = dir_path,
                       full.names = TRUE)
 n_runs <- length(dir_list) # should always be 15
 
+# Initialize an empty list to store the histogram data
+hist_data_list <- list()
+
 # Create a progress bar object
 pb <- progress_bar$new(total = n_runs)
 
+############### big momma loop #############################
 ##### loop through the runs in this condition
 for (i in 1:length(dir_list)) {
   # print(paste("In", dir_list[i])) # for debugging
@@ -79,6 +83,7 @@ for (i in 1:length(dir_list)) {
   # rename the combined file back to xyt_dat
   xyt_dat <- tmp
   
+  ##### NA removal #########################################
   # Find the frames with NaNs in either data column
   nan_frames = xyt_dat[is.na(xyt_dat$x) | is.na(xyt_dat$y), 'frame']
   
@@ -102,7 +107,7 @@ for (i in 1:length(dir_list)) {
                                   min_objects = min_objects, 
                                   eps = eps))
   
-  ##### run rle analysis #########################################
+  ##### run rle analysis ##################################
   # make data frame without unneeded columns
   cluster_dat <- xyt_dat %>% select(rat_num, frame, cluster)
   # rat number cycles fast, frame cycles slowly
@@ -164,9 +169,6 @@ for (i in 1:length(dir_list)) {
   
   # need to add a cumulative sum column of the lengths
   # to code the frame number at which clusters start
-  
-  
-  
   
   
   ##################
