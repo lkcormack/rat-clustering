@@ -11,7 +11,7 @@
 library(tidyverse)
 library(plotly)
 
-save_flag = TRUE # save out the tibble with the cluster columns?
+save_flag = FALSE # save out the tibble with the cluster columns?
 plot_flag = FALSE # make plot?
 
 # Pick a run to look at (in my vocab, a "run" is single
@@ -25,6 +25,7 @@ dir_path <- rstudioapi::selectDirectory(caption = "Select Directory",
 # get list of csv files in directory
 file_list <- list.files(path = dir_path, pattern = ".csv", full.names = TRUE)
 n_files <- length(file_list)
+n_rats <- n_files # just for clarity of code below
 
 # create an empty data frame
 xyt_dat = data.frame()
@@ -41,6 +42,9 @@ for (i in 1:n_files) {
   xyt_dat <- rbind(xyt_dat, tmp)
 }
 
+# for sanity, get number of rows in orignial data before trimming NAs
+tot_raw_obs <- dim(xyt_dat)[1] 
+
 # Find the frames with NaNs in either data column
 nan_frames = xyt_dat[is.na(xyt_dat$x) | is.na(xyt_dat$y), 'frame']
 
@@ -50,15 +54,51 @@ nan_frames = xyt_dat[is.na(xyt_dat$x) | is.na(xyt_dat$y), 'frame']
 # Which is what we need.
 xyt_dat <- xyt_dat[!xyt_dat$frame %in% nan_frames$frame, ]
 
-# omit rows with NA values - DON'T DO IT THIS WAY :(
-# orig <- xyt_dat
-# xyt_dat <- xyt_dat[complete.cases(xyt_dat$x, xyt_dat$y), ]
+# fir sanity...
+tot_valid_obs <- dim(xyt_dat)[1] 
 
 # compute the frame jump column separately per rat
 # these should end up identical for each rat
 xyt_dat <- xyt_dat %>%
   group_by(rat_num) %>% 
   mutate(f_diff = c(1, diff(frame)))
+
+##### some diagnostics
+# useful numbers will be
+# - frames (rows) per rat
+# - total rows (all observations, including NAs)
+# - above two should divide with no remainder
+# - frames with NAs per rat
+# - total number of NAs
+# - final ligitimate number of observations
+# - ligit obs should be total rows minus ... what?
+
+
+# get total number of frames (per rat, i.e. unique frames)
+tot_frames <- dim(tmp)[1] 
+# test: total number of observations should = n_files (# of rats) x tot_frames
+if (tot_raw_obs == n_rats * tot_frames) {
+  print("File sizes / # of frames / observations sanity check passed!")
+} else {
+  print("File sizes / # of frames / observations not kosher...")
+}
+
+# get the number of frames with any NA vals (across rats)
+nf <- nan_frames$frame # make vector for convenience
+n_obs_omitted <- length(nf)
+n_unique_NA_frames <- length(unique(nf))
+
+# get total number of valid and omitted observations...
+tot_valid_obs <- dim(xyt_dat)[1] 
+n_omitted_obs <- n_rats * n_unique_NA_frames
+
+if (tot_valid_obs == tot_raw_obs - n_rats * n_unique_NA_frames) {
+  print("trimmed data / # of frames / observations sanity check passed!")
+} else {
+  print("trimmed data / # of frames / observations not kosher...")
+}
+
+######### End sanity checks ########
 
 # make rat ID a factor (categorical variable)
 xyt_dat$rat_num <- as.factor(xyt_dat$rat_num)
