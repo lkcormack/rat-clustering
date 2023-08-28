@@ -188,7 +188,7 @@ for (i in 1:length(dir_list)) {
   # Update the progress bar
   pb$tick()
   
-}
+} ###### End of the Big Kahuna loop ######
 
 # Combine all the data frames into a single data frame
 # hist_data_df <- do.call(rbind, hist_data_list)
