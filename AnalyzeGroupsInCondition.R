@@ -48,8 +48,9 @@ dir_list <- list.dirs(path = dir_path,
                       full.names = TRUE)
 n_runs <- length(dir_list) # should always be 15
 
-# Initialize an empty list to store the histogram data
-hist_data_list <- list()
+# Initialize storage
+hist_data_list <- list() # empty list to store the histogram data
+rle_raw <- tibble() # empty tibble to hold rle results
 
 # Create a progress bar object
 pb <- progress_bar$new(total = n_runs)
@@ -137,11 +138,11 @@ for (i in 1:length(dir_list)) {
   
   # fill group label x frame array whose values are the number of 
   # members in that group
-  for (i in 1:max_grp_number) {    # loop through the groups labels
+  for (j in 1:max_grp_number) {    # loop through the groups labels
     temp <- grps_matrix    # make a matrix whose entries are
-    temp[temp == i] <- 1   # 1 for this group and
-    temp[temp != i] <- 0.  # 0 for the other groups
-    member_counts[i, ] <- colSums(temp) # number of members of this group for each frame
+    temp[temp == j] <- 1   # 1 for this group and
+    temp[temp != j] <- 0.  # 0 for the other groups
+    member_counts[j, ] <- colSums(temp) # number of members of this group for each frame
   }
   # We now have a matrix indicating whether a group (row) is present
   # on a given frame (column)
@@ -149,17 +150,17 @@ for (i in 1:length(dir_list)) {
   # Now perform run length encoding (rle) to get a data frame of group lengths 
   # (in frames) and group sizes (# of rats).   
   # NB: doing this in separate `for()` loop from above for clarity.
-  rle_raw <- tibble() # empty tibble to hold results
-  for (i in 1:max_grp_number) {    # loop through the groups labels
+  for (j in 1:max_grp_number) {    # loop through the groups labels
     # Perform the run-length encoding for this row
-    rle_output <- rle(member_counts[i, ])
+    rle_output <- rle(member_counts[j, ])
     
     # the output of rle() is a list, so
     # convert the RLE result to a temporary tibble
     rle_tibble <- tibble(
       lengths = rle_output$lengths,
       values = rle_output$values,
-      grp_label = i
+      grp_label = j,
+      run_label = i
     )
     
     # Append to the results to the main output tibble
@@ -188,7 +189,7 @@ for (i in 1:length(dir_list)) {
   # Update the progress bar
   pb$tick()
   
-} ###### End of the Big Kahuna loop ######
+} ###### End of the Big Kahuna loop through runs; index variable i ######
 
 # Combine all the data frames into a single data frame
 # hist_data_df <- do.call(rbind, hist_data_list)
