@@ -199,7 +199,6 @@ if (plot_flag) {
     ggplot(aes(x = lengths, fill = as.factor(run_label))) +
     geom_histogram(bins = 30, alpha = 0.4, position = "identity") +
     ggtitle(title_str, subtitle = "lifetimes; runs by color")
-  
   show(clstr_len_plot)
  
   # histograms of lifetimes collapsed across run
@@ -207,7 +206,6 @@ if (plot_flag) {
     ggplot(aes(x = lengths)) +
     geom_histogram(bins = 30, fill = "blue", alpha = 0.7) +
     ggtitle(title_str, subtitle = "lifetimes; all runs combined")
-  
   show(all_clstr_len_plot)
   
   # histograms of group sizes; runs by color
@@ -215,7 +213,6 @@ if (plot_flag) {
     ggplot(aes(x = values, fill = as.factor(run_label))) +
     geom_histogram(bins = 30, alpha = 0.4, position ="identity") +
     ggtitle(title_str, subtitle = "cluster sizes; runs by color")
-  
   show(clstr_size_plot)
   
   # histograms of group sizes collapsed across run
@@ -223,7 +220,12 @@ if (plot_flag) {
     ggplot(aes(x = values)) +
     geom_histogram(bins = 30, fill = "blue", alpha = 0.7) +
     ggtitle(title_str, subtitle = "cluster sizes; all runs combined")
-  
   show(all_clstr_size_plot)
+  
+  p <- plt_lengths %>% 
+    ggplot(aes(x = values, y =  lengths)) + 
+    geom_jitter(width = 0.2, height = 0, alpha = 0.2)
+#    geom_point(alpha = 0.2, position = "jitter")
+  show(p)
   
 }
