@@ -184,6 +184,7 @@ for (i in 1:length(dir_list)) {
 # So eliminate runs of zeros.
 cluster_lengths_sizes <- rle_raw[rle_raw$values != 0, ]
 
+##### Saving
 # save out the data frame for this condition
 
 ##### Plotting
@@ -193,12 +194,12 @@ if (plot_flag) {
   # histograms of cluster lifetimes
   len_thresh <- 10 # threshold for length (in frames) of a "real" cluster
   plt_lengths <- cluster_lengths_sizes[cluster_lengths_sizes$lengths > len_thresh, ]
-  plt_lengths$lengths <- (plt_lengths$lengths)/60 # convert to seconts
+  plt_lengths$lengths <- (plt_lengths$lengths)/60 # convert to seconds
   
   # histograms of lifetimes; runs by color
   clstr_len_plot <- plt_lengths %>%
-    ggplot(aes(x = lengths, fill = as.factor(run_label))) +
-    geom_histogram(bins = 30, alpha = 0.4, position = "identity") +
+    ggplot(aes(x = lengths, color = as.factor(run_label))) +
+    geom_freqpoly(bins = 30, alpha = 0.4, position = "identity") +
     ggtitle(title_str, subtitle = "lifetimes; runs by color") +
     xlab("cluster length (seconds)")
   show(clstr_len_plot)
@@ -239,5 +240,5 @@ if (plot_flag) {
 }
 
 ##### some stuff
-print(paste("Biggest cluster is ",max(plt_lengths$values, "rats.")))
+print(paste("Biggest cluster is ", max(plt_lengths$values), "rats."))
 print(paste("Longest cluster lifetime is", max(plt_lengths$lengths), "seconds."))
