@@ -192,31 +192,28 @@ if (plot_flag) {
 
   # histograms of cluster lifetimes
   len_thresh <- 10 # threshold for length (in frames) of a "real" cluster
-  t <- cluster_lengths_sizes[cluster_lengths_sizes$lengths > len_thresh, ]
+  plt_lengths <- cluster_lengths_sizes[cluster_lengths_sizes$lengths > len_thresh, ]
   
   # histograms of lifetimes; runs by color
-  clstr_len_plot <- t %>%
+  clstr_len_plot <- plt_lengths %>%
     ggplot(aes(x = lengths, fill = as.factor(run_label))) +
-    geom_histogram(bins = 30, alpha = 0.4) +
+    geom_histogram(bins = 30, alpha = 0.4, position = "identity") +
     ggtitle(title_str, subtitle = "lifetimes; runs by color")
   
   show(clstr_len_plot)
  
   # histograms of lifetimes collapsed across run
-  all_clstr_len_plot <- t %>%
+  all_clstr_len_plot <- plt_lengths %>%
     ggplot(aes(x = lengths)) +
     geom_histogram(bins = 30, fill = "blue", alpha = 0.7) +
     ggtitle(title_str, subtitle = "lifetimes; all runs combined")
   
   show(all_clstr_len_plot)
   
-  # histograms of cluster group sizes
-  t <- cluster_lengths_sizes$values
-  
   # histograms of group sizes; runs by color
   clstr_size_plot <- cluster_lengths_sizes %>%
     ggplot(aes(x = values, fill = as.factor(run_label))) +
-    geom_histogram(bins = 30, alpha = 0.4) +
+    geom_histogram(bins = 30, alpha = 0.4, position ="identity") +
     ggtitle(title_str, subtitle = "cluster sizes; runs by color")
   
   show(clstr_size_plot)
