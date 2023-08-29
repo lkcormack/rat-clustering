@@ -20,6 +20,10 @@ library(rstudioapi)
 library(progress) # this script is going to take a while to run...
 library(fpc)
 
+##### Do we save and/or plot?
+save_flag = FALSE # save out the rle results?
+plot_flag = TRUE # make plot?
+
 ######### function definitions ##################
 # Define the function to perform DBSCAN clustering
 # It takes the group labels (0 for no group), and adds
@@ -171,30 +175,58 @@ for (i in 1:length(dir_list)) {
   # need to add a cumulative sum column of the lengths
   # to code the frame number at which clusters start
   
-  
-  ##################
-  # compute the histograms of group lengths for this run and store
-#  h <- hist(temp, probability = TRUE, plot = FALSE)
-  
-  # Create a data frame with counts, bin midpoints, and dataset ID
-  # df <- data.frame(
-  #   dataset_id = i,
-  #   counts = h$counts,
-  #   bin_midpoints = (h$breaks[-length(h$breaks)] + h$breaks[-1]) / 2
-  # )
-  
-  # Append the histogram data to the list
-  # hist_data_list[[i]] <- df
-
   # Update the progress bar
   pb$tick()
   
 } ###### End of the Big Kahuna loop through runs; index variable i ######
 
-# Combine all the data frames into a single data frame
-# hist_data_df <- do.call(rbind, hist_data_list)
+# Runs of zeros are runs of "no cluster" for that cluster ID
+# So eliminate runs of zeros.
+cluster_lengths_sizes <- rle_raw[rle_raw$values != 0, ]
 
 # save out the data frame for this condition
 
-
 ##### Plotting
+if (plot_flag) {
+  title_str <- paste(n_files, "Rats") # number of rats for figure titles
+
+  # histograms of cluster lifetimes
+  len_thresh <- 10 # threshold for length (in frames) of a "real" cluster
+  t <- cluster_lengths_sizes[cluster_lengths_sizes$lengths > len_thresh, ]
+  
+  # histograms of lifetimes; runs by color
+  clstr_len_plot <- t %>%
+    ggplot(aes(x = lengths, fill = as.factor(run_label))) +
+    geom_histogram(bins = 30, alpha = 0.4) +
+    ggtitle(title_str, subtitle = "lifetimes; runs by color")
+  
+  show(clstr_len_plot)
+ 
+  # histograms of lifetimes collapsed across run
+  all_clstr_len_plot <- t %>%
+    ggplot(aes(x = lengths)) +
+    geom_histogram(bins = 30, fill = "blue", alpha = 0.7) +
+    ggtitle(title_str, subtitle = "lifetimes; all runs combined")
+  
+  show(all_clstr_len_plot)
+  
+  # histograms of cluster group sizes
+  t <- cluster_lengths_sizes$values
+  
+  # histograms of group sizes; runs by color
+  clstr_size_plot <- cluster_lengths_sizes %>%
+    ggplot(aes(x = values, fill = as.factor(run_label))) +
+    geom_histogram(bins = 30, alpha = 0.4) +
+    ggtitle(title_str, subtitle = "cluster sizes; runs by color")
+  
+  show(clstr_size_plot)
+  
+  # histograms of group sizes collapsed across run
+  all_clstr_size_plot <- cluster_lengths_sizes %>%
+    ggplot(aes(x = values)) +
+    geom_histogram(bins = 30, fill = "blue", alpha = 0.7) +
+    ggtitle(title_str, subtitle = "cluster sizes; all runs combined")
+  
+  show(all_clstr_size_plot)
+  
+}
