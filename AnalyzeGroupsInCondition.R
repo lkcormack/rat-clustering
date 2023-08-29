@@ -193,39 +193,51 @@ if (plot_flag) {
   # histograms of cluster lifetimes
   len_thresh <- 10 # threshold for length (in frames) of a "real" cluster
   plt_lengths <- cluster_lengths_sizes[cluster_lengths_sizes$lengths > len_thresh, ]
+  plt_lengths$lengths <- (plt_lengths$lengths)/60 # convert to seconts
   
   # histograms of lifetimes; runs by color
   clstr_len_plot <- plt_lengths %>%
     ggplot(aes(x = lengths, fill = as.factor(run_label))) +
     geom_histogram(bins = 30, alpha = 0.4, position = "identity") +
-    ggtitle(title_str, subtitle = "lifetimes; runs by color")
+    ggtitle(title_str, subtitle = "lifetimes; runs by color") +
+    xlab("cluster length (seconds)")
   show(clstr_len_plot)
  
   # histograms of lifetimes collapsed across run
   all_clstr_len_plot <- plt_lengths %>%
     ggplot(aes(x = lengths)) +
     geom_histogram(bins = 30, fill = "blue", alpha = 0.7) +
-    ggtitle(title_str, subtitle = "lifetimes; all runs combined")
+    ggtitle(title_str, subtitle = "lifetimes; all runs combined") +
+    xlab("cluster length (seconds)")
   show(all_clstr_len_plot)
   
-  # histograms of group sizes; runs by color
-  clstr_size_plot <- cluster_lengths_sizes %>%
-    ggplot(aes(x = values, fill = as.factor(run_label))) +
-    geom_histogram(bins = 30, alpha = 0.4, position ="identity") +
-    ggtitle(title_str, subtitle = "cluster sizes; runs by color")
-  show(clstr_size_plot)
-  
-  # histograms of group sizes collapsed across run
-  all_clstr_size_plot <- cluster_lengths_sizes %>%
-    ggplot(aes(x = values)) +
-    geom_histogram(bins = 30, fill = "blue", alpha = 0.7) +
-    ggtitle(title_str, subtitle = "cluster sizes; all runs combined")
-  show(all_clstr_size_plot)
-  
-  p <- plt_lengths %>% 
-    ggplot(aes(x = values, y =  lengths)) + 
-    geom_jitter(width = 0.2, height = 0, alpha = 0.2)
-#    geom_point(alpha = 0.2, position = "jitter")
-  show(p)
-  
+  if (n_files > 3) {  # these plots don't make sense for 3 rats
+    # histograms of group sizes; runs by color
+    clstr_size_plot <- cluster_lengths_sizes %>%
+      ggplot(aes(x = values, fill = as.factor(run_label))) +
+      geom_histogram(bins = 30, alpha = 0.4, position ="identity") +
+      ggtitle(title_str, subtitle = "cluster sizes; runs by color") +
+      xlab("cluster size")
+    show(clstr_size_plot)
+    
+    # histograms of group sizes collapsed across run
+    all_clstr_size_plot <- cluster_lengths_sizes %>%
+      ggplot(aes(x = values)) +
+      geom_histogram(bins = 30, fill = "blue", alpha = 0.7) +
+      ggtitle(title_str, subtitle = "cluster sizes; all runs combined") +
+      xlab("cluster size")
+    show(all_clstr_size_plot)
+    
+    p <- plt_lengths %>% 
+      ggplot(aes(x = values, y =  lengths)) + 
+      geom_jitter(width = 0.2, height = 0, alpha = 0.2) +
+      ggtitle(title_str, subtitle = "size vs. duration") + 
+      xlab("cluster size") +
+      ylab("duration (seconds)")
+    show(p)
+  } # end plots for 6 or more rats
 }
+
+##### some stuff
+print(paste("Biggest cluster is ",max(plt_lengths$values, "rats.")))
+print(paste("Longest cluster lifetime is", max(plt_lengths$lengths), "seconds."))
