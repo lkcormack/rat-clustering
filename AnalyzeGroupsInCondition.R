@@ -178,11 +178,7 @@ for (i in 1:length(dir_list)) {
   # Update the progress bar
   pb$tick()
   
-<<<<<<< Updated upstream
 } ###### End of the Big Kahuna loop through runs; index variable i ######
-=======
-} # end of Big Kahuna 
->>>>>>> Stashed changes
 
 # Runs of zeros are runs of "no cluster" for that cluster ID
 # So eliminate runs of zeros.
