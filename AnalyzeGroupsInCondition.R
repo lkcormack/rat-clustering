@@ -118,7 +118,7 @@ for (i in 1:length(dir_list)) {
   # rat number cycles fast, frame cycles slowly
   
   # remove unneeded Big Kahuna data frame
-  rm('xyt_dat')
+  #rm('xyt_dat')
   
   # pivot such that 
   # - rats are rows, 
@@ -186,6 +186,8 @@ cluster_lengths_sizes <- rle_raw[rle_raw$values != 0, ]
 
 ##### Saving
 # save out the data frame for this condition
+fname_str <- paste0(n_files, "RatsClusterSummary.RData") # number of rats 
+save(xyt_dat, cluster_dat, rle_raw, cluster_lengths_sizes, file = "fname_str")
 
 ##### Plotting
 if (plot_flag) {
