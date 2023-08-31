@@ -178,16 +178,22 @@ for (i in 1:length(dir_list)) {
   # Update the progress bar
   pb$tick()
   
-} ###### End of the Big Kahuna loop through runs; index variable i ######
+} ###### End of the Big Momma loop through runs; index variable i ######
 
 # Runs of zeros are runs of "no cluster" for that cluster ID
 # So eliminate runs of zeros.
 cluster_lengths_sizes <- rle_raw[rle_raw$values != 0, ]
 
 ##### Saving
-# save out the data frame for this condition
-fname_str <- paste0(n_files, "RatsClusterSummary.RData") # number of rats 
-save(xyt_dat, cluster_dat, rle_raw, cluster_lengths_sizes, file = fname_str)
+# assemble a file name
+fname_str <- paste0(n_files, "RatsClusterSummary.RData") 
+
+# save out the data frame for this condition as a .RData file
+save(xyt_dat,                 # The Big Kahuna - has all the things (except NaNs)
+     cluster_dat,             # subset of xyt_dat; just rat, frame, and cluster ID
+     rle_raw,                 # run length encoding output including 0s (no group)
+     cluster_lengths_sizes,   # rle output with only actual groups
+     file = fname_str)
 
 ##### Plotting
 if (plot_flag) {
