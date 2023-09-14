@@ -21,6 +21,7 @@ for (sub_dir in sub_dirs) {
   all_files <- c(all_files, files_in_current_dir)
 }
 
+n <- length(files_in_current_dir)
 
 num_iterations <- 100  # should go up on TACC
 results <- vector("list", num_iterations)
@@ -29,7 +30,8 @@ for(i in 1:num_iterations) {
   sampled_files <- sample(all_files, n, replace = TRUE)
   
   # Load sampled data
-  sampled_data <- lapply(sampled_files, read.csv) %>% bind_rows() 
+  sampled_data <- lapply(sampled_files, read.csv) %>% 
+    bind_rows() 
   
   # DBSCAN
   # ... 
