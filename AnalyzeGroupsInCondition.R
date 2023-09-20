@@ -21,7 +21,7 @@ library(progress) # this script is going to take a while to run...
 library(fpc)
 
 ##### Do we save and/or plot?
-save_flag = TRUE # save out the rle results?
+save_flag = FALSE # save out the rle results?
 plot_flag = TRUE # make plot?
 
 ######### function definitions ##################
@@ -221,7 +221,7 @@ if (plot_flag) {
   show(all_clstr_len_plot)
   
   ###### make and save a histogram object #####
-  LfTmHist <- hist(plt_lengths[lengths], breaks = 30)
+  LfTmHist <- hist(plt_lengths$lengths, breaks = 30)
   # save...
   
   if (n_files > 3) {  # these plots don't make sense for 3 rats

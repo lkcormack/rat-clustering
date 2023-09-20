@@ -144,8 +144,10 @@ for(i in 1:num_iterations) {
   # - and entries are cluster ID number
   # this will allow us to detect frame-to-frame continuity of clusters more
   # easily
-  grps_tibble <- cluster_dat %>%
-    pivot_wider(names_from = frame, values_from = cluster)
+  
+  # WTF is going on here?
+  # grps_tibble <- cluster_dat %>%
+  #   pivot_wider(names_from = frame, values_from = cluster)
 
   # # convert to a matrix so we can do maths more directly
   # grps_matrix <- as.matrix(grps_tibble[,-1])
