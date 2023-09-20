@@ -2,7 +2,7 @@
 # Analyze groups in a condition
 # This code (will...) 
 #  let the user pick a condition (number of rats)
-#  loop through the runs in that conditiona
+#  loop through the runs in that condition
 #     load each rat's .RData file
 #     combine the rat data files into one data frame
 #     compute the group lengths
