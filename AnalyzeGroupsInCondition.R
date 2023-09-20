@@ -21,7 +21,7 @@ library(progress) # this script is going to take a while to run...
 library(fpc)
 
 ##### Do we save and/or plot?
-save_flag = FALSE # save out the rle results?
+save_flag = TRUE # save out the rle results?
 plot_flag = TRUE # make plot?
 
 ######### function definitions ##################
@@ -211,7 +211,7 @@ if (plot_flag) {
     ggtitle(title_str, subtitle = "lifetimes; runs by color") +
     xlab("cluster length (seconds)")
   show(clstr_len_plot)
- 
+
   # histograms of lifetimes collapsed across run
   all_clstr_len_plot <- plt_lengths %>%
     ggplot(aes(x = lengths)) +
@@ -219,7 +219,7 @@ if (plot_flag) {
     ggtitle(title_str, subtitle = "lifetimes; all runs combined") +
     xlab("cluster length (seconds)")
   show(all_clstr_len_plot)
-  
+
   if (n_files > 3) {  # these plots don't make sense for 3 rats
     # histograms of group sizes; runs by color
     clstr_size_plot <- cluster_lengths_sizes %>%
@@ -228,7 +228,7 @@ if (plot_flag) {
       ggtitle(title_str, subtitle = "cluster sizes; runs by color") +
       xlab("cluster size")
     show(clstr_size_plot)
-    
+
     # histograms of group sizes collapsed across run
     all_clstr_size_plot <- cluster_lengths_sizes %>%
       ggplot(aes(x = values)) +
@@ -236,7 +236,7 @@ if (plot_flag) {
       ggtitle(title_str, subtitle = "cluster sizes; all runs combined") +
       xlab("cluster size")
     show(all_clstr_size_plot)
-    
+
     p <- plt_lengths %>% 
       ggplot(aes(x = values, y =  lengths)) + 
       geom_jitter(width = 0.2, height = 0, alpha = 0.2) +
@@ -244,6 +244,7 @@ if (plot_flag) {
       xlab("cluster size") +
       ylab("duration (seconds)")
     show(p)
+    # save
   } # end plots for 6 or more rats
 }
 
