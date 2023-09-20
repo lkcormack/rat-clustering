@@ -244,7 +244,7 @@ if (plot_flag) {
       xlab("cluster size") +
       ylab("duration (seconds)")
     show(p)
-    save
+    # save
   } # end plots for 6 or more rats
 }
 
