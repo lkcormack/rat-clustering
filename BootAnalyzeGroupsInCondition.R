@@ -46,10 +46,11 @@ perform_dbscan <- function(data, min_objects, eps) {
 ############ directory selection #################
 
 ####get path to condition directory #######
-root_dir <- selectDirectory(caption = "Select Directory",
-                            label = "Select",
-                            path = getActiveProject())
+# root_dir <- selectDirectory(caption = "Select Directory",
+#                             label = "Select",
+#                             path = getActiveProject())
 
+root_dir = "/Users/lkc/Documents/GitHub/rat-clustering/data/3Rats"
 dir_list <- dir(root_dir, full.names = TRUE, recursive = FALSE)
 
 # Initialize an empty list to hold all the files
@@ -70,7 +71,8 @@ for (sub_dir in dir_list) {
   all_files <- c(all_files, files_in_current_dir)
 }
 
-n <- length(files_in_current_dir)
+# condition ID for the filename
+cond <- paste0('n_Rats', n_files)
 
 num_iterations <- 3  # should go up on TACC
 
@@ -78,31 +80,28 @@ num_iterations <- 3  # should go up on TACC
 hist_data_list <- vector("list", num_iterations)
 rle_raw <- tibble() # empty tibble to hold rle results
 
-# condition ID for the filename
-cond <- paste0('n_Rats', n_files)
+# Create a progress bar object
+pb <- progress_bar$new(total = num_iterations)
 
-
-# Here's the big bootstrapping loop
+############### Here's the big bootstrapping loop ############
 for(i in 1:num_iterations) {
   
   # create an empty data frame to hold the combined data
   sampled_data = data.frame()
   
-  sampled_files <- sample(all_files, n, replace = TRUE)
+  sampled_files <- sample(all_files, n_files, replace = TRUE)
   
   
   ###### Load sampled .RData files
-  # Initialize an empty list to store the data frames
-  df_list <- list()
   
-  # Loop through each file in sampled_files
-  for (file in sampled_files) {
-    loaded_name <- load(file)
-    df_list[[length(df_list) + 1]] <- get(loaded_name)
-  }
-  
-  # Now bind all data frames together
-  sampled_data <- bind_rows(df_list)
+  # load the .RData files for the rats in this run
+  for (j in 1:length(sampled_files)) {
+    # print(paste("Loading rat", j)) # for debugging
+    # combine into one data frame
+    load(sampled_files[[j]])
+    sampled_data <- rbind(sampled_data, xyt_dat)
+    
+  } # end of looping through files for this run
   
   # rename the combined file back to xyt_dat
   xyt_dat <- sampled_data
@@ -118,11 +117,94 @@ for(i in 1:num_iterations) {
   xyt_dat <- xyt_dat[!xyt_dat$frame %in% nan_frames$frame, ]
  
   ##### run DBScan #########################################
+  # Set parameters
+  min_objects <- 3 # Minimum number of objects in a cluster
+  eps <- 100       # Maximum distance between two samples for
+  # them to be considered as in the same neighborhood
+
+  # preform the clustering on each video frame
+  # Group data by time and apply the perform_dbscan function
+  xyt_dat <- xyt_dat %>%
+    group_by(frame) %>% # group data by frame number
+    group_modify(~ perform_dbscan(.x,
+                                  min_objects = min_objects,
+                                  eps = eps))
+
+  ##### run rle analysis ##################################
+  # make data frame without unneeded columns
+  cluster_dat <- xyt_dat %>% select(rat_num, frame, cluster)
+  # rat number cycles fast, frame cycles slowly
+
+  # remove unneeded Big Kahuna data frame
+  #rm('xyt_dat')
+
+  # pivot such that
+  # - rats are rows,
+  # - frames are columns,
+  # - and entries are cluster ID number
+  # this will allow us to detect frame-to-frame continuity of clusters more
+  # easily
+  grps_tibble <- cluster_dat %>%
+    pivot_wider(names_from = frame, values_from = cluster)
+
+  # # convert to a matrix so we can do maths more directly
+  # grps_matrix <- as.matrix(grps_tibble[,-1])
+  # mat_dims <- dim(grps_matrix)
+  # n_frames = mat_dims[2]
+  # 
+  # # get maximum integer group label for the `for()` loop below
+  # max_grp_number <- max(grps_matrix)
+  # 
+  # # Initialize group label x frame array for group member counts
+  # member_counts <- array(0, dim=c(max_grp_number, n_frames))
+  # 
+  # # fill group label x frame array whose values are the number of 
+  # # members in that group
+  # for (j in 1:max_grp_number) {    # loop through the groups labels
+  #   temp <- grps_matrix    # make a matrix whose entries are
+  #   temp[temp == j] <- 1   # 1 for this group and
+  #   temp[temp != j] <- 0.  # 0 for the other groups
+  #   member_counts[j, ] <- colSums(temp) # number of members of this group for each frame
+  # }
+  # # We now have a matrix indicating whether a group (row) is present
+  # # on a given frame (column)
+  # 
+  # # Now perform run length encoding (rle) to get a data frame of group lengths 
+  # # (in frames) and group sizes (# of rats).   
+  # # NB: doing this in separate `for()` loop from above for clarity.
+  # for (j in 1:max_grp_number) {    # loop through the groups labels
+  #   # Perform the run-length encoding for this row
+  #   rle_output <- rle(member_counts[j, ])
+  #   
+  #   # the output of rle() is a list, so
+  #   # convert the RLE result to a temporary tibble
+  #   rle_tibble <- tibble(
+  #     lengths = rle_output$lengths,
+  #     values = rle_output$values,
+  #     grp_label = j,
+  #     run_label = i
+  #   )
+  #   
+  #   # Append to the results to the main output tibble
+  #   rle_raw <- bind_rows(rle_raw, rle_tibble)
+  #   
+  # }
+  # 
+  # # need to add a cumulative sum column of the lengths
+  # # to code the frame number at which clusters start
+  # 
+  # Update the progress bar
+  pb$tick()
   
   result <- "our histograms"
   
   hist_data_list[[i]] <- result
   print(paste0("on iteration ", i))
-}
+  
+} # end of bootstrapping loop!
+
+# Runs of zeros are runs of "no cluster" for that cluster ID
+# So eliminate runs of zeros.
+#cluster_lengths_sizes <- rle_raw[rle_raw$values != 0, ]
 
 
