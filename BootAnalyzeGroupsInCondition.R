@@ -50,7 +50,7 @@ perform_dbscan <- function(data, min_objects, eps) {
 #                             label = "Select",
 #                             path = getActiveProject())
 
-root_dir = "/Users/lkc/Documents/GitHub/rat-clustering/data/3Rats"
+root_dir = "/Users/lkc3-admin/Documents/GitHub/rat-clustering/data/3Rats"
 dir_list <- dir(root_dir, full.names = TRUE, recursive = FALSE)
 
 # Initialize an empty list to hold all the files
@@ -89,7 +89,9 @@ for(i in 1:num_iterations) {
   # create an empty data frame to hold the combined data
   sampled_data = data.frame()
   
-  sampled_files <- sample(all_files, n_files, replace = TRUE)
+  # replace = false prevents indentical rats in a run 
+  # the bootstrapping is still valid because we're subsampling
+  sampled_files <- sample(all_files, n_files, replace = FALSE)
   
   
   ###### Load sampled .RData files
@@ -98,7 +100,10 @@ for(i in 1:num_iterations) {
   for (j in 1:length(sampled_files)) {
     # print(paste("Loading rat", j)) # for debugging
     # combine into one data frame
-    load(sampled_files[[j]])
+    load(sampled_files[[j]])  # new xyt_dat data frame now on board
+    id_string <- sub(".*/(Rat\\d+Run\\d+).*", "\\1", sampled_files[[j]])
+    xyt_dat$rat_num = id_string
+    
     sampled_data <- rbind(sampled_data, xyt_dat)
     
   } # end of looping through files for this run
@@ -146,17 +151,17 @@ for(i in 1:num_iterations) {
   # easily
   
   # WTF is going on here?
-  # grps_tibble <- cluster_dat %>%
-  #   pivot_wider(names_from = frame, values_from = cluster)
+  grps_tibble <- cluster_dat %>%
+    pivot_wider(names_from = frame, values_from = cluster)
 
-  # # convert to a matrix so we can do maths more directly
-  # grps_matrix <- as.matrix(grps_tibble[,-1])
-  # mat_dims <- dim(grps_matrix)
-  # n_frames = mat_dims[2]
-  # 
-  # # get maximum integer group label for the `for()` loop below
-  # max_grp_number <- max(grps_matrix)
-  # 
+  # convert to a matrix so we can do maths more directly
+  grps_matrix <- as.matrix(grps_tibble[,-1])
+  mat_dims <- dim(grps_matrix)
+  n_frames = mat_dims[2]
+
+  # get maximum integer group label for the `for()` loop below
+  max_grp_number <- max(grps_matrix)
+
   # # Initialize group label x frame array for group member counts
   # member_counts <- array(0, dim=c(max_grp_number, n_frames))
   # 
