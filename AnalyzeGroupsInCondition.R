@@ -219,7 +219,11 @@ if (plot_flag) {
     ggtitle(title_str, subtitle = "lifetimes; all runs combined") +
     xlab("cluster length (seconds)")
   show(all_clstr_len_plot)
-
+  
+  ###### make and save a histogram object #####
+  LfTmHist <- hist(plt_lengths[lengths], breaks = 30)
+  # save...
+  
   if (n_files > 3) {  # these plots don't make sense for 3 rats
     # histograms of group sizes; runs by color
     clstr_size_plot <- cluster_lengths_sizes %>%
