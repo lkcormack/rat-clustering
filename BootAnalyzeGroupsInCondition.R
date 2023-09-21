@@ -89,7 +89,7 @@ for(i in 1:num_iterations) {
   # create an empty data frame to hold the combined data
   sampled_data = data.frame()
   
-  # replace = false prevents indentical rats in a run 
+  # replace = false prevents identical rats in a run 
   # the bootstrapping is still valid because we're subsampling
   sampled_files <- sample(all_files, n_files, replace = FALSE)
   
@@ -101,8 +101,9 @@ for(i in 1:num_iterations) {
     # print(paste("Loading rat", j)) # for debugging
     # combine into one data frame
     load(sampled_files[[j]])  # new xyt_dat data frame now on board
+    # will need to save these when we analyze social hierarchy...
     id_string <- sub(".*/(Rat\\d+Run\\d+).*", "\\1", sampled_files[[j]])
-    xyt_dat$rat_num = id_string
+    xyt_dat$rat_num = j # set rat ID to an int
     
     sampled_data <- rbind(sampled_data, xyt_dat)
     
@@ -163,43 +164,43 @@ for(i in 1:num_iterations) {
   max_grp_number <- max(grps_matrix)
 
   # # Initialize group label x frame array for group member counts
-  # member_counts <- array(0, dim=c(max_grp_number, n_frames))
-  # 
-  # # fill group label x frame array whose values are the number of 
-  # # members in that group
-  # for (j in 1:max_grp_number) {    # loop through the groups labels
-  #   temp <- grps_matrix    # make a matrix whose entries are
-  #   temp[temp == j] <- 1   # 1 for this group and
-  #   temp[temp != j] <- 0.  # 0 for the other groups
-  #   member_counts[j, ] <- colSums(temp) # number of members of this group for each frame
-  # }
-  # # We now have a matrix indicating whether a group (row) is present
-  # # on a given frame (column)
-  # 
-  # # Now perform run length encoding (rle) to get a data frame of group lengths 
-  # # (in frames) and group sizes (# of rats).   
-  # # NB: doing this in separate `for()` loop from above for clarity.
-  # for (j in 1:max_grp_number) {    # loop through the groups labels
-  #   # Perform the run-length encoding for this row
-  #   rle_output <- rle(member_counts[j, ])
-  #   
-  #   # the output of rle() is a list, so
-  #   # convert the RLE result to a temporary tibble
-  #   rle_tibble <- tibble(
-  #     lengths = rle_output$lengths,
-  #     values = rle_output$values,
-  #     grp_label = j,
-  #     run_label = i
-  #   )
-  #   
-  #   # Append to the results to the main output tibble
-  #   rle_raw <- bind_rows(rle_raw, rle_tibble)
-  #   
-  # }
-  # 
-  # # need to add a cumulative sum column of the lengths
-  # # to code the frame number at which clusters start
-  # 
+  member_counts <- array(0, dim=c(max_grp_number, n_frames))
+
+  # fill group label x frame array whose values are the number of
+  # members in that group
+  for (j in 1:max_grp_number) {    # loop through the groups labels
+    temp <- grps_matrix    # make a matrix whose entries are
+    temp[temp == j] <- 1   # 1 for this group and
+    temp[temp != j] <- 0.  # 0 for the other groups
+    member_counts[j, ] <- colSums(temp) # number of members of this group for each frame
+  }
+  # We now have a matrix indicating whether a group (row) is present
+  # on a given frame (column)
+
+  # Now perform run length encoding (rle) to get a data frame of group lengths
+  # (in frames) and group sizes (# of rats).
+  # NB: doing this in separate `for()` loop from above for clarity.
+  for (j in 1:max_grp_number) {    # loop through the groups labels
+    # Perform the run-length encoding for this row
+    rle_output <- rle(member_counts[j, ])
+
+    # the output of rle() is a list, so
+    # convert the RLE result to a temporary tibble
+    rle_tibble <- tibble(
+      lengths = rle_output$lengths,
+      values = rle_output$values,
+      grp_label = j,
+      run_label = i
+    )
+
+    # Append to the results to the main output tibble
+    rle_raw <- bind_rows(rle_raw, rle_tibble)
+
+  }
+
+  # need to add a cumulative sum column of the lengths
+  # to code the frame number at which clusters start
+
   # Update the progress bar
   pb$tick()
   
