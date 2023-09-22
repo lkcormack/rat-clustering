@@ -45,12 +45,15 @@ perform_dbscan <- function(data, min_objects, eps) {
 
 ############ directory selection #################
 
-####get path to condition directory #######
+###get path to condition directory #######
 # root_dir <- selectDirectory(caption = "Select Directory",
 #                             label = "Select",
 #                             path = getActiveProject())
 
-root_dir = "/Users/lkc3-admin/Documents/GitHub/rat-clustering/data/3Rats"
+# office
+root_dir = "/Users/lkc/Documents/GitHub/rat-clustering/data/3Rats/"
+# laptop
+#root_dir = "/Users/lkc3-admin/Documents/GitHub/rat-clustering/data/3Rats/"
 dir_list <- dir(root_dir, full.names = TRUE, recursive = FALSE)
 
 # Initialize an empty list to hold all the files

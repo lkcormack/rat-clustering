@@ -62,7 +62,11 @@ pb <- progress_bar$new(total = n_runs)
 ############### big momma loop #############################
 ##### loop through the runs in this condition
 
-for (i in 1:length(dir_list)) {
+# shorten for debugging
+# nDirs = length(dir_list)
+nDirs = 3
+
+for (i in 1:nDirs) {
   # print(paste("In", dir_list[i])) # for debugging
   # load the list of files in this directory
   file_list <-
