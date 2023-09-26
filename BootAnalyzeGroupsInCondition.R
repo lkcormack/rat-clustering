@@ -45,12 +45,15 @@ perform_dbscan <- function(data, min_objects, eps) {
 
 ############ directory selection #################
 
-####get path to condition directory #######
+###get path to condition directory #######
 # root_dir <- selectDirectory(caption = "Select Directory",
 #                             label = "Select",
 #                             path = getActiveProject())
 
-root_dir = "/Users/lkc3-admin/Documents/GitHub/rat-clustering/data/3Rats"
+# office
+root_dir = "/Users/lkc/Documents/GitHub/rat-clustering/data/3Rats/"
+# laptop
+#root_dir = "/Users/lkc3-admin/Documents/GitHub/rat-clustering/data/3Rats/"
 dir_list <- dir(root_dir, full.names = TRUE, recursive = FALSE)
 
 # Initialize an empty list to hold all the files
@@ -70,6 +73,7 @@ for (sub_dir in dir_list) {
   # Append this list to the main list
   all_files <- c(all_files, files_in_current_dir)
 }
+############ end directory selection #################
 
 # condition ID for the filename
 cond <- paste0('n_Rats', n_files)
@@ -96,6 +100,25 @@ for(i in 1:num_iterations) {
   
   ###### Load sampled .RData files
   
+  #### Okay, this is going to be clumsy as fuck, but...
+  #### because the runs are different lengths ...
+  ### we need to 
+  ### load the three files once to get 
+  ### their lengths, and then 
+  ### load 'em again to load 'em...
+
+  # vector to hold the lengths
+  run_lengths = vector()
+  # load the .RData files for the rats in this run
+  for (j in 1:length(sampled_files)) {
+    # print(paste("Loading rat", j)) # for debugging
+    # combine into one data frame
+    load(sampled_files[[j]])  # new xyt_dat data frame now on board
+    run_lengths = c(run_lengths, nrow(xyt_dat))
+  } # end of looping through files for this run
+  
+  min_run_length = min(run_lengths) # need to truncate all data to this value
+
   # load the .RData files for the rats in this run
   for (j in 1:length(sampled_files)) {
     # print(paste("Loading rat", j)) # for debugging
@@ -104,8 +127,8 @@ for(i in 1:num_iterations) {
     # will need to save these when we analyze social hierarchy...
     id_string <- sub(".*/(Rat\\d+Run\\d+).*", "\\1", sampled_files[[j]])
     xyt_dat$rat_num = j # set rat ID to an int
-    
-    sampled_data <- rbind(sampled_data, xyt_dat)
+    print(nrow(xyt_dat))
+    sampled_data <- rbind(sampled_data, xyt_dat[1:min_run_length, ])
     
   } # end of looping through files for this run
   
