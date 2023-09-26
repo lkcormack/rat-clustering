@@ -22,7 +22,6 @@
 library(tidyverse)
 library(rstudioapi) # won't be needed for Lonestar6
 library(fs)         # may not be needed anymore
-library(progress) # this script is going to take a while to run...
 library(fpc)
 #############
 
@@ -51,9 +50,9 @@ perform_dbscan <- function(data, min_objects, eps) {
 #                             path = getActiveProject())
 
 # office
-root_dir = "/Users/lkc/Documents/GitHub/rat-clustering/data/3Rats/"
+#root_dir = "/Users/lkc/Documents/GitHub/rat-clustering/data/3Rats/"
 # laptop
-#root_dir = "/Users/lkc3-admin/Documents/GitHub/rat-clustering/data/3Rats/"
+root_dir = "/Users/lkc3-admin/Documents/GitHub/rat-clustering/data/3Rats/"
 dir_list <- dir(root_dir, full.names = TRUE, recursive = FALSE)
 
 # Initialize an empty list to hold all the files
@@ -80,15 +79,15 @@ cond <- paste0('n_Rats', n_files)
 
 num_iterations <- 3  # should go up on TACC
 
-# Initialize storage
+############### Initialize storage #################
 hist_data_list <- vector("list", num_iterations)
 rle_raw <- tibble() # empty tibble to hold rle results
 
-# Create a progress bar object
-pb <- progress_bar$new(total = num_iterations)
 
 ############### Here's the big bootstrapping loop ############
 for(i in 1:num_iterations) {
+  
+  print(paste0("starting iteration ", i))
   
   # create an empty data frame to hold the combined data
   sampled_data = data.frame()
@@ -127,7 +126,7 @@ for(i in 1:num_iterations) {
     # will need to save these when we analyze social hierarchy...
     id_string <- sub(".*/(Rat\\d+Run\\d+).*", "\\1", sampled_files[[j]])
     xyt_dat$rat_num = j # set rat ID to an int
-    print(nrow(xyt_dat))
+    # print(nrow(xyt_dat))
     sampled_data <- rbind(sampled_data, xyt_dat[1:min_run_length, ])
     
   } # end of looping through files for this run
@@ -173,8 +172,6 @@ for(i in 1:num_iterations) {
   # - and entries are cluster ID number
   # this will allow us to detect frame-to-frame continuity of clusters more
   # easily
-  
-  # WTF is going on here?
   grps_tibble <- cluster_dat %>%
     pivot_wider(names_from = frame, values_from = cluster)
 
@@ -224,16 +221,14 @@ for(i in 1:num_iterations) {
   # need to add a cumulative sum column of the lengths
   # to code the frame number at which clusters start
 
-  # Update the progress bar
-  pb$tick()
-  
-  result <- "our histograms"
+  result <- hist(rle_tibble$lengths, 30)
   
   hist_data_list[[i]] <- result
-  print(paste0("on iteration ", i))
+  print(paste0("done with iteration ", i))
   
 } # end of bootstrapping loop!
 
+save(rle_raw, hist_data_list, file = "bootHistTest.RData")
 # Runs of zeros are runs of "no cluster" for that cluster ID
 # So eliminate runs of zeros.
 #cluster_lengths_sizes <- rle_raw[rle_raw$values != 0, ]
