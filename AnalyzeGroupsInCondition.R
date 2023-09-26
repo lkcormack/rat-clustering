@@ -13,12 +13,12 @@
 # NOTE: MakeDataFilesFromCSVs.R must be used to create
 # the .RData files in the directories before running this!
 
-#####
-
+##### library loading ######
 library(tidyverse)
 library(rstudioapi)
 library(progress) # this script is going to take a while to run...
 library(fpc)
+#############
 
 ##### Do we save and/or plot?
 save_flag = FALSE # save out the rle results?
@@ -51,6 +51,7 @@ dir_list <- list.dirs(path = dir_path,
                       recursive = FALSE, 
                       full.names = TRUE)
 n_runs <- length(dir_list) # should always be 15
+############ end directory selection #################
 
 # Initialize storage
 hist_data_list <- list() # empty list to store the histogram data
@@ -75,7 +76,7 @@ for (i in 1:nDirs) {
                full.names = TRUE)
   n_files <- length(file_list)
   
-  # condition ID for the filename
+  # condition ID for the filename (doesn't have to be done each iteration, but...)
   cond <- paste0('n_Rats', n_files)
   
   # create an empty data frame to hold the combined data
@@ -131,6 +132,7 @@ for (i in 1:nDirs) {
   # - and entries are cluster ID number
   # this will allow us to detect frame-to-frame continuity of clusters more
   # easily
+  
   grps_tibble <- cluster_dat %>%
     pivot_wider(names_from = frame, values_from = cluster)
   
