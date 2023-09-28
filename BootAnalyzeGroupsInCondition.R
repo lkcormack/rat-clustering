@@ -25,6 +25,10 @@ library(fs)         # may not be needed anymore
 library(fpc)
 #############
 
+##### Do we save and/or plot?
+save_flag = FALSE # save out the rle results?
+plot_flag = TRUE # make plot?
+
 ######### function definitions ##################
 # Define the function to perform DBSCAN clustering
 # It takes the group labels (0 for no group), and adds
@@ -52,7 +56,7 @@ perform_dbscan <- function(data, min_objects, eps) {
 # office
 #root_dir = "/Users/lkc/Documents/GitHub/rat-clustering/data/3Rats/"
 # laptop
-root_dir = "/Users/lkc3-admin/Documents/GitHub/rat-clustering/data/3Rats/"
+root_dir = "/Users/lkc3-admin/Documents/GitHub/rat-clustering/data/15Rats/"
 dir_list <- dir(root_dir, full.names = TRUE, recursive = FALSE)
 
 # Initialize an empty list to hold all the files
@@ -77,7 +81,7 @@ for (sub_dir in dir_list) {
 # condition ID for the filename
 cond <- paste0('n_Rats', n_files)
 
-num_iterations <- 3  # should go up on TACC
+num_iterations <- 15  # should go up on TACC
 
 ############### Initialize storage #################
 hist_data_list <- vector("list", num_iterations)
@@ -181,7 +185,7 @@ for(i in 1:num_iterations) {
   n_frames = mat_dims[2]
 
   # get maximum integer group label for the `for()` loop below
-  max_grp_number <- max(grps_matrix)
+  max_grp_number <- max(grps_matrix) + 1 # b/c zero is the "no group" #
 
   # # Initialize group label x frame array for group member counts
   member_counts <- array(0, dim=c(max_grp_number, n_frames))
@@ -194,7 +198,7 @@ for(i in 1:num_iterations) {
     temp[temp != j] <- 0.  # 0 for the other groups
     member_counts[j, ] <- colSums(temp) # number of members of this group for each frame
   }
-  # We now have a matrix indicating whether a group (row) is present
+  # We now have a matrix indicating how many rats (entry) are in a group (row) 
   # on a given frame (column)
 
   # Now perform run length encoding (rle) to get a data frame of group lengths
@@ -221,16 +225,97 @@ for(i in 1:num_iterations) {
   # need to add a cumulative sum column of the lengths
   # to code the frame number at which clusters start
 
-  result <- hist(rle_tibble$lengths, 30)
+  # cl_lgth_sz_temp <- rle_tibble[rle_tibble$values != 0, ]
+  # 
+  # if (nrow(cl_lgth_sz_temp) > 2) {
+  #   hist_data_list[[i]] <- hist(cl_lgth_sz_temp$lengths, 30)
+  # }
+  # else {
+  #   hist_data_list[[i]] <- "nope"
+  # }
   
-  hist_data_list[[i]] <- result
   print(paste0("done with iteration ", i))
   
-} # end of bootstrapping loop!
+} 
+################# end of bootstrapping loop! ################
 
-save(rle_raw, hist_data_list, file = "bootHistTest.RData")
 # Runs of zeros are runs of "no cluster" for that cluster ID
 # So eliminate runs of zeros.
-#cluster_lengths_sizes <- rle_raw[rle_raw$values != 0, ]
+cluster_lengths_sizes <- rle_raw[rle_raw$values != 0, ]
 
+##### Saving
+if (save_flag) {
+  # assemble a file name
+  fname_str <- paste0(n_files, "RatsBootSummary.RData") 
+  
+  # save out the data frame for this condition as a .RData file
+  save(xyt_dat,                 # The Big Kahuna - has all the things (except NaNs)
+       cluster_dat,             # subset of xyt_dat; just rat, frame, and cluster ID
+       rle_raw,                 # run length encoding output including 0s (no group)
+       cluster_lengths_sizes,   # rle output with only actual groups
+       file = fname_str)
+}
+
+##### Plotting
+if (plot_flag) {
+  title_str <- paste(n_files, "Rats") # number of rats for figure titles
+  
+  # histograms of cluster lifetimes
+  len_thresh <- 10 # threshold for length (in frames) of a "real" cluster
+  plt_lengths <- cluster_lengths_sizes[cluster_lengths_sizes$lengths > len_thresh, ]
+  plt_lengths$lengths <- (plt_lengths$lengths)/60 # convert to seconds
+  
+  # histograms of lifetimes; runs by color
+  clstr_len_plot <- plt_lengths %>%
+    ggplot(aes(x = lengths, color = as.factor(run_label))) +
+    geom_freqpoly(bins = 30, alpha = 0.4, position = "identity") +
+    ggtitle(title_str, subtitle = "bootstrapped lifetimes; runs by color") +
+    xlab("cluster length (seconds)")
+  show(clstr_len_plot)
+  
+  # histograms of lifetimes collapsed across run
+  all_clstr_len_plot <- plt_lengths %>%
+    ggplot(aes(x = lengths)) +
+    geom_histogram(bins = 30, fill = "red", alpha = 0.7) +
+    ggtitle(title_str, subtitle = "bootstrapped lifetimes; all runs combined") +
+    xlab("cluster length (seconds)")
+  show(all_clstr_len_plot)
+  
+  ###### make and save a histogram object #####
+  LfTmHist <- hist(plt_lengths$lengths, breaks = 30)
+  # save...
+  
+  if (n_files > 3) {  # these plots don't make sense for 3 rats
+    # histograms of group sizes; runs by color
+    clstr_size_plot <- cluster_lengths_sizes %>%
+      ggplot(aes(x = values, fill = as.factor(run_label))) +
+      geom_histogram(bins = 30, alpha = 0.4, position ="identity") +
+      ggtitle(title_str, subtitle = "bootstrapped cluster sizes; runs by color") +
+      xlab("cluster size")
+    show(clstr_size_plot)
+    
+    # histograms of group sizes collapsed across run
+    all_clstr_size_plot <- cluster_lengths_sizes %>%
+      ggplot(aes(x = values)) +
+      geom_histogram(bins = 30, fill = "red", alpha = 0.7) +
+      ggtitle(title_str, subtitle = "bootstrapped cluster sizes; all runs combined") +
+      xlab("cluster size")
+    show(all_clstr_size_plot)
+    
+    p <- plt_lengths %>% 
+      ggplot(aes(x = values, y =  lengths)) + 
+      geom_jitter(width = 0.2, height = 0, color = "red", alpha = 0.2) +
+      ggtitle(title_str, subtitle = "bootstrapped size vs. duration") + 
+      xlab("cluster size") +
+      ylab("duration (seconds)")
+    show(p)
+    # save
+  } # end plots for 6 or more rats
+}
+
+##### some stuff
+print(paste("Biggest cluster is ", max(plt_lengths$values), "rats."))
+print(paste("Longest cluster lifetime is", max(plt_lengths$lengths), "seconds."))
+
+# hist((cluster_lengths_sizes$lengths)/60, 30) # for playing/debugging
 

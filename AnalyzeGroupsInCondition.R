@@ -192,15 +192,17 @@ for (i in 1:nDirs) {
 cluster_lengths_sizes <- rle_raw[rle_raw$values != 0, ]
 
 ##### Saving
-# assemble a file name
-fname_str <- paste0(n_files, "RatsClusterSummary.RData") 
-
-# save out the data frame for this condition as a .RData file
-save(xyt_dat,                 # The Big Kahuna - has all the things (except NaNs)
-     cluster_dat,             # subset of xyt_dat; just rat, frame, and cluster ID
-     rle_raw,                 # run length encoding output including 0s (no group)
-     cluster_lengths_sizes,   # rle output with only actual groups
-     file = fname_str)
+if (save_flag) {
+  # assemble a file name
+  fname_str <- paste0(n_files, "RatsClusterSummary.RData") 
+  
+  # save out the data frame for this condition as a .RData file
+  save(xyt_dat,                 # The Big Kahuna - has all the things (except NaNs)
+       cluster_dat,             # subset of xyt_dat; just rat, frame, and cluster ID
+       rle_raw,                 # run length encoding output including 0s (no group)
+       cluster_lengths_sizes,   # rle output with only actual groups
+       file = fname_str)
+}
 
 ##### Plotting
 if (plot_flag) {
