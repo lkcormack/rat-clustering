@@ -54,9 +54,9 @@ perform_dbscan <- function(data, min_objects, eps) {
 #                             path = getActiveProject())
 
 # office
-#root_dir = "/Users/lkc/Documents/GitHub/rat-clustering/data/3Rats/"
+root_dir = "/Users/lkc/Documents/GitHub/rat-clustering/data/3Rats/"
 # laptop
-root_dir = "/Users/lkc3-admin/Documents/GitHub/rat-clustering/data/15Rats/"
+#root_dir = "/Users/lkc3-admin/Documents/GitHub/rat-clustering/data/15Rats/"
 dir_list <- dir(root_dir, full.names = TRUE, recursive = FALSE)
 
 # Initialize an empty list to hold all the files
@@ -81,7 +81,8 @@ for (sub_dir in dir_list) {
 # condition ID for the filename
 cond <- paste0('n_Rats', n_files)
 
-num_iterations <- 15  # should go up on TACC
+######### number of bootstrap repetitions to run ############
+num_iterations <- 5  # should go up on TACC
 
 ############### Initialize storage #################
 hist_data_list <- vector("list", num_iterations)
@@ -185,7 +186,7 @@ for(i in 1:num_iterations) {
   n_frames = mat_dims[2]
 
   # get maximum integer group label for the `for()` loop below
-  max_grp_number <- max(grps_matrix) + 1 # b/c zero is the "no group" #
+  max_grp_number <- max(grps_matrix) # + 1 # b/c zero is the "no group" #
 
   # # Initialize group label x frame array for group member counts
   member_counts <- array(0, dim=c(max_grp_number, n_frames))
@@ -225,15 +226,15 @@ for(i in 1:num_iterations) {
   # need to add a cumulative sum column of the lengths
   # to code the frame number at which clusters start
 
-  # cl_lgth_sz_temp <- rle_tibble[rle_tibble$values != 0, ]
-  # 
-  # if (nrow(cl_lgth_sz_temp) > 2) {
-  #   hist_data_list[[i]] <- hist(cl_lgth_sz_temp$lengths, 30)
-  # }
-  # else {
-  #   hist_data_list[[i]] <- "nope"
-  # }
-  
+  cl_lgth_sz_temp <- rle_tibble[rle_tibble$values != 0, ]
+
+  if (nrow(cl_lgth_sz_temp) > 0) {
+    hist_data_list[[i]] <- hist(cl_lgth_sz_temp$lengths, 30)
+  }
+  else {
+    hist_data_list[[i]] <- "nope"
+  }
+
   print(paste0("done with iteration ", i))
   
 } 
