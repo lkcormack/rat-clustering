@@ -1,4 +1,4 @@
-load("6RatsClusterSummary.RData")
+load("3RatsClusterSummary.RData")
 n3rats_vals <- cluster_lengths_sizes$values
 n3rats_lens <- cluster_lengths_sizes$lengths
 load("6RatsClusterSummary.RData")
