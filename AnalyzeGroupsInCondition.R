@@ -21,7 +21,7 @@ library(fpc)
 #############
 
 ##### Do we save and/or plot?
-save_flag = FALSE # save out the rle results?
+save_flag = TRUE # save out the rle results?
 plot_flag = TRUE # make plot?
 
 ######### function definitions ##################
@@ -246,7 +246,11 @@ if (plot_flag) {
   show(all_clstr_len_plot)
   
   ###### make and save a histogram object #####
-  LfTmHist <- hist(plt_lengths$lengths, breaks = 30)
+  trimmed_plt_lens <-  plt_lengths$lengths[plt_lengths$lengths < 6]
+  LfTmHist <- hist(trimmed_plt_lens, 
+                   breaks = seq(0, 6, 0.2), 
+                   freq = FALSE,
+                   ylim = c(0, 2.5))
   # save...
   
   if (n_files > 3) {  # these plots don't make sense for 3 rats
@@ -260,8 +264,10 @@ if (plot_flag) {
 
     # histograms of group sizes collapsed across run
     all_clstr_size_plot <- cluster_lengths_sizes %>%
-      ggplot(aes(x = values)) +
-      geom_histogram(bins = 30, fill = "blue", alpha = 0.7) +
+      ggplot(aes(x = values, after_stat(density))) +
+      geom_histogram(binwidth = 1, fill = "blue", alpha = 0.7) +
+      xlim(0, 15) +
+      ylim(0, 0.8) +
       ggtitle(title_str, subtitle = "cluster sizes; all runs combined") +
       xlab("cluster size")
     show(all_clstr_size_plot)
@@ -270,6 +276,8 @@ if (plot_flag) {
       ggplot(aes(x = values, y =  lengths)) + 
       geom_jitter(width = 0.2, height = 0, alpha = 0.2) +
       ggtitle(title_str, subtitle = "size vs. duration") + 
+      xlim(3, 15) +
+      ylim(0, 10) +
       xlab("cluster size") +
       ylab("duration (seconds)")
     show(p)
