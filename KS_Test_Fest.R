@@ -18,4 +18,4 @@ ks9vs15vals <- ks.test(n9rats_vals, n15rats_vals)
 
 save(ks3vs6vals, ks3vs9vals, ks3vs15vals, 
      ks6vs9vals, ks6vs15vals, ks9vs15vals, 
-     file = "KStestsForVals.RData")
+     file = "KStestsForSizes.RData")
