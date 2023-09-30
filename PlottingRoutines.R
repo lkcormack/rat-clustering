@@ -1,3 +1,9 @@
+###### Plotting routines for rat clustering summary data #########
+
+### Load a file first! ####
+
+title_str <- paste(max(cluster_dat$rat_num), "Rats") # number of rats for figure titles
+
 # histograms of cluster lifetimes
 len_thresh <- 10 # threshold for length (in frames) of a "real" cluster
 plt_lengths <- cluster_lengths_sizes[cluster_lengths_sizes$lengths > len_thresh, ]
