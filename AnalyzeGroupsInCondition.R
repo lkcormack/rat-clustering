@@ -63,9 +63,7 @@ pb <- progress_bar$new(total = n_runs)
 ############### big momma loop #############################
 ##### loop through the runs in this condition
 
-# shorten for debugging
 nDirs = length(dir_list)
-# nDirs = 3
 
 for (i in 1:nDirs) {
   # print(paste("In", dir_list[i])) # for debugging
@@ -150,7 +148,9 @@ for (i in 1:nDirs) {
   # get maximum integer group label for the `for()` loop below
   max_grp_number <- max(grps_matrix)
   
+  # only look for groups if they're are any!
   if (max_grp_number > 0) {
+    
     # Initialize group label x frame array for group member counts
     member_counts <- array(0, dim = c(max_grp_number, n_frames))
     
@@ -165,7 +165,6 @@ for (i in 1:nDirs) {
       member_counts[j,] <-
         colSums(temp) # number of members of this group for each frame
     }
-    
     # We now have a matrix indicating whether a group (row) is present
     # on a given frame (column)
     

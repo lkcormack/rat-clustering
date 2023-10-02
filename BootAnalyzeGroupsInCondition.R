@@ -180,48 +180,62 @@ for(i in 1:num_iterations) {
   grps_tibble <- cluster_dat %>%
     pivot_wider(names_from = frame, values_from = cluster)
 
+  # nrow(cluster_dat) == nrow(grps_tibble)*ncol(grps_tibble) - n_files
+  # this test passes!
+  
   # convert to a matrix so we can do maths more directly
   grps_matrix <- as.matrix(grps_tibble[,-1])
   mat_dims <- dim(grps_matrix)
   n_frames = mat_dims[2]
 
+  # length(grps_matrix) == nrow(cluster_dat)
+  # this test passes (length() for a matrix is number of elements)
+  
   # get maximum integer group label for the `for()` loop below
-  max_grp_number <- max(grps_matrix) # + 1 # b/c zero is the "no group" #
+  max_grp_number <- max(grps_matrix) 
 
-  # # Initialize group label x frame array for group member counts
-  member_counts <- array(0, dim=c(max_grp_number, n_frames))
-
-  # fill group label x frame array whose values are the number of
-  # members in that group
-  for (j in 1:max_grp_number) {    # loop through the groups labels
-    temp <- grps_matrix    # make a matrix whose entries are
-    temp[temp == j] <- 1   # 1 for this group and
-    temp[temp != j] <- 0.  # 0 for the other groups
-    member_counts[j, ] <- colSums(temp) # number of members of this group for each frame
-  }
-  # We now have a matrix indicating how many rats (entry) are in a group (row) 
-  # on a given frame (column)
-
-  # Now perform run length encoding (rle) to get a data frame of group lengths
-  # (in frames) and group sizes (# of rats).
-  # NB: doing this in separate `for()` loop from above for clarity.
-  for (j in 1:max_grp_number) {    # loop through the groups labels
-    # Perform the run-length encoding for this row
-    rle_output <- rle(member_counts[j, ])
-
-    # the output of rle() is a list, so
-    # convert the RLE result to a temporary tibble
-    rle_tibble <- tibble(
-      lengths = rle_output$lengths,
-      values = rle_output$values,
-      grp_label = j,
-      run_label = i
-    )
-
-    # Append to the results to the main output tibble
-    rle_raw <- bind_rows(rle_raw, rle_tibble)
-
-  }
+  # only look for groups if they're are any!
+  if (max_grp_number > 0) {
+    
+    # # Initialize group label x frame array for group member counts
+    member_counts <- array(0, dim=c(max_grp_number, n_frames))
+    
+    # fill group label x frame array whose values are the number of
+    # members in that group
+    
+    for (j in 1:max_grp_number) {    # loop through the groups labels
+      temp <- grps_matrix    # make a matrix whose entries are
+      temp[temp == j] <- 1   # 1 for this group and
+      temp[temp != j] <- 0.  # 0 for the other groups
+      member_counts[j, ] <- colSums(temp) # number of members of this group for each frame
+    }
+    # We now have a matrix indicating how many rats (entry) are in a group (row) 
+    # on a given frame (column)
+    
+    # Now perform run length encoding (rle) to get a data frame of group lengths
+    # (in frames) and group sizes (# of rats).
+    # NB: doing this in separate `for()` loop from above for clarity.
+    for (j in 1:max_grp_number) {    # loop through the groups labels
+      # Perform the run-length encoding for this row
+      rle_output <- rle(member_counts[j, ])
+      
+      # the output of rle() is a list, so
+      # convert the RLE result to a temporary tibble
+      rle_tibble <- tibble(
+        lengths = rle_output$lengths,
+        values = rle_output$values,
+        grp_label = j,
+        run_label = i
+      )
+      # Note!! The "grp_label" refers to the group number we're running the 
+      # rle on. So runs of 0s will still have a label >= 1
+      
+      # Append to the results to the main output tibble
+      rle_raw <- bind_rows(rle_raw, rle_tibble)
+      
+    }
+    
+  } # if
 
   # need to add a cumulative sum column of the lengths
   # to code the frame number at which clusters start
