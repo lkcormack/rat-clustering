@@ -26,8 +26,8 @@ library(fpc)
 #############
 
 ##### Do we save and/or plot?
-save_flag = FALSE # save out the rle results?
-plot_flag = TRUE # make plot?
+save_flag = TRUE # save out the rle results?
+plot_flag = FALSE # make plot? 
 
 ######### function definitions ##################
 # Define the function to perform DBSCAN clustering
@@ -54,9 +54,9 @@ perform_dbscan <- function(data, min_objects, eps) {
 #                             path = getActiveProject())
 
 # office
-root_dir = "/Users/lkc/Documents/GitHub/rat-clustering/data/3Rats/"
+#root_dir = "/Users/lkc/Documents/GitHub/rat-clustering/data/3Rats/"
 # laptop
-#root_dir = "/Users/lkc3-admin/Documents/GitHub/rat-clustering/data/15Rats/"
+root_dir = "/Users/lkc3-admin/Documents/GitHub/rat-clustering/data/15Rats/"
 dir_list <- dir(root_dir, full.names = TRUE, recursive = FALSE)
 
 # Initialize an empty list to hold all the files
@@ -85,7 +85,9 @@ cond <- paste0('n_Rats', n_files)
 num_iterations <- 5  # should go up on TACC
 
 ############### Initialize storage #################
-hist_data_list <- vector("list", num_iterations)
+# cluster_data_list <- vector("list", num_iterations)
+# hist_data_list <- vector("list", num_iterations)
+rle_data_list <- vector("list", num_iterations)
 rle_raw <- tibble() # empty tibble to hold rle results
 
 
@@ -237,26 +239,23 @@ for(i in 1:num_iterations) {
     
   } # if
 
-  # need to add a cumulative sum column of the lengths
+  # maybe add a cumulative sum column of the lengths
   # to code the frame number at which clusters start
+  
+  rle_data_list[[i]] <- rle_raw
 
-  cl_lgth_sz_temp <- rle_tibble[rle_tibble$values != 0, ]
-
-  if (nrow(cl_lgth_sz_temp) > 0) {
-    hist_data_list[[i]] <- hist(cl_lgth_sz_temp$lengths, 30)
-  }
-  else {
-    hist_data_list[[i]] <- "nope"
-  }
+  # cl_lgth_sz_temp <- rle_tibble[rle_tibble$values != 0, ]
+  # if (nrow(cl_lgth_sz_temp) > 0) {
+  #   hist_data_list[[i]] <- hist(cl_lgth_sz_temp$lengths, 30)
+  # }
+  # else {
+  #   hist_data_list[[i]] <- "nope"
+  # }
 
   print(paste0("done with iteration ", i))
   
 } 
 ################# end of bootstrapping loop! ################
-
-# Runs of zeros are runs of "no cluster" for that cluster ID
-# So eliminate runs of zeros.
-cluster_lengths_sizes <- rle_raw[rle_raw$values != 0, ]
 
 ##### Saving
 if (save_flag) {
@@ -264,10 +263,7 @@ if (save_flag) {
   fname_str <- paste0(n_files, "RatsBootSummary.RData") 
   
   # save out the data frame for this condition as a .RData file
-  save(xyt_dat,                 # The Big Kahuna - has all the things (except NaNs)
-       cluster_dat,             # subset of xyt_dat; just rat, frame, and cluster ID
-       rle_raw,                 # run length encoding output including 0s (no group)
-       cluster_lengths_sizes,   # rle output with only actual groups
+  save(rle_data_list,   # rle output with only actual groups
        file = fname_str)
 }
 
@@ -327,10 +323,4 @@ if (plot_flag) {
     # save
   } # end plots for 6 or more rats
 }
-
-##### some stuff
-print(paste("Biggest cluster is ", max(plt_lengths$values), "rats."))
-print(paste("Longest cluster lifetime is", max(plt_lengths$lengths), "seconds."))
-
-# hist((cluster_lengths_sizes$lengths)/60, 30) # for playing/debugging
 
