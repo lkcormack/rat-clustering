@@ -56,7 +56,7 @@ perform_dbscan <- function(data, min_objects, eps) {
 # office
 #root_dir = "/Users/lkc/Documents/GitHub/rat-clustering/data/3Rats/"
 # laptop
-root_dir = "/Users/lkc3-admin/Documents/GitHub/rat-clustering/data/3Rats/"
+root_dir = "/Users/lkc3-admin/Documents/GitHub/rat-clustering/data/15Rats/"
 dir_list <- dir(root_dir, full.names = TRUE, recursive = FALSE)
 
 # Initialize an empty list to hold all the files
