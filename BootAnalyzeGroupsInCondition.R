@@ -56,7 +56,7 @@ perform_dbscan <- function(data, min_objects, eps) {
 # office
 #root_dir = "/Users/lkc/Documents/GitHub/rat-clustering/data/3Rats/"
 # laptop
-root_dir = "/Users/lkc3-admin/Documents/GitHub/rat-clustering/data/15Rats/"
+root_dir = "/Users/lkc3-admin/Documents/GitHub/rat-clustering/data/3Rats/"
 dir_list <- dir(root_dir, full.names = TRUE, recursive = FALSE)
 
 # Initialize an empty list to hold all the files
@@ -82,7 +82,7 @@ for (sub_dir in dir_list) {
 cond <- paste0('n_Rats', n_files)
 
 ######### number of bootstrap repetitions to run ############
-num_iterations <- 5  # should go up on TACC
+num_iterations <- 32  # should go up on TACC
 
 ############### Initialize storage #################
 # cluster_data_list <- vector("list", num_iterations)
