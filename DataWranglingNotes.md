@@ -26,6 +26,8 @@ I just realized that we can simply drop the NaNs (any frames where either x and 
 
 Each time rats are released into the box, I'm calling that a "run" – a single video recording
 
+Within a run, each rat does a "trial"
+
 A set of identical runs (e.g. n=3 rats), I'm calling that that a "block"
 
 A set of blocks with different rat numbers in each block is an "expermient". So, the data we're working on now is one experiment, the "baseline experiment".
@@ -91,6 +93,14 @@ The bug is here. 3 days ago, I "cleaned" up the removal of NAs. In so doing, I s
 
 For extra hilariousness, I even added this snarky commit message when I "cleaned" things up.
 "Simplified removal of rows with NaNs. Now doing it, you know, the way I should have done it in the first place."
+
+---
+
+12 Oct 2023
+
+Been too long, sorry. Thinking about the KS tests... their borked because of the discreet nature of the data and the number of ties or whatever. Need a bootstrapping approach. We could roll our own, but I think I found a package - twosample! Simulates p-vals using bootstrapping/permutation. Assumption free and mucho mass power (not that we're hurting on the talent front)
+
+
 
 
 
