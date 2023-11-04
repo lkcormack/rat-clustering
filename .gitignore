@@ -15,6 +15,9 @@
 # Raw data folder
 data/
 
+# TACC data folder
+TACC_Data/
+
 # Zipped copy of data files or whatever
 *.zip
 
