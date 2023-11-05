@@ -2,26 +2,35 @@
 library(tidyverse)
 
 ### Load files first! ####
+## If the files are not in your working directory, you will need to 
+## specify the path, or load the files "by hand" (and comment out the 
+## load() lines below)
+
 ### e.g. load("6RatsClusterSummary.RData")
-load("15RatsClusterSummary.RData")
+#load("15RatsClusterSummary.RData")
+
 # load boot rle_data_list
-load("15RatsBootSummary.RData")
+#load("15RatsBootSummary.RData")
+
+### files loaded ###
+
 n_rats <- 15 # yes, this is hardcoded...
 
 title_str <- paste(max(cluster_dat$rat_num), "Rats") # number of rats for figure titles
 ## (or make your own)
 
-# thresholding params
+# thresholding parameters
 min_grp_size <- 3
 min_grp_len <- 10
 
-### make (don't plot) ggplots of real results
+### make (don't plot) ggplots of real results ###
 
 # histograms of group sizes collapsed across run
 all_clstr_size_plot <- cluster_lengths_sizes %>%
   ggplot() +
   geom_histogram(aes(x = values),
-                 breaks = seq(0, 16), fill = "blue", alpha = 0.7) +
+                 breaks = seq(0, 16), 
+                 fill = "blue", alpha = 0.7) +
   ggtitle(title_str, subtitle = "cluster sizes; all runs combined") +
   xlab("cluster size")
 # show(all_clstr_size_plot)
@@ -128,11 +137,12 @@ lifetm_summary <- lifetm_hist_boot_all %>%
 size_overlay <- all_clstr_size_plot +
   geom_bar(data = size_summary, 
            aes(x = size_mids, y = size_mean), 
-           stat="identity") +
+           stat="identity", 
+           alpha = 0.25) +
   geom_errorbar(data = size_summary,
     aes(x = size_mids, 
-        ymin = size_mean - size_se, 
-        ymax = size_mean + size_se),
+        ymin = size_mean - size_sd, 
+        ymax = size_mean + size_sd),
     width = 0.25  # Width of the error bars
   ) +
   labs(y = "Counts", x = "Group Size", title = title_str) +
