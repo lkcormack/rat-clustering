@@ -23,9 +23,12 @@ title_str <- paste(max(cluster_dat$rat_num), "Rats") # number of rats for figure
 min_grp_size <- 3
 min_grp_len <- 10
 
-### make (don't plot) ggplots of real results ###
 
-# histograms of group sizes collapsed across run
+####### REAL DATA ########
+### make (don't display yet) ggplots of real results ###
+### down below, we'll plot these overlaid with bootstrapped results ###
+
+# histograms of GROUP SIZES collapsed across run
 all_clstr_size_plot <- cluster_lengths_sizes %>%
   ggplot() +
   geom_histogram(aes(x = values),
@@ -35,11 +38,12 @@ all_clstr_size_plot <- cluster_lengths_sizes %>%
   xlab("cluster size")
 # show(all_clstr_size_plot)
 
-# histograms of cluster lifetimes
+# histograms of CLUSTER LIFETIMES collapsed across run
+# threshold for minimum group lifetime
 plt_lengths <- cluster_lengths_sizes[cluster_lengths_sizes$lengths > min_grp_len, ]
 plt_lengths$lengths <- (plt_lengths$lengths)/60 # convert to seconds
 
-# histograms of lifetimes collapsed across run
+# make the histogram
 all_clstr_len_plot <- plt_lengths %>%
   ggplot() +
   geom_histogram(aes(x = lengths),
@@ -48,22 +52,28 @@ all_clstr_len_plot <- plt_lengths %>%
   xlab("cluster length (seconds)")
 # show(all_clstr_len_plot)
 
+### we now have all_clstr_size_plot and all_clstr_len_plot ###
+### to be overlaid with bootstrapped results ###
+
+
+####### PREPARE AND ANALYZE BOOTSTRAP DATA ########
+
 # get number of bootstrap replications
 n_reps <- length(rle_data_list)
 
 # strings for output
 title_str <- paste(n_rats, "Rats", n_reps, "Replicates") 
 
-# storage
+### make tibbles for bootstrapped summaries ###
 rle_boot_all <- tibble()  # all the run length encoding
 size_hist_boot_all <- tibble() # counts of group sizes and lengths by bin
 lifetm_hist_boot_all <- tibble() # counts of group sizes and lengths by bin
 
-### go through the bootstrap replicate experiments
+############### BOOTSTRAP DATA LOOP ####################
 for (i in 1:n_reps) {
   print(paste("On iteration", i))
   
-  rle_temp <- rle_data_list[[i]]
+  rle_temp <- rle_data_list[[i]] # get the ith bootstrap replicate tibble
   rle_temp <-  rle_temp[rle_temp$values > 0, ] # extract actual groups (inc 2 rats)
   
   ### check to see if we have any data to work with (mainly for n = 3 rats) ###
@@ -83,10 +93,14 @@ for (i in 1:n_reps) {
   # convert lifetimes to seconds
   rle_temp$lengths <- rle_temp$lengths / 60
   
-  # steps / tasks 
-  # make a stacked tibble of the runs with actual groups (value != 0)
+  # add a column for the bootstrap replicate number
   rle_temp$bootrep <- i # code the rep number
   
+  ######## NOTE: I think think that maybe we should either ########
+  # - make the stacked tibble as just below, and then work from that, OR
+  # - proceed as we are...
+  
+  # make a stacked tibble of the runs with actual groups (value != 0)
   rle_boot_all <- bind_rows(rle_boot_all, rle_temp)  # all the run length encoding
   
   # compute histograms of group lifetimes and sizes with constant, identical bins
@@ -108,6 +122,7 @@ for (i in 1:n_reps) {
                              size_cnts = size_hist$counts,
                              bootrep = i)
   
+  # add to the tibble of all the boot reps for group sizes
   size_hist_boot_all <- bind_rows(size_hist_boot_all, sz_hist_tib_temp)
   
   # then lifetimes
@@ -115,25 +130,29 @@ for (i in 1:n_reps) {
                              lifetm_cnts = lifetime_hist$counts,
                              bootrep = i)
   
+  # add to the tibble of all the boot reps
   lifetm_hist_boot_all <- bind_rows(lifetm_hist_boot_all, lt_hist_tib_temp)
   
-}
+} ### end of for loop 
+############### END OF BOOTSTRAP DATA LOOP ####################
 
+
+########### summarize the bootstrap results ############
+## boot means and sds for SIZES
 size_summary <- size_hist_boot_all %>% 
   group_by(size_mids) %>% 
   summarise(n_obs = n(),
             size_mean = mean(size_cnts),
-            size_sd = sd(size_cnts),
-            size_se = size_sd/sqrt(n_obs))
+            size_sd = sd(size_cnts))
 
+## boot means and sds for LIFETIMES
 lifetm_summary <- lifetm_hist_boot_all %>% 
   group_by(lifetm_mids) %>% 
   summarise(n_obs = n(),
             lifetm_mean = mean(lifetm_cnts),
-            lifetm_sd = sd(lifetm_cnts),
-            lifetm_se = lifetm_sd/sqrt(n_obs))
+            lifetm_sd = sd(lifetm_cnts))
 
-### plotting
+################### PLOTTING ###############
 size_overlay <- all_clstr_size_plot +
   geom_bar(data = size_summary, 
            aes(x = size_mids, y = size_mean), 
@@ -156,8 +175,8 @@ len_overlay <- all_clstr_len_plot +
            stat="identity") +
   geom_errorbar(data = lifetm_summary, 
     aes(x = lifetm_mids, 
-        ymin = lifetm_mean - lifetm_se, 
-        ymax = lifetm_mean + lifetm_se),
+        ymin = lifetm_mean - lifetm_sd, 
+        ymax = lifetm_mean + lifetm_sd),
     width = 0.25  # Width of the error bars
   ) +
   xlim(0, 6) +
