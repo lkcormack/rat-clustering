@@ -5,37 +5,45 @@ library(tidyverse)
 # load the file...
 # load it by hand for now
 
-# group by bootstrap replicate
-grouped_boot_data <- rle_boot_all %>% group_by(bootrep)
+df <- rle_boot_all
 
-# make a tibble of the histograms
-histograms <- grouped_boot_data %>%
-  mutate(value_hist = list(hist(values,
-                                breaks = seq(0, 16),
-                                plot = FALSE)),
-         length_hist = list(hist(lengths,
-                                 breaks = seq(0, 20, 0.2),
-                                 plot = FALSE)))
+# Get unique bootrep values
+unique_bootreps <- unique(df$bootrep)
 
-# Group the data by "bootstrap_replicate" and bin for sizes
-size_result <- histograms %>%
-  unnest(value_hist) %>%
-  group_by(bootstrap_replicate, bin = value_hist$mids) %>%
-  summarize(
-    mean_value = mean(value_hist$counts),
-    sd_value = sd(value_hist$counts)
-  )
+# Specify the number of breaks 
+value_breaks <-  seq(0, 16)
+length_breaks <-  seq(0, 20, 0.2)
 
-# Create a bar graph with error bars for sizes
-ggplot(size_result, aes(x = bin, y = mean_value, fill = as.factor(bootstrap_replicate))) +
-  geom_bar(stat = "identity", position = "dodge") +
-  geom_errorbar(
-    aes(ymin = mean_value - sd_value, ymax = mean_value + sd_value),
-    width = 0.2,
-    position = position_dodge(width = 0.9)
-  ) +
-  labs(x = "Bin", y = "Mean Value", fill = "Bootstrap Replicate") +
-  ggtitle("Mean Values with Standard Deviation Error Bars by Bin")
+# Pre-allocate matrices to store histogram counts for each unique bootrep
+# The number of rows is the number of unique bootreps and the number of columns is the number of breaks
+values_hist_matrix <- matrix(nrow = length(unique_bootreps), 
+                             ncol = length(value_breaks)-1)
+rownames(values_hist_matrix) <- as.character(unique_bootreps)
+lengths_hist_matrix <- matrix(nrow = length(unique_bootreps), 
+                              ncol = length(length_breaks)-1)
+rownames(lengths_hist_matrix) <- as.character(unique_bootreps)
 
+# Loop over each unique bootrep
+for (boot in unique_bootreps) {
+  print(paste("On iteration", boot))
+  
+  # Subset the dataframe for the current bootrep
+  subset_df <- df[df$bootrep == boot, ]
+  
+  # Calculate histogram for values
+  values_hist <- hist(subset_df$values, 
+                      breaks=value_breaks, 
+                      plot=FALSE)
+  
+  # Calculate histogram for lengths
+  lengths_hist <- hist(subset_df$lengths, 
+                       breaks=length_breaks, 
+                       plot=FALSE)
+ 
+  # Store the counts in the matrices
+  values_hist_matrix[boot, ] <- values_hist$counts
+  lengths_hist_matrix[boot, ] <- lengths_hist$counts
+  
+}
 
-
+# Convert the matrices to dataframes
