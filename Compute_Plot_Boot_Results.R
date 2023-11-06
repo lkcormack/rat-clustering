@@ -1,16 +1,35 @@
-# summarize the combined bootsrapped data
+# summarize the combined bootsrapped data and plot with rat data
 
 library(tidyverse)
 
-# load the file...
-# load it by hand for now
+######## load the needed summary files ########
 
-df <- rle_boot_all
+file_path <- rstudioapi::selectFile(caption = "Select Real Data Summary File",
+                                    filter = "RData Files (*.RData)",
+                                    existing = TRUE)
+
+load(file_path) # load real data summary file
+
+rm(xyt_dat, rle_raw, cluster_dat) # remove unneeded dataframes
+
+file_path <- rstudioapi::selectFile(caption = "Select Bootstrap Summary File",
+                                    filter = "RData Files (*.RData)",
+                                    existing = TRUE)
+
+load(file_path) # load bootstrapped summary file
+
+df <- rle_boot_all # rename for shorter code lines below
+rm(rle_boot_all) # remove unneeded dataframe
+
+######## Done loading files and cleaning up ########
+
+
+######## Calculate bootstrap histogram values ########
 
 # Get unique bootrep values
 unique_bootreps <- unique(df$bootrep)
 
-# Specify the number of breaks 
+# Specify the histogram breaks 
 value_breaks <-  seq(0, 16)
 length_breaks <-  seq(0, 20, 0.2)
 
@@ -23,7 +42,8 @@ lengths_hist_matrix <- matrix(nrow = length(unique_bootreps),
                               ncol = length(length_breaks)-1)
 rownames(lengths_hist_matrix) <- as.character(unique_bootreps)
 
-# Loop over each unique bootrep
+# Loop over each unique bootrep and compute histograms, storing counts
+# in matrices as we go
 for (boot in unique_bootreps) {
   print(paste("On iteration", boot))
   
@@ -44,6 +64,12 @@ for (boot in unique_bootreps) {
   values_hist_matrix[boot, ] <- values_hist$counts
   lengths_hist_matrix[boot, ] <- lengths_hist$counts
   
-}
+} # end of bootstrap loop
+######## Done calculating bootstrap histogram values ########
+
+######## Compute the mean and standard deviation of the histograms ########
+
 
 # Convert the matrices to dataframes
+
+######## PLOTTING ########
