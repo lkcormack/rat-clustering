@@ -69,7 +69,6 @@ for (boot in unique_bootreps) {
 
 ######## Compute the mean and standard deviation of the histograms ########
 
-
-# Convert the matrices to dataframes
+# Convert the means and sds to dataframes for plotting
 
 ######## PLOTTING ########
