@@ -23,39 +23,6 @@ title_str <- paste(max(cluster_dat$rat_num), "Rats") # number of rats for figure
 min_grp_size <- 3
 min_grp_len <- 10
 
-
-####### REAL DATA ########
-### make (don't display yet) ggplots of real results ###
-### down below, we'll plot these overlaid with bootstrapped results ###
-
-# histograms of GROUP SIZES collapsed across run
-all_clstr_size_plot <- cluster_lengths_sizes %>%
-  ggplot() +
-  geom_histogram(aes(x = values),
-                 breaks = seq(0, 16), 
-                 fill = "blue", alpha = 0.7) +
-  ggtitle(title_str, subtitle = "cluster sizes; all runs combined") +
-  xlab("cluster size")
-# show(all_clstr_size_plot)
-
-# histograms of CLUSTER LIFETIMES collapsed across run
-# threshold for minimum group lifetime
-plt_lengths <- cluster_lengths_sizes[cluster_lengths_sizes$lengths > min_grp_len, ]
-plt_lengths$lengths <- (plt_lengths$lengths)/60 # convert to seconds
-
-# make the histogram
-all_clstr_len_plot <- plt_lengths %>%
-  ggplot() +
-  geom_histogram(aes(x = lengths),
-                 breaks = seq(0, 20, 0.2), fill = "blue", alpha = 0.7) +
-  ggtitle(title_str, subtitle = "lifetimes; all runs combined") +
-  xlab("cluster length (seconds)")
-# show(all_clstr_len_plot)
-
-### we now have all_clstr_size_plot and all_clstr_len_plot ###
-### to be overlaid with bootstrapped results ###
-
-
 ####### PREPARE AND ANALYZE BOOTSTRAP DATA ########
 
 # get number of bootstrap replications
@@ -70,6 +37,8 @@ size_hist_boot_all <- tibble() # counts of group sizes and lengths by bin
 lifetm_hist_boot_all <- tibble() # counts of group sizes and lengths by bin
 
 ############### BOOTSTRAP DATA LOOP ####################
+### go through the bootstrap replicate experiments
+### hardcode n_reps to 1000 or whatever if needed
 for (i in 1:n_reps) {
   print(paste("On iteration", i))
   
@@ -153,34 +122,45 @@ lifetm_summary <- lifetm_hist_boot_all %>%
             lifetm_sd = sd(lifetm_cnts))
 
 ################### PLOTTING ###############
-size_overlay <- all_clstr_size_plot +
+##### Group sizes #####
+size_overlay <- ggplot() +
   geom_bar(data = size_summary, 
            aes(x = size_mids, y = size_mean), 
-           stat="identity", 
-           alpha = 0.25) +
+           stat="identity") +
   geom_errorbar(data = size_summary,
-    aes(x = size_mids, 
-        ymin = size_mean - size_sd, 
-        ymax = size_mean + size_sd),
-    width = 0.25  # Width of the error bars
+                aes(x = size_mids, 
+                    ymin = size_mean - size_se, 
+                    ymax = size_mean + size_se),
+                width = 0.25  # Width of the error bars
   ) +
+  geom_histogram(data = cluster_lengths_sizes,
+                 aes(x = values),
+                 breaks = seq(0, 16), fill = "blue", alpha = 0.7) +
   labs(y = "Counts", x = "Group Size", title = title_str) +
   theme_minimal()
 
 print(size_overlay)
 
-len_overlay <- all_clstr_len_plot +
+##### Group lifetimes #####
+# threshold for minimum group lifetime
+plt_lengths <- cluster_lengths_sizes[cluster_lengths_sizes$lengths > min_grp_len, ]
+plt_lengths$lengths <- (plt_lengths$lengths)/60 # convert to seconds
+
+len_overlay <- ggplot() +
+  geom_errorbar(data = lifetm_summary, 
+                aes(x = lifetm_mids, 
+                    ymin = lifetm_mean - lifetm_se, 
+                    ymax = lifetm_mean + lifetm_se),
+                width = 0.25  # Width of the error bars
+  ) +
   geom_bar(data = lifetm_summary, 
            aes(x = lifetm_mids, y = lifetm_mean), 
            stat="identity") +
-  geom_errorbar(data = lifetm_summary, 
-    aes(x = lifetm_mids, 
-        ymin = lifetm_mean - lifetm_sd, 
-        ymax = lifetm_mean + lifetm_sd),
-    width = 0.25  # Width of the error bars
-  ) +
+  geom_histogram(data = plt_lengths, aes(x = lengths),
+                 breaks = seq(0, 20, 0.2), fill = "blue", alpha = 0.5) +
   xlim(0, 6) +
   labs(y = "Counts", x = "Group Lifetime", title = title_str) +
-  theme_minimal()
+  theme_minimal() 
 
 print(len_overlay)
+
