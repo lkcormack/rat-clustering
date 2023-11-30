@@ -1,6 +1,11 @@
 ###### Plot real data and boot data overlaid #########
 library(tidyverse)
 
+debug_flag <- 1
+if (debug_flag) {
+  n_reps <- 100
+  save_flag <- 0
+}
 ### Load files first! ####
 ## If the files are not in your working directory, you will need to 
 ## specify the path, or load the files "by hand" (and comment out the 
