@@ -1,6 +1,11 @@
 # make a stacked tibble of the bootstrapped rle results
 
-save_flag = 0
+debug_flag <- 1
+if (debug_flag) {
+  n_reps <- 100
+  save_flag <- 0
+}
+
 
 # load libraries
 library(tidyverse)
