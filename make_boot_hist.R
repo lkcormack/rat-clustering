@@ -96,6 +96,7 @@ make_boot_hist <- function(rle_data_list, n_rats, min_grp_size, min_grp_len) {
               lifetm_mean = mean(lifetm_cnts),
               lifetm_sd = sd(lifetm_cnts))
   
-  # Return a list containing the objects
+  # Return a list containing the bin centers and counts for the size 
+  # and lifetime histograms
   return(list(size_summary, lifetm_summary))
 }
