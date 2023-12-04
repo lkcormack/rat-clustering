@@ -4,7 +4,7 @@ make_boot_hist <- function(rle_data_list, n_rats, min_grp_size, min_grp_len) {
   
   # get number of bootstrap replications
   n_reps <- length(rle_data_list)
-  n_reps <- 10 # for testing
+  n_reps <- 420 # for testing
   
   ### make tibbles for bootstrapped summaries ###
   rle_boot_all <- tibble()  # all the run length encoding
@@ -18,6 +18,7 @@ make_boot_hist <- function(rle_data_list, n_rats, min_grp_size, min_grp_len) {
     print(paste("On iteration", i))
     
     rle_temp <- rle_data_list[[i]] # get the ith bootstrap replicate tibble
+    rle_data_list[[i]] <- tibble() # wipe the tibble to save memory
     rle_temp <-  rle_temp[rle_temp$values > 0, ] # extract actual groups (inc 2 rats)
     
     ### check to see if we have any data to work with (mainly for n = 3 rats) ###
@@ -56,7 +57,7 @@ make_boot_hist <- function(rle_data_list, n_rats, min_grp_size, min_grp_len) {
     
     ###### make a histogram for lifetimes #####
     lifetime_hist <- hist(rle_temp$lengths, 
-                          breaks = seq(0, 20, 0.2), # go long - can truncate for plots
+                          breaks = seq(0, 30, 0.2), # go long - can truncate for plots
                           plot = FALSE
     )
     
@@ -79,7 +80,6 @@ make_boot_hist <- function(rle_data_list, n_rats, min_grp_size, min_grp_len) {
     
   } ### end of for loop 
   ############### END OF BOOTSTRAP DATA LOOP ####################
-  
   
   ########### summarize the bootstrap results ############
   ## boot means and sds for SIZES
