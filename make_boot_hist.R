@@ -7,6 +7,7 @@ make_boot_hist <- function(rle_data_list, n_rats, min_grp_size, min_grp_len) {
   n_reps <- 420 # for testing
   
   ### make tibbles for bootstrapped summaries ###
+  ### need to pre-allocate to save time hopefully! ###
   rle_boot_all <- tibble()  # all the run length encoding
   size_hist_boot_all <- tibble() # counts of group sizes and lengths by bin
   lifetm_hist_boot_all <- tibble() # counts of group sizes and lengths by bin
