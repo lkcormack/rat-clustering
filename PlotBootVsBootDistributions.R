@@ -11,7 +11,7 @@ if (debug_flag) {
 ## specify the path, or load the files "by hand" (and comment out the 
 ## load() lines below)
 
-n_rats <- 6 # yes, this is hardcoded... could ask for input I suppose
+n_rats <- 15 # yes, this is hardcoded... could ask for input I suppose
 
 # thresholding parameters
 min_grp_size <- 3
@@ -66,7 +66,7 @@ rm(within_size_summary, mama_size_summary, within_lifetime_summary,
 title_str <- paste(n_rats, "Rats") # number of rats for figure titles
 ## (or make your own)
 
-dodge <- position_dodge(width = 0.9) # for dodging bars
+dodge <- position_dodge(width = 0.1) # for dodging bars
 
 ##### Group sizes #####
 size_overlay <- ggplot() +

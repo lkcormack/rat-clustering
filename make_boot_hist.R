@@ -4,7 +4,7 @@ make_boot_hist <- function(rle_data_list, n_rats, min_grp_size, min_grp_len) {
   
   # get number of bootstrap replications
   n_reps <- length(rle_data_list)
-  n_reps <- 420 # for testing
+  n_reps <- 300 # for testing
   
   ### make tibbles for bootstrapped summaries ###
   ### need to pre-allocate to save time hopefully! ###
