@@ -48,38 +48,47 @@ title_str <- paste(n_rats, "Rats") # number of rats for figure titles
 size_overlay <- ggplot() +
   geom_bar(data = within_summary[[1]],
            aes(x = size_mids, y = size_mean), 
-           stat="identity") +
+           stat="identity", position = position_dodge()) +
+  
   geom_errorbar(data = within_summary[[1]],
                 aes(x = size_mids, 
                     ymin = size_mean - size_sd, 
                     ymax = size_mean + size_sd),
-                width = 0.25  # Width of the error bars
-  ) +
-  #  geom_bar(data = mama_summary[[1]], ...
+                    width = 0.25,  # Width of the error bars
+                    position = position_dodge(0.9)) +
+  
+  geom_bar(data = mama_summary[[1]],
+           aes(x = size_mids, y = size_mean, alpha = 0.5, fill = "red"), 
+           stat="identity", position = position_dodge()) +
+  
+  geom_errorbar(data = mama_summary[[1]],
+                aes(x = size_mids, 
+                    ymin = size_mean - size_sd, 
+                    ymax = size_mean + size_sd),
+                width = 0.25,  # Width of the error bars
+                position = position_dodge(0.9)) +
+  
   labs(y = "Counts", x = "Group Size", title = title_str) +
   theme_minimal()
 
 print(size_overlay)
 
 ##### Group lifetimes #####
-# threshold for minimum group lifetime
-plt_lengths <- cluster_lengths_sizes[cluster_lengths_sizes$lengths > min_grp_len, ]
-plt_lengths$lengths <- (plt_lengths$lengths)/60 # convert to seconds
-
 len_overlay <- ggplot() +
-  geom_errorbar(data = lifetm_summary, 
-                aes(x = lifetm_mids, 
-                    ymin = lifetm_mean - lifetm_se, 
-                    ymax = lifetm_mean + lifetm_se),
-                width = 0.25  # Width of the error bars
-  ) +
-  geom_bar(data = lifetm_summary, 
+  geom_bar(data = within_summary[[2]], 
            aes(x = lifetm_mids, y = lifetm_mean), 
            stat="identity") +
-  geom_histogram(data = plt_lengths, aes(x = lengths),
-                 breaks = seq(0, 20, 0.2), fill = "blue", alpha = 0.5) +
+  geom_errorbar(data = within_summary[[2]], 
+                aes(x = lifetm_mids, 
+                    ymin = lifetm_mean - lifetm_sd, 
+                    ymax = lifetm_mean + lifetm_sd),
+                width = 0.25  # Width of the error bars
+  ) +
+  geom_bar(data = within_summary[[2]], 
+           aes(x = lifetm_mids, y = lifetm_mean), 
+           stat="identity") +
   xlim(0, 6) +
-  labs(y = "Counts", x = "Group Lifetime", title = title_str) +
+  labs(y = "Counts", x = "Group Lifetime (sec)", title = title_str) +
   theme_minimal() 
 
 print(len_overlay)
