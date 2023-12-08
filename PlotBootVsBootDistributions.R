@@ -1,17 +1,22 @@
 ###### Plot real data and boot data overlaid #########
 library(tidyverse)
 
-debug_flag <- 1
-if (debug_flag) {
-  n_reps <- 100
-  save_flag <- 0
+TACC_flag <- 0 # set to 1 if running on TACC
+
+if (TACC_flag) {
+  n_reps <- 0; # this, passed to make_boot_hist(), will use all bootstrap reps
+  plot_flag <- 0
+} else {
+  n_reps <- 100 # or whatever
+  plot_flag <- 1
 }
+
 ### Load files first! ####
 ## If the files are not in your working directory, you will need to 
 ## specify the path, or load the files "by hand" (and comment out the 
 ## load() lines below)
 
-n_rats <- 15 # yes, this is hardcoded... could ask for input I suppose
+n_rats <- 6 # yes, this is hardcoded... could ask for input I suppose
 
 # thresholding parameters
 min_grp_size <- 3
@@ -26,7 +31,8 @@ load(within_fname) # load data
 
 # call make_boot_hist() function to compute histograms
 within_summary <- make_boot_hist(rle_data_list, n_rats, 
-                                 min_grp_size, min_grp_len)
+                                 min_grp_size, min_grp_len,
+                                 n_reps = n_reps)
 
 # load big mama rat data
 # make filename
@@ -37,7 +43,8 @@ load(mama_fname) # load data
 
 # call make_boot_hist() function to compute histograms
 mama_summary <- make_boot_hist(rle_data_list, n_rats, 
-                                 min_grp_size, min_grp_len)
+                                 min_grp_size, min_grp_len,
+                               n_reps = n_reps)
 
 ######### make stacked tibbles of the bootstrapped data #########
 ##### one for sizes and one for lifetimes #####
@@ -63,47 +70,50 @@ rm(within_size_summary, mama_size_summary, within_lifetime_summary,
    mama_lifetime_summary) # remove the big tibbles to save memory
 
 ################### PLOTTING ###############
-title_str <- paste(n_rats, "Rats") # number of rats for figure titles
-## (or make your own)
-
-dodge <- position_dodge(width = 0.1) # for dodging bars
-
-##### Group sizes #####
-size_overlay <- ggplot() +
-  geom_bar(data = size_summary,
-           aes(x = size_mids, y = size_mean,fill = group),
-           alpha = 0.5,
-           stat="identity", position = dodge) +
+if(plot_flag) { 
+  title_str <- paste(n_rats, "Rats") # number of rats for figure titles
+  ## (or make your own)
   
-  geom_errorbar(data = size_summary,
-                aes(x = size_mids, 
-                    ymin = size_mean - size_sd, 
-                    ymax = size_mean + size_sd,
-                    group = group, color = group),
-                    width = 0.25,  # Width of the error bars
-                    position = dodge) +
-  labs(y = "Counts", x = "Group Size", title = title_str) +
-  theme_minimal()
-
-print(size_overlay)
-
-##### Group lifetimes #####
-len_overlay <- ggplot() +
-  geom_bar(data = lifetime_summary,
-           aes(x = lifetm_mids, y = lifetm_mean,fill = group),
-           alpha = 0.5,
-           stat="identity", position = dodge) +
+  dodge <- position_dodge(width = 0.1) # for dodging bars
   
-  geom_errorbar(data = lifetime_summary,
-                aes(x = lifetm_mids, 
-                    ymin = lifetm_mean - lifetm_sd, 
-                    ymax = lifetm_mean + lifetm_sd,
-                    group = group, color = group),
-                width = 0.25,  # Width of the error bars
-                position = dodge) +
-  xlim(0, 6) +
-  labs(y = "Counts", x = "Group Lifetime (sec)", title = title_str) +
-  theme_minimal() 
-
-print(len_overlay)
+  ##### Group sizes #####
+  size_overlay <- ggplot() +
+    geom_bar(data = size_summary,
+             aes(x = size_mids, y = size_mean,fill = group),
+             alpha = 0.5,
+             stat="identity", position = dodge) +
+    
+    geom_errorbar(data = size_summary,
+                  aes(x = size_mids, 
+                      ymin = size_mean - size_sd, 
+                      ymax = size_mean + size_sd,
+                      group = group, color = group),
+                  width = 0.25,  # Width of the error bars
+                  position = dodge) +
+    labs(y = "Counts", x = "Group Size", title = title_str) +
+    theme_minimal()
+  
+  print(size_overlay)
+  
+  ##### Group lifetimes #####
+  len_overlay <- ggplot() +
+    geom_bar(data = lifetime_summary,
+             aes(x = lifetm_mids, y = lifetm_mean,fill = group),
+             alpha = 0.5,
+             stat="identity", position = dodge) +
+    
+    geom_errorbar(data = lifetime_summary,
+                  aes(x = lifetm_mids, 
+                      ymin = lifetm_mean - lifetm_sd, 
+                      ymax = lifetm_mean + lifetm_sd,
+                      group = group, color = group),
+                  width = 0.25,  # Width of the error bars
+                  position = dodge) +
+    xlim(0, 6) +
+    labs(y = "Counts", x = "Group Lifetime (sec)", title = title_str) +
+    theme_minimal() 
+  
+  print(len_overlay)
+  
+} # end if(plot_flag)
 
