@@ -16,7 +16,7 @@ if (TACC_flag) {
 ## specify the path, or load the files "by hand" (and comment out the 
 ## load() lines below)
 
-n_rats <- 9 # yes, this is hardcoded... could ask for input I suppose
+n_rats <- 6 # yes, this is hardcoded... could ask for input I suppose
 
 # thresholding parameters
 min_grp_size <- 3
