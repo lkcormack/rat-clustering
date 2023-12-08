@@ -1,11 +1,15 @@
-make_boot_hist <- function(rle_data_list, n_rats, min_grp_size, min_grp_len) {
+make_boot_hist <- function(rle_data_list, 
+                           n_rats, 
+                           min_grp_size, min_grp_len,
+                           n_reps = 0) {
   
   ####### PREPARE AND ANALYZE BOOTSTRAP DATA ########
   
-  # get number of bootstrap replications
-  n_reps <- length(rle_data_list)
-  # n_reps <- 300 # for testing
-  
+  # if n_reps = 0, then use the number of replicates in the list
+  if (n_reps == 0) {
+    n_reps <- length(rle_data_list)
+  }  
+ 
   ### make tibbles for bootstrapped summaries ###
   ### need to pre-allocate to save time hopefully! ###
   rle_boot_all <- tibble()  # all the run length encoding
