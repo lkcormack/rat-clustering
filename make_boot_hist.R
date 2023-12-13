@@ -22,6 +22,8 @@ make_boot_hist <- function(rle_data_list,
   for (i in 1:n_reps) {
     print(paste("On iteration", i))
     
+    if (length(rle_data_list[[i]]) == 0)  next # nothing in this rep; on to the next
+    
     rle_temp <- rle_data_list[[i]] # get the ith bootstrap replicate tibble
     rle_data_list[[i]] <- tibble() # wipe the tibble to save memory
     rle_temp <-  rle_temp[rle_temp$values > 0, ] # extract actual groups (inc 2 rats)

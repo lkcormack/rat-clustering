@@ -1,0 +1,32 @@
+---
+title: "debuggingWeirdGrowWithBootreps"
+author: "Cormack"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## The problem
+
+The counts in the histogram bins to seems to grow with bootstrap replicates.  This is not what I expected.  I expected the counts to be somewhat similar for each bin, regardless of the bootstrap replicate.
+
+## make_boot_hist.R
+
+This function is working fine. Honestly, I thought this was where the but was, but it's not.
+
+## test_boot_hist.R 
+
+This is basically the same as make_boot_hist.R, but not a function so easier to debug.  Playing it with did reveal this:
+
+#### The count in the histogram bins seems to grow with bootstrap replicates.  But this should not be true. Moreover, the don't grow in any sysematic way, except that they tend to increase. It's very bizarre.
+
+## So...
+
+For now, I'm calling make make_boot_hist.R good. The bug is prior to this. Somewhere in doing the actual bootstrap replications...
+
+```{r}
+
+```{r}
