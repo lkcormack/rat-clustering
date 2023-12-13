@@ -1,5 +1,6 @@
 ###### Plot real data and boot data overlaid #########
 library(tidyverse)
+source("~/Documents/GitHub/rat-clustering/make_boot_hist.R")
 
 TACC_flag <- 0 # set to 1 if running on TACC
 
@@ -7,7 +8,7 @@ if (TACC_flag) {
   n_reps <- 0; # this, passed to make_boot_hist(), will use all bootstrap reps
   plot_flag <- 0
 } else {
-  n_reps <- 100 # or whatever
+  n_reps <- 40 # or whatever
   plot_flag <- 1
 }
 
