@@ -33,17 +33,17 @@ For now, I'm calling make make_boot_hist.R good. The bug is prior to this. Somew
 
 Original:
 
-```{r}
+```
 rle_raw <- tibble() # empty tibble to hold rle results
 
 ############### Here's the big bootstrapping loop ############
 for(i in 1:num_iterations) {
-  
+}
 ```
   
 So `rle_raw` got zeroed out at the very begining. The corrected version:
 
-```{r}
+```
 ############### Here's the big bootstrapping loop ############
 for(i in 1:num_iterations) {
   
@@ -51,6 +51,7 @@ for(i in 1:num_iterations) {
   
   # GOTCHA! This is the issue. This needs to be reset inside the loop...
   rle_raw <- tibble() # empty tibble to hold rle results
+}
 ```
 
 Which resets `rle_raw` inside the loop. The previous version accumulated results across bootstrap reps, instead of storing the results of each bootstrap replication independently.
