@@ -2,7 +2,7 @@
 # "rle_data_list" is in the global environment
 
 library(tidyverse)
-rle_data_list <- short_rle_data_list # just for testing
+rle_data_list <- rle_data_list # just for testing
 
 # test boot hist function piecemeal
 n_rats <-  15
