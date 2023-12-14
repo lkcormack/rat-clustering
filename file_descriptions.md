@@ -51,7 +51,7 @@ This is the main file that chews through the original data, and constructs boots
 
 In this version, all rat trajectories come from the same condition. In other words, for a “3 rats” bootstrap run, all rat trajectories came from rats that ran with only 2 other rats.
 
-It outputs a series of lists (one list for each bootstrap replication), where each list 
+It outputs a series of lists (one list for each bootstrap replication), where each list is a tibble of group sizes and lengths like the output of `AnalyzeGroupsInCondition.R` for the actual data.
 
 #### BootMotherAnalyzeGroupsInCond.R
 
@@ -59,7 +59,7 @@ Same as above, except that a rat in a “3 rat” bootstrap replicate could have
 
 ### Summarizing and plotting the results
 
-
+Takes the output of the RLE analysis from the above code, computes histogram data (bins, counts) and plots the results. for the bootstrapping data, it plots the mean counts in each bin with error bars showing the standard deviations across bootstrap replications (i.e., the estimated standard errors).
 
 #### PlotRealAndBootSummary.R
 
