@@ -1,4 +1,4 @@
-# summarize the combined bootsrapped data and plot with rat data
+# summarize the combined bootstrapped data and plot with rat data
 
 library(tidyverse)
 

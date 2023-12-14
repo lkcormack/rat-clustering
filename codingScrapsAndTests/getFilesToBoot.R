@@ -1,3 +1,9 @@
+
+# Sample code to get a list of files from a directory, then randomly select a 
+# subset of those files to read into a data frame.
+
+
+
 library(rstudioapi) # for dialog box file selection
 library(tidyverse)
 
