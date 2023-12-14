@@ -89,13 +89,14 @@ num_iterations <- iterations  # should go up on TACC
 # cluster_data_list <- vector("list", num_iterations)
 # hist_data_list <- vector("list", num_iterations)
 rle_data_list <- vector("list", num_iterations)
-rle_raw <- tibble() # empty tibble to hold rle results
 
 n_files <- cond
 ############### Here's the big bootstrapping loop ############
 for(i in 1:num_iterations) {
   
   print(paste0("starting iteration ", i))
+  
+  rle_raw <- tibble() # empty tibble to hold rle results
   
   # create an empty data frame to hold the combined data
   sampled_data = data.frame()
