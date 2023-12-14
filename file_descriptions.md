@@ -23,11 +23,13 @@ This does the DBScan clustering, and outputs data in the same format as from the
 
 This does the run length encoding (RLE) to determine group sizes and group lengths. It outputs a tibble containing columns with the group sizes (“values”), group lifetimes (“lengths”), and group IDs (“grp_label” – prob. not that useful here).
 
+Saves data out as a `cluster_lengths_sizes` tibble that has exactly what it says in it. Has some incomplete aspirational plotting code in it also too.
+
 ### Look at real data in one go
 
 #### AnalyzeGroupsInCondition.R
 
-This combines the steps above into one script. The one caveat being that you have to convert the .csv data files to .RData files first using `MakeDataFilesFromCSVs.R` to make the loading faster.
+This combines the steps above into one script. The one caveat being that you have to convert the .csv data files to .RData files first using `MakeDataFilesFromCSVs.R` to make the loading faster. Has actual useful plotting (unlike `03ComputeGroupStats.R`). But, mainly, it outputs a `cluster_lengths_sizes` tibble for the actual rat data.
 
 * **MakeDataFilesFromCSVs.R** – converts .csv files into .RData files
 
@@ -41,11 +43,15 @@ Two basic bootstrapping analyses were run. In the first, a simulation of a 3 rat
 
 ### Core bootstrapping
 
+Both of the following scripts create and save lists, each element of which is the output of the RLE analysis for a bootstrap replication; the group sizes and lifetimes for that bootstrap replication.
+
 #### BootAnalyzeGroupsInCondition.R
 
 This is the main file that chews through the original data, and constructs bootstrap replicates based on actual rat trajectories, but that we’re not from the same actual run (recording). In other words, each “rat” in the bootstrap run could not have adjusted its behavior based on the other “rats” in the bootstrapped trial. The rats were, in effect, ghost rats that could not see, smell, or feel one another.
 
 In this version, all rat trajectories come from the same condition. In other words, for a “3 rats” bootstrap run, all rat trajectories came from rats that ran with only 2 other rats.
+
+It outputs a series of lists (one list for each bootstrap replication), where each list 
 
 #### BootMotherAnalyzeGroupsInCond.R
 
@@ -53,9 +59,11 @@ Same as above, except that a rat in a “3 rat” bootstrap replicate could have
 
 ### Summarizing and plotting the results
 
-PlotRealAndBootSummary.R
 
-PlotBootVsBootDistributions.R
 
-make_boot_hist.R
+#### PlotRealAndBootSummary.R
+
+#### PlotBootVsBootDistributions.R
+
+#### make_boot_hist.R
 
