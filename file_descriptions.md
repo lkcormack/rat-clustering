@@ -37,6 +37,10 @@ This combines the steps above into one script. The one caveat being that you hav
 
 Two basic bootstrapping analyses were run. In the first, a simulation of a 3 rat run, for example, consisted only of trajectories from rats that were run in a 3 rat condition. In the other (the “mother” bootstrap), a simulation of a 3 rat run, for example, could consist of trajectories from rats that were run in any condition (3, 6, 9, or 15 rats). The idea here was to see if there were grouping differences based solely on how rats moved with different numbers of rats in the environment, independent of any particular social behavior of one rat reacting to the presence of another.
 
+---
+
+### Core bootstrapping
+
 #### BootAnalyzeGroupsInCondition.R
 
 This is the main file that chews through the original data, and constructs bootstrap replicates based on actual rat trajectories, but that we’re not from the same actual run (recording). In other words, each “rat” in the bootstrap run could not have adjusted its behavior based on the other “rats” in the bootstrapped trial. The rats were, in effect, ghost rats that could not see, smell, or feel one another.
@@ -46,4 +50,12 @@ In this version, all rat trajectories come from the same condition. In other wor
 #### BootMotherAnalyzeGroupsInCond.R
 
 Same as above, except that a rat in a “3 rat” bootstrap replicate could have come from a 15 rat condition, i.e. might have been actually in the box with 14 other rats.
+
+### Summarizing and plotting the results
+
+PlotRealAndBootSummary.R
+
+PlotBootVsBootDistributions.R
+
+make_boot_hist.R
 
