@@ -56,7 +56,7 @@ perform_dbscan <- function(data, min_objects, eps) {
 # office
 #root_dir = "/Users/lkc/Documents/GitHub/rat-clustering/data/3Rats/"
 # laptop
-root_dir = "/Users/lkc3-admin/Documents/GitHub/rat-clustering/data/15Rats/"
+root_dir = "/Users/lkcormack/Documents/GitHub/rat-clustering/data/15Rats"
 dir_list <- dir(root_dir, full.names = TRUE, recursive = FALSE)
 
 # Initialize an empty list to hold all the files
@@ -88,16 +88,21 @@ num_iterations <- 32  # should go up on TACC
 # cluster_data_list <- vector("list", num_iterations)
 # hist_data_list <- vector("list", num_iterations)
 rle_data_list <- vector("list", num_iterations)
-rle_raw <- tibble() # empty tibble to hold rle results
 
+# GOTCHA! This is the issue. This needs to be reset inside the loop...
+#rle_raw <- tibble() # empty tibble to hold rle results
 
 ############### Here's the big bootstrapping loop ############
 for(i in 1:num_iterations) {
   
   print(paste0("starting iteration ", i))
   
+  # GOTCHA! This is the issue. This needs to be reset inside the loop...
+  rle_raw <- tibble() # empty tibble to hold rle results
+  
   # create an empty data frame to hold the combined data
   sampled_data = data.frame()
+  # this is reset every iteration, so can't be the accumulation culprit
   
   # replace = false prevents identical rats in a run 
   # the bootstrapping is still valid because we're subsampling
@@ -109,7 +114,7 @@ for(i in 1:num_iterations) {
   #### Okay, this is going to be clumsy as fuck, but...
   #### because the runs are different lengths ...
   ### we need to 
-  ### load the three files once to get 
+  ### load the sampled_files files once to get 
   ### their lengths, and then 
   ### load 'em again to load 'em...
 
@@ -120,7 +125,7 @@ for(i in 1:num_iterations) {
     # print(paste("Loading rat", j)) # for debugging
     # combine into one data frame
     load(sampled_files[[j]])  # new xyt_dat data frame now on board
-    run_lengths = c(run_lengths, nrow(xyt_dat))
+    run_lengths = c(run_lengths, nrow(xyt_dat)) # run lengths for each file
   } # end of looping through files for this run
   
   min_run_length = min(run_lengths) # need to truncate all data to this value
@@ -261,66 +266,10 @@ for(i in 1:num_iterations) {
 if (save_flag) {
   # assemble a file name
   fname_str <- paste0(n_files, "RatsBootSummary.RData") 
+  fname_str <- paste0(n_files, "GotchaBitch.RData") 
   
   # save out the data frame for this condition as a .RData file
   save(rle_data_list,   # rle output with only actual groups
        file = fname_str)
-}
-
-##### Plotting
-if (plot_flag) {
-  title_str <- paste(n_files, "Rats") # number of rats for figure titles
-  
-  # histograms of cluster lifetimes
-  len_thresh <- 10 # threshold for length (in frames) of a "real" cluster
-  plt_lengths <- cluster_lengths_sizes[cluster_lengths_sizes$lengths > len_thresh, ]
-  plt_lengths$lengths <- (plt_lengths$lengths)/60 # convert to seconds
-  
-  # histograms of lifetimes; runs by color
-  clstr_len_plot <- plt_lengths %>%
-    ggplot(aes(x = lengths, color = as.factor(run_label))) +
-    geom_freqpoly(bins = 30, alpha = 0.4, position = "identity") +
-    ggtitle(title_str, subtitle = "bootstrapped lifetimes; runs by color") +
-    xlab("cluster length (seconds)")
-  show(clstr_len_plot)
-  
-  # histograms of lifetimes collapsed across run
-  all_clstr_len_plot <- plt_lengths %>%
-    ggplot(aes(x = lengths)) +
-    geom_histogram(bins = 30, fill = "red", alpha = 0.7) +
-    ggtitle(title_str, subtitle = "bootstrapped lifetimes; all runs combined") +
-    xlab("cluster length (seconds)")
-  show(all_clstr_len_plot)
-  
-  ###### make and save a histogram object #####
-  LfTmHist <- hist(plt_lengths$lengths, breaks = 30)
-  # save...
-  
-  if (n_files > 3) {  # these plots don't make sense for 3 rats
-    # histograms of group sizes; runs by color
-    clstr_size_plot <- cluster_lengths_sizes %>%
-      ggplot(aes(x = values, fill = as.factor(run_label))) +
-      geom_histogram(bins = 30, alpha = 0.4, position ="identity") +
-      ggtitle(title_str, subtitle = "bootstrapped cluster sizes; runs by color") +
-      xlab("cluster size")
-    show(clstr_size_plot)
-    
-    # histograms of group sizes collapsed across run
-    all_clstr_size_plot <- cluster_lengths_sizes %>%
-      ggplot(aes(x = values)) +
-      geom_histogram(bins = 30, fill = "red", alpha = 0.7) +
-      ggtitle(title_str, subtitle = "bootstrapped cluster sizes; all runs combined") +
-      xlab("cluster size")
-    show(all_clstr_size_plot)
-    
-    p <- plt_lengths %>% 
-      ggplot(aes(x = values, y =  lengths)) + 
-      geom_jitter(width = 0.2, height = 0, color = "red", alpha = 0.2) +
-      ggtitle(title_str, subtitle = "bootstrapped size vs. duration") + 
-      xlab("cluster size") +
-      ylab("duration (seconds)")
-    show(p)
-    # save
-  } # end plots for 6 or more rats
 }
 
