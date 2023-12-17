@@ -266,7 +266,6 @@ for(i in 1:num_iterations) {
 if (save_flag) {
   # assemble a file name
   fname_str <- paste0(n_files, "RatsBootSummary.RData") 
-  fname_str <- paste0(n_files, "GotchaBitch.RData") 
   
   # save out the data frame for this condition as a .RData file
   save(rle_data_list,   # rle output with only actual groups

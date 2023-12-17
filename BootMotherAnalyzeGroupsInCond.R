@@ -96,6 +96,7 @@ for(i in 1:num_iterations) {
   
   print(paste0("starting iteration ", i))
   
+  # this was the bug; this was not being reset inside the loop
   rle_raw <- tibble() # empty tibble to hold rle results
   
   # create an empty data frame to hold the combined data

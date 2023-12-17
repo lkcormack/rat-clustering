@@ -63,7 +63,15 @@ Takes the output of the RLE analysis from the above code, computes histogram dat
 
 #### PlotRealAndBootSummary.R
 
+This takes the `cluster_lengths_sizes` from a actual rat data file, and a corresponding `rle_data_list` from the bootstrapping, each of which contains a tibble analogous to the `cluster_lengths_sizes` tibble from the experimental data, and then plots a histogram of the real data and the average histogram of the bootstrapping data (averaged across bootstrap replications). 
+
+NB: should modify to call `make_boot_hist.R` to be consistent and modular.
+
 #### PlotBootVsBootDistributions.R
 
-#### make_boot_hist.R
+Computes and plots the histograms for the within-condition vs. “mother” bootstrapping findings. In other words, bootstrapping an *n* rats condition using only only rats that were run in that condition vs. sampling from rats that were run in any condition. (So a 6 rat condition might be simulated from 6 trajectories from any of 3, 6, 9, and/or 15 experimental conditions).
+
+##### make_boot_hist.R
+
+The function called to compute the histogram values by the above script (and needs to be sourced by the calling script).
 
