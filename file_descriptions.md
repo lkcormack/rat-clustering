@@ -73,5 +73,5 @@ Computes and plots the histograms for the within-condition vs. “mother” boot
 
 ##### make_boot_hist.R
 
-Called to compute the histogram values by the above script (and should be by the script before that).
+The function called to compute the histogram values by the above script (and needs to be sourced by the calling script).
 
