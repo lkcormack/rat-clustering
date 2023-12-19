@@ -1,8 +1,21 @@
-cond <- 3 # rat number condition
-iterations <- 50 # iterations of bootstrapping
+args <- commandArgs(trailingOnly = TRUE)
+cat("Received arguments:", args, "\n")
+arg_list <- list()
+for (arg in args) {
+  arg_parts <- unlist(strsplit(arg, "="))
+  if (length(arg_parts) == 2) {
+    arg_name <- arg_parts[1]
+    arg_value <- arg_parts[2]
+    arg_list[[arg_name]] <- arg_value
+  }
+}
 
-folder_path <- '/Users/michaelpasala/Research/MovementLab/dataR' # root folder path with all the data e.g. contains (3Rats, 6Rats, 9Rats, 15Rats)
-save_path <- '/Users/michaelpasala/Research/Results/Mother' # path to save output data
+# Access arguments as a list
+cond <- arg_list[["--cond"]]
+iterations <- arg_list[["--iter"]]
+
+folder_path <- '/Users/michaelpasala/Research/MovementLab/dataR'
+save_path <- '/Users/michaelpasala/Research/Results/Mother-50/'
 
 ###### Within condition bootstapping
 # Bootstrap analysis of groups in a condition
@@ -102,7 +115,7 @@ for(i in 1:num_iterations) {
   ### load the three files once to get 
   ### their lengths, and then 
   ### load 'em again to load 'em...
-
+  
   # vector to hold the lengths
   run_lengths = vector()
   # load the .RData files for the rats in this run
@@ -114,7 +127,7 @@ for(i in 1:num_iterations) {
   } # end of looping through files for this run
   
   min_run_length = min(run_lengths) # need to truncate all data to this value
-
+  
   # load the .RData files for the rats in this run
   for (j in 1:length(sampled_files)) {
     # print(paste("Loading rat", j)) # for debugging
@@ -140,13 +153,13 @@ for(i in 1:num_iterations) {
   # buddies has a NA on that frame, even if the first rat's data is valid...
   # Which is what we need.
   xyt_dat <- xyt_dat[!xyt_dat$frame %in% nan_frames$frame, ]
- 
+  
   ##### run DBScan #########################################
   # Set parameters
   min_objects <- 3 # Minimum number of objects in a cluster
   eps <- 100       # Maximum distance between two samples for
   # them to be considered as in the same neighborhood
-
+  
   # preform the clustering on each video frame
   # Group data by time and apply the perform_dbscan function
   xyt_dat <- xyt_dat %>%
@@ -154,15 +167,15 @@ for(i in 1:num_iterations) {
     group_modify(~ perform_dbscan(.x,
                                   min_objects = min_objects,
                                   eps = eps))
-
+  
   ##### run rle analysis ##################################
   # make data frame without unneeded columns
   cluster_dat <- xyt_dat %>% select(rat_num, frame, cluster)
   # rat number cycles fast, frame cycles slowly
-
+  
   # remove unneeded Big Kahuna data frame
   #rm('xyt_dat')
-
+  
   # pivot such that
   # - rats are rows,
   # - frames are columns,
@@ -171,7 +184,7 @@ for(i in 1:num_iterations) {
   # easily
   grps_tibble <- cluster_dat %>%
     pivot_wider(names_from = frame, values_from = cluster)
-
+  
   # nrow(cluster_dat) == nrow(grps_tibble)*ncol(grps_tibble) - n_files
   # this test passes!
   
@@ -179,13 +192,13 @@ for(i in 1:num_iterations) {
   grps_matrix <- as.matrix(grps_tibble[,-1])
   mat_dims <- dim(grps_matrix)
   n_frames = mat_dims[2]
-
+  
   # length(grps_matrix) == nrow(cluster_dat)
   # this test passes (length() for a matrix is number of elements)
   
   # get maximum integer group label for the `for()` loop below
   max_grp_number <- max(grps_matrix) 
-
+  
   # only look for groups if they're are any!
   if (max_grp_number > 0) {
     
@@ -228,12 +241,12 @@ for(i in 1:num_iterations) {
     }
     
   } # if
-
+  
   # maybe add a cumulative sum column of the lengths
   # to code the frame number at which clusters start
   
   rle_data_list[[i]] <- rle_raw
-
+  
   # cl_lgth_sz_temp <- rle_tibble[rle_tibble$values != 0, ]
   # if (nrow(cl_lgth_sz_temp) > 0) {
   #   hist_data_list[[i]] <- hist(cl_lgth_sz_temp$lengths, 30)
@@ -241,7 +254,7 @@ for(i in 1:num_iterations) {
   # else {
   #   hist_data_list[[i]] <- "nope"
   # }
-
+  
   print(paste0("done with iteration ", i))
   
 } 
@@ -249,9 +262,10 @@ for(i in 1:num_iterations) {
 
 ##### Saving
 if (save_flag) {
+  print("Saving...")
   # assemble a file name
-  path = paste(save_path, n_files, sep="/")
-  fname_str <- paste0(n_files, "MotherRatsBootSummary.RData") 
+  path = paste(save_path, n_files, sep="")
+  fname_str <- paste0(path, "MotherRatsBootSummary.RData") 
   
   # save out the data frame for this condition as a .RData file
   save(rle_data_list,   # rle output with only actual groups
