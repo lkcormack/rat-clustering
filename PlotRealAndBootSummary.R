@@ -129,13 +129,13 @@ size_overlay <- ggplot() +
            stat="identity") +
   geom_errorbar(data = size_summary,
                 aes(x = size_mids, 
-                    ymin = size_mean - size_se, 
-                    ymax = size_mean + size_se),
+                    ymin = size_mean - size_sd, 
+                    ymax = size_mean + size_sd),
                 width = 0.25  # Width of the error bars
   ) +
-  geom_histogram(data = cluster_lengths_sizes,
-                 aes(x = values),
-                 breaks = seq(0, 16), fill = "blue", alpha = 0.7) +
+  # geom_histogram(data = cluster_lengths_sizes,
+  #                aes(x = values),
+  #                breaks = seq(0, 16), fill = "blue", alpha = 0.7) +
   labs(y = "Counts", x = "Group Size", title = title_str) +
   theme_minimal()
 
@@ -149,17 +149,17 @@ plt_lengths$lengths <- (plt_lengths$lengths)/60 # convert to seconds
 len_overlay <- ggplot() +
   geom_errorbar(data = lifetm_summary, 
                 aes(x = lifetm_mids, 
-                    ymin = lifetm_mean - lifetm_se, 
-                    ymax = lifetm_mean + lifetm_se),
+                    ymin = lifetm_mean - lifetm_sd, 
+                    ymax = lifetm_mean + lifetm_sd),
                 width = 0.25  # Width of the error bars
   ) +
   geom_bar(data = lifetm_summary, 
            aes(x = lifetm_mids, y = lifetm_mean), 
            stat="identity") +
-  geom_histogram(data = plt_lengths, aes(x = lengths),
-                 breaks = seq(0, 20, 0.2), fill = "blue", alpha = 0.5) +
+  # geom_histogram(data = plt_lengths, aes(x = lengths),
+  #                breaks = seq(0, 20, 0.2), fill = "blue", alpha = 0.5) +
   xlim(0, 6) +
-  labs(y = "Counts", x = "Group Lifetime", title = title_str) +
+  labs(y = "Counts", x = "Group Lifetime (sec)", title = title_str) +
   theme_minimal() 
 
 print(len_overlay)
