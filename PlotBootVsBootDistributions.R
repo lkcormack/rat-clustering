@@ -1,6 +1,7 @@
 ###### Plot real data and boot data overlaid #########
 library(tidyverse)
-source("~/Documents/GitHub/rat-clustering/make_boot_hist.R")
+# source("~/Documents/GitHub/rat-clustering/make_boot_hist.R")
+source("/Users/michaelpasala/Research/MovementLab/rat-clustering/make_boot_hist.R")
 
 TACC_flag <- 0 # set to 1 if running on TACC
 
@@ -17,7 +18,7 @@ if (TACC_flag) {
 ## specify the path, or load the files "by hand" (and comment out the 
 ## load() lines below)
 
-n_rats <- 6 # yes, this is hardcoded... could ask for input I suppose
+n_rats <- 3 # yes, this is hardcoded... could ask for input I suppose
 
 # thresholding parameters
 min_grp_size <- 3
@@ -25,7 +26,7 @@ min_grp_len <- 10
 
 # load within rat data
 # make filename
-within_fname <- paste("./TACC_Data/Bootstrapping_results/", n_rats, 
+within_fname <- paste("/Users/michaelpasala/Research/Results/Within-50/", n_rats, 
                "RatsBootSummary.RData", sep = "")
 print("Loading within-condition bootstrapping results... It'll be a minute...")
 load(within_fname) # load data
@@ -37,7 +38,7 @@ within_summary <- make_boot_hist(rle_data_list, n_rats,
 
 # load big mama rat data
 # make filename
-mama_fname <- paste("./TACC_Data/MotherBootstrapping_results/", n_rats, 
+mama_fname <- paste("/Users/michaelpasala/Research/Results/Mother-50/", n_rats, 
                       "MotherRatsBootSummary.RData", sep = "")
 print("Loading mama bootstrapping results ...It'll be a minute...")
 load(mama_fname) # load data

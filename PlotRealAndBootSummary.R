@@ -6,15 +6,18 @@ library(tidyverse)
 ## specify the path, or load the files "by hand" (and comment out the 
 ## load() lines below)
 
+n_rats <- 15 # yes, this is hardcoded...
+
 ### e.g. load("6RatsClusterSummary.RData")
 #load("15RatsClusterSummary.RData")
+load(paste0("/Users/michaelpasala/Research/Results/Cluster/", n_rats, "RatsClusterSummary.RData")) # michael's dirs
 
 # load boot rle_data_list
 #load("15RatsBootSummary.RData")
+load(paste0("/Users/michaelpasala/Research/Results/Mother-50/", n_rats, "MotherRatsBootSummary.RData")) # michael's dirs
 
 ### files loaded ###
 
-n_rats <- 15 # yes, this is hardcoded...
 
 title_str <- paste(max(cluster_dat$rat_num), "Rats") # number of rats for figure titles
 ## (or make your own)
@@ -129,8 +132,8 @@ size_overlay <- ggplot() +
            stat="identity") +
   geom_errorbar(data = size_summary,
                 aes(x = size_mids, 
-                    ymin = size_mean - size_se, 
-                    ymax = size_mean + size_se),
+                    ymin = size_mean - size_sd, 
+                    ymax = size_mean + size_sd),
                 width = 0.25  # Width of the error bars
   ) +
   geom_histogram(data = cluster_lengths_sizes,
@@ -149,8 +152,8 @@ plt_lengths$lengths <- (plt_lengths$lengths)/60 # convert to seconds
 len_overlay <- ggplot() +
   geom_errorbar(data = lifetm_summary, 
                 aes(x = lifetm_mids, 
-                    ymin = lifetm_mean - lifetm_se, 
-                    ymax = lifetm_mean + lifetm_se),
+                    ymin = lifetm_mean - lifetm_sd, 
+                    ymax = lifetm_mean + lifetm_sd),
                 width = 0.25  # Width of the error bars
   ) +
   geom_bar(data = lifetm_summary, 
