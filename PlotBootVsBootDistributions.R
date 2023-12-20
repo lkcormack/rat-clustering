@@ -25,6 +25,7 @@ min_grp_len <- 10
 
 # load within rat data
 # make filename
+# change
 within_fname <- paste("./TACC_Data/Bootstrapping_results/", n_rats, 
                "RatsBootSummary.RData", sep = "")
 print("Loading within-condition bootstrapping results... It'll be a minute...")
