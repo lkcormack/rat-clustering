@@ -244,14 +244,6 @@ if (plot_flag) {
     xlab("cluster length (seconds)")
   show(all_clstr_len_plot)
   
-  ###### make and save a histogram object #####
-  trimmed_plt_lens <-  plt_lengths$lengths[plt_lengths$lengths < 6]
-  LfTmHist <- hist(trimmed_plt_lens, 
-                   breaks = seq(0, 6, 0.2), 
-                   freq = FALSE,
-                   ylim = c(0, 2.5))
-  # save...
-  
   if (n_files > 3) {  # these plots don't make sense for 3 rats
     # histograms of group sizes; runs by color
     clstr_size_plot <- cluster_lengths_sizes %>%

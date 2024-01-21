@@ -1,32 +1,14 @@
-###### Plotting routines for rat clustering summary data #########
+###### Compute summary stats for rat clustering summary data #########
 
 ### Load a file first! ####
 
 title_str <- paste(max(cluster_dat$rat_num), "Rats") # number of rats for figure titles
 
-# histograms of cluster lifetimes
-# 
 # make a dataframe of cluster lengths (in sec) and sizes over length
 # threshold for plotting
 len_thresh <- 10 # threshold for length (in frames) of a "real" cluster
 thresh_lengths_sizes <- cluster_lengths_sizes[cluster_lengths_sizes$lengths > len_thresh, ]
 thresh_lengths_sizes$lengths <- (thresh_lengths_sizes$lengths)/60 # convert to seconds
-
-# histograms of lifetimes; runs by color
-clstr_len_plot <- thresh_lengths_sizes %>%
-  ggplot(aes(x = lengths, color = as.factor(run_label))) +
-  geom_freqpoly(bins = 30, alpha = 0.4, position = "identity") +
-  ggtitle(title_str, subtitle = "lifetimes; runs by color") +
-  xlab("cluster length (seconds)")
-show(clstr_len_plot)
-
-# histograms of lifetimes collapsed across run
-all_clstr_len_plot <- thresh_lengths_sizes %>%
-  ggplot(aes(x = lengths)) +
-  geom_histogram(bins = 30, fill = "blue", alpha = 0.7) +
-  ggtitle(title_str, subtitle = "lifetimes; all runs combined") +
-  xlab("cluster length (seconds)")
-show(all_clstr_len_plot)
 
 # these plots are mainly for > 3 rats
 
