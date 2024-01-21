@@ -1,4 +1,5 @@
 ###### Plotting routines for rat clustering summary data #########
+library(tidyverse)
 
 ### Load a file first! ####
 
