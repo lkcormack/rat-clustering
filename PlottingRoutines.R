@@ -1,19 +1,20 @@
 ###### Plotting routines for rat clustering summary data #########
+library(tidyverse)
 
 ### Load a file first! ####
-### e.g. load("6RatsClusterSummary.RData")
-load("6RatsClusterSummary.RData")
 
 title_str <- paste(max(cluster_dat$rat_num), "Rats") # number of rats for figure titles
-## (or make your own)
 
 # histograms of cluster lifetimes
+# 
+# make a dataframe of cluster lengths (in sec) and sizes over length
+# threshold for plotting
 len_thresh <- 10 # threshold for length (in frames) of a "real" cluster
-plt_lengths <- cluster_lengths_sizes[cluster_lengths_sizes$lengths > len_thresh, ]
-plt_lengths$lengths <- (plt_lengths$lengths)/60 # convert to seconds
+thresh_lengths_sizes <- cluster_lengths_sizes[cluster_lengths_sizes$lengths > len_thresh, ]
+thresh_lengths_sizes$lengths <- (thresh_lengths_sizes$lengths)/60 # convert to seconds
 
 # histograms of lifetimes; runs by color
-clstr_len_plot <- plt_lengths %>%
+clstr_len_plot <- thresh_lengths_sizes %>%
   ggplot(aes(x = lengths, color = as.factor(run_label))) +
   geom_freqpoly(bins = 30, alpha = 0.4, position = "identity") +
   ggtitle(title_str, subtitle = "lifetimes; runs by color") +
@@ -21,21 +22,14 @@ clstr_len_plot <- plt_lengths %>%
 show(clstr_len_plot)
 
 # histograms of lifetimes collapsed across run
-all_clstr_len_plot <- plt_lengths %>%
+all_clstr_len_plot <- thresh_lengths_sizes %>%
   ggplot(aes(x = lengths)) +
   geom_histogram(bins = 30, fill = "blue", alpha = 0.7) +
   ggtitle(title_str, subtitle = "lifetimes; all runs combined") +
   xlab("cluster length (seconds)")
 show(all_clstr_len_plot)
 
-###### make and save a histogram object #####
-trimmed_plt_lens <-  plt_lengths$lengths[plt_lengths$lengths < 6]
-LfTmHist <- hist(trimmed_plt_lens, 
-                 breaks = seq(0, 6, 0.2), 
-                 freq = FALSE,
-                 ylim = c(0, 2.5))
-
-# these plots are manly for > 3 rats
+# these plots are mainly for > 3 rats
 
 # histograms of group sizes; runs by color
 clstr_size_plot <- cluster_lengths_sizes %>%
@@ -55,7 +49,7 @@ all_clstr_size_plot <- cluster_lengths_sizes %>%
   xlab("cluster size")
 show(all_clstr_size_plot)
 
-p <- plt_lengths %>% 
+p <- thresh_lengths_sizes %>% 
   ggplot(aes(x = values, y =  lengths)) + 
   geom_jitter(width = 0.2, height = 0, alpha = 0.2) +
   ggtitle(title_str, subtitle = "size vs. duration") + 

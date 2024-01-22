@@ -21,6 +21,7 @@ thresh_lengths_sizes$lengths <- (thresh_lengths_sizes$lengths)/60 # convert to s
 # length summary stats
 mean_length <- mean(thresh_lengths_sizes$lengths)
 std_length <- sd(thresh_lengths_sizes$lengths)
+se_length <- std_length/sqrt(nrow(thresh_lengths_sizes))
 skew_length <- skewness(thresh_lengths_sizes$lengths)
 
 # length summary stats by run
@@ -38,6 +39,7 @@ emp_st_error_length <- sd(length_stats$mean_length)/sqrt(nrow(length_stats))
 if (nRats > 3) {
   mean_size <- mean(thresh_lengths_sizes$values)
   std_size <- sd(thresh_lengths_sizes$values)
+  se_size <- std_size/sqrt(nrow(thresh_lengths_sizes))
   skew_size <- skewness(thresh_lengths_sizes$values)
   
   # size summary stats by run
