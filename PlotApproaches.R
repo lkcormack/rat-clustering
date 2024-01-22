@@ -31,7 +31,7 @@ ggplot(data, aes(x = Condition, y = Approaches, group = Condition)) +
   geom_violin(fill = "firebrick", color = "black", alpha = 0.7) +
   stat_summary(fun=mean, geom="point", shape=8, size=2, color="black") +
   geom_smooth(method="lm", se=FALSE, color="black", linewidth=0.5, aes(group = 1)) +
-  labs(title = "Approaches Across Conditions",
+  labs(title = "Mean Approaches per Rat Across Conditions",
        x = "Number of Rats",
        y = "Mean Approaches per Rat") +
   scale_x_continuous(breaks = c(3, 6, 9, 12, 15), labels = c("3", "6", "9", "12", "15"))
