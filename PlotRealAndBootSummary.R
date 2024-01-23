@@ -10,11 +10,11 @@ n_rats <- 15 # yes, this is hardcoded...
 
 ### e.g. load("6RatsClusterSummary.RData")
 #load("15RatsClusterSummary.RData")
-load(paste0("/Users/michaelpasala/Research/Results/Cluster/", n_rats, "RatsClusterSummary.RData")) # michael's dirs
+#load(paste0("/Users/michaelpasala/Research/Results/Cluster/", n_rats, "RatsClusterSummary.RData")) # michael's dirs
 
 # load boot rle_data_list
 #load("15RatsBootSummary.RData")
-load(paste0("/Users/michaelpasala/Research/Results/Mother-50/", n_rats, "MotherRatsBootSummary.RData")) # michael's dirs
+#load(paste0("/Users/michaelpasala/Research/Results/Mother-50/", n_rats, "MotherRatsBootSummary.RData")) # michael's dirs
 
 ### files loaded ###
 
@@ -110,6 +110,7 @@ for (i in 1:n_reps) {
 
 
 ########### summarize the bootstrap results ############
+
 ## boot means and sds for SIZES
 size_summary <- size_hist_boot_all %>% 
   group_by(size_mids) %>% 
@@ -136,9 +137,9 @@ size_overlay <- ggplot() +
                     ymax = size_mean + size_sd),
                 width = 0.25  # Width of the error bars
   ) +
-  # geom_histogram(data = cluster_lengths_sizes,
-  #                aes(x = values),
-  #                breaks = seq(0, 16), fill = "blue", alpha = 0.7) +
+   geom_histogram(data = cluster_lengths_sizes,
+                  aes(x = values),
+                  breaks = seq(0, 16), fill = "red", alpha = 0.7) +
   labs(y = "Counts", x = "Group Size", title = title_str) +
   theme_minimal()
 
@@ -159,8 +160,8 @@ len_overlay <- ggplot() +
   geom_bar(data = lifetm_summary, 
            aes(x = lifetm_mids, y = lifetm_mean), 
            stat="identity") +
-  # geom_histogram(data = plt_lengths, aes(x = lengths),
-  #                breaks = seq(0, 20, 0.2), fill = "blue", alpha = 0.5) +
+  geom_histogram(data = plt_lengths, aes(x = lengths),
+                  breaks = seq(0, 20, 0.2), fill = "red", alpha = 0.5) +
   xlim(0, 6) +
   labs(y = "Counts", x = "Group Lifetime (sec)", title = title_str) +
   theme_minimal() 
