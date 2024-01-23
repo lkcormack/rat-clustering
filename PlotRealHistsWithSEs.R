@@ -15,7 +15,7 @@ df <- thresh_lengths_sizes # rename for convenience
 
 ### make group size histogram ###
 # Create overall histogram to get bin edges
-grp_breaks <- seq(0, 15, by = 1)
+grp_breaks <- seq(0, 16)
 size_hist_info <- hist(df$values, breaks = grp_breaks, plot = FALSE)
 
 # Create histograms for each run_label
