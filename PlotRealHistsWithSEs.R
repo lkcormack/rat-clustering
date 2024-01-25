@@ -47,8 +47,8 @@ show(p)
 
 ### make group duration histogram ###
 # Create overall histogram to get bin edges
-dur_breaks <- seq(0, 6, length.out = 30) # why isn't this working for breaks?
-dur_hist_info <- hist(df$lengths, breaks = 30, plot = FALSE)
+dur_breaks <- seq(0, 15, length.out = 75) # why isn't this working for breaks?
+dur_hist_info <- hist(df$lengths, breaks = dur_breaks, plot = FALSE)
 
 # Create histograms for each run_label
 run_labels <- unique(df$run_label)
@@ -72,6 +72,7 @@ plot_data <- data.frame(bin_mid = dur_hist_info$mids, avg_counts = avg_counts, s
 p <- ggplot(plot_data, aes(x = bin_mid, y = avg_counts)) +
   geom_bar(stat = "identity", fill = "blue", alpha = 0.7) +
   geom_errorbar(aes(ymin = avg_counts - stderr, ymax = avg_counts + stderr), width = 0.1) +
+  xlim(0, 6) +
   xlab("Group Duration (sec)") +
   ylab("Average Count") +
   ggtitle(title_str)

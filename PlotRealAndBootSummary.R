@@ -6,7 +6,7 @@ library(tidyverse)
 ## specify the path, or load the files "by hand" (and comment out the 
 ## load() lines below)
 
-n_rats <- 15 # yes, this is hardcoded...
+n_rats <- max(cluster_dat$rat_num) # yes, this is hardcoded...
 
 ### e.g. load("6RatsClusterSummary.RData")
 #load("15RatsClusterSummary.RData")
@@ -18,10 +18,6 @@ n_rats <- 15 # yes, this is hardcoded...
 
 ### files loaded ###
 
-
-title_str <- paste(max(cluster_dat$rat_num), "Rats") # number of rats for figure titles
-## (or make your own)
-
 # thresholding parameters
 min_grp_size <- 3
 min_grp_len <- 10
@@ -31,9 +27,6 @@ min_grp_len <- 10
 # get number of bootstrap replications
 n_reps <- length(rle_data_list)
 
-# strings for output
-title_str <- paste(n_rats, "Rats", n_reps, "Replicates") 
-
 ### make tibbles for bootstrapped summaries ###
 rle_boot_all <- tibble()  # all the run length encoding
 size_hist_boot_all <- tibble() # counts of group sizes and lengths by bin
@@ -42,6 +35,7 @@ lifetm_hist_boot_all <- tibble() # counts of group sizes and lengths by bin
 ############### BOOTSTRAP DATA LOOP ####################
 ### go through the bootstrap replicate experiments
 ### hardcode n_reps to 1000 or whatever if needed
+# n_reps <- 1000 
 for (i in 1:n_reps) {
   print(paste("On iteration", i))
   
@@ -84,7 +78,7 @@ for (i in 1:n_reps) {
   
   ###### make a histogram for lifetimes #####
   lifetime_hist <- hist(rle_temp$lengths, 
-                        breaks = seq(0, 20, 0.2), # go long - can truncate for plots
+                        breaks = seq(0, 30, 0.2), # go long - can truncate for plots
                         plot = FALSE
   )
   
@@ -126,6 +120,9 @@ lifetm_summary <- lifetm_hist_boot_all %>%
             lifetm_sd = sd(lifetm_cnts))
 
 ################### PLOTTING ###############
+# strings for output
+title_str <- paste(n_rats, "Rats", n_reps, "Replicates") 
+
 # threshold for minimum group lifetime
 plt_lengths <- cluster_lengths_sizes[cluster_lengths_sizes$lengths > min_grp_len, ]
 plt_lengths$lengths <- (plt_lengths$lengths)/60 # convert to seconds
@@ -137,13 +134,13 @@ size_overlay <- ggplot() +
            stat="identity") +
   geom_errorbar(data = size_summary,
                 aes(x = size_mids, 
-                    ymin = size_mean - size_sd, 
+                    ymin = size_mean - 0, 
                     ymax = size_mean + size_sd),
                 width = 0.25  # Width of the error bars
   ) +
-   geom_histogram(data = plt_lengths,
-                  aes(x = values),
-                  breaks = seq(0, 16), fill = "green", alpha = 0.7) +
+  # geom_histogram(data = plt_lengths,
+  #                aes(x = values),
+  #                breaks = seq(0, 16), fill = "pink", alpha = 0.7) +
   labs(y = "Counts", x = "Group Size", title = title_str) +
   theme_minimal()
 
@@ -155,18 +152,25 @@ print(size_overlay)
 len_overlay <- ggplot() +
   geom_errorbar(data = lifetm_summary, 
                 aes(x = lifetm_mids, 
-                    ymin = lifetm_mean - lifetm_sd, 
+                    ymin = lifetm_mean - 0, 
                     ymax = lifetm_mean + lifetm_sd),
                 width = 0.25  # Width of the error bars
   ) +
   geom_bar(data = lifetm_summary, 
            aes(x = lifetm_mids, y = lifetm_mean), 
            stat="identity") +
-  geom_histogram(data = plt_lengths, aes(x = lengths),
-                  breaks = seq(0, 20, 0.2), fill = "green", alpha = 0.5) +
+ # geom_histogram(data = plt_lengths, aes(x = lengths),
+ #                 breaks = seq(0, 20, 0.2), fill = "pink", alpha = 0.5) +
   xlim(0, 6) +
   labs(y = "Counts", x = "Group Lifetime (sec)", title = title_str) +
   theme_minimal() 
-
 print(len_overlay)
 
+print(paste("boot dur mean = ", mean(rle_boot_all$lengths)))
+print(paste("boot sz mean =", mean(rle_boot_all$values)))
+
+print(paste("boot dur sd = ", sd(rle_boot_all$lengths)))
+print(paste("boot sz sd =", sd(rle_boot_all$values)))
+
+print(paste("boot dur skew = ", skewness(rle_boot_all$lengths)))
+print(paste("boot sz skew =", skewness(rle_boot_all$values)))
