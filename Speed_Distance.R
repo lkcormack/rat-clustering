@@ -83,7 +83,7 @@ for (i in 1:length(dir_list)) {
   # final data frame for all rats velocity bins
   vel_bin_dat <- data.frame(matrix(0, nrow = exp_bins, ncol = 1))
   
-  # total distance for all rats instantaneous >? why do emelents becomes ints when added to list
+  # total distance for all rats instantaneous
   total_dist <- c()
   
   # go through all rat nums 

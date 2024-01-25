@@ -1,14 +1,10 @@
 library(tidyverse)
-
-# Install and load ggplot2 if not already installed
-# install.packages("ggplot2")
 library(ggplot2)
 
 
 ### Plotting violin plots of total approaches 
 
-data <- read.csv("/Users/michaelpasala/Research/MovementLab/analysis/approaches/all_approaches_old.csv")
-
+data <- read.csv("/Users/michaelpasala/Research/MovementLab/analysis/approaches/all_approaches.csv") # local file path
 data <- data[ -c(1) ]
 
 # Create a violin plot
@@ -41,7 +37,7 @@ ggplot(data, aes(x = Condition, y = Approaches, group = Condition)) +
 
 ### Plotting boxplots of approaches for each condition split by food
 
-data <- read.csv("/Users/michaelpasala/Research/MovementLab/analysis/approaches/all_approaches.csv")
+data <- read.csv("/Users/michaelpasala/Research/MovementLab/analysis/approaches/all_approaches.csv") # local file path
 
 data <- data[ -c(1) ]
 

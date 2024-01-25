@@ -233,60 +233,53 @@ anova <- anova[-1, ]
 save(anova, file = "/Users/michaelpasala/Research/MovementLab/plots/speed/new/anova.RData")
 write.csv(anova, file = "/Users/michaelpasala/Research/MovementLab/plots/speed/new/anova.csv", row.names = FALSE)
 
+
+
 ############# old mean calc
-# take 
 
-pre <- t(pre)
-post <- t(post)
+#pre <- t(pre)
+#post <- t(post)
 
-pre_mean <- data.frame(means = colMeans(pre, na.rm = TRUE))
-post_mean <- data.frame(means = colMeans(post, na.rm = TRUE))
+#pre_mean <- data.frame(means = colMeans(pre, na.rm = TRUE))
+#post_mean <- data.frame(means = colMeans(post, na.rm = TRUE))
 
-post_exp_minutes = nrow(post_mean) / bins_per_min
+#post_exp_minutes = nrow(post_mean) / bins_per_min
 
-pre_minute_df <- data.frame(matrix(0, nrow = bins_per_min, ncol = 1))
-post_minute_df <- data.frame(matrix(0, nrow = bins_per_min, ncol = 1))
+#pre_minute_df <- data.frame(matrix(0, nrow = bins_per_min, ncol = 1))
+#post_minute_df <- data.frame(matrix(0, nrow = bins_per_min, ncol = 1))
 
-pre_exp_minutes = nrow(pre_mean) / bins_per_min
-for (j in 1:(pre_exp_minutes) ) {
-  #print( ((j - 1) * bins_per_min + 1) ) 
-  #print( ((j - 1) * bins_per_min + 1) + bins_per_min - 1)
-  temp <- pre_mean[((j - 1) * bins_per_min + 1):(((j - 1) * bins_per_min + 1) + bins_per_min - 1), ] 
-  pre_minute_df[j] <- temp
-}
-
-
-post_exp_minutes = nrow(post_mean) / bins_per_min
-for (j in 1:(post_exp_minutes) ) {
-  #print( ((j - 1) * bins_per_min + 1) ) 
-  #print( ((j - 1) * bins_per_min + 1) + bins_per_min - 1)
-  temp <- post_mean[((j - 1) * bins_per_min + 1):(((j - 1) * bins_per_min + 1) + bins_per_min - 1), ] 
-  post_minute_df[j] <- temp
-}
-
-pre_names <- as.character(seq((-1 * length(pre_minute_df)), -1), -1)
-colnames(pre_minute_df) <- pre_names
-
-post_names <- as.character(seq(0,(length(post_minute_df) - 1)) )
-colnames(post_minute_df) <- post_names
-
-all_minute_df <- cbind(pre_minute_df, post_minute_df)
-
-save(all_minute_df, file = glue("./{cond}_speed_minute.RData"))
+#pre_exp_minutes = nrow(pre_mean) / bins_per_min
+#for (j in 1:(pre_exp_minutes) ) {
+#  #print( ((j - 1) * bins_per_min + 1) ) 
+#  #print( ((j - 1) * bins_per_min + 1) + bins_per_min - 1)
+#  temp <- pre_mean[((j - 1) * bins_per_min + 1):(((j - 1) * bins_per_min + 1) + bins_per_min - 1), ] 
+#  pre_minute_df[j] <- temp
+#}
 
 
-boxplot(all_minute_df,
-        ylim = c(0, 7),
-        xlab = "Minutes",  # Customize the x-axis label
-        ylab = "Mean Speed",  # Customize the y-axis label
-        main = glue("Condition {cond}")  # Add a plot title
-        #col = c("lightblue", "lightgreen", "lightpink")  # Specify box colors
-)
+#post_exp_minutes = nrow(post_mean) / bins_per_min
+#for (j in 1:(post_exp_minutes) ) {
+#  #print( ((j - 1) * bins_per_min + 1) ) 
+#  #print( ((j - 1) * bins_per_min + 1) + bins_per_min - 1)
+#  temp <- post_mean[((j - 1) * bins_per_min + 1):(((j - 1) * bins_per_min + 1) + bins_per_min - 1), ] 
+#  post_minute_df[j] <- temp
+#}
 
-############
+#pre_names <- as.character(seq((-1 * length(pre_minute_df)), -1), -1)
+#colnames(pre_minute_df) <- pre_names
 
-#plot_data <- plot_data[-1, ]
+#post_names <- as.character(seq(0,(length(post_minute_df) - 1)) )
+#colnames(post_minute_df) <- post_names
 
-#ggplot(plot_data, aes(x = as.factor(minute), y = mean_speed)) +
-#  geom_boxplot() +
-#  labs(title = "Boxplot Example", x = "Group", y = "Value")
+#all_minute_df <- cbind(pre_minute_df, post_minute_df)
+
+#save(all_minute_df, file = glue("./{cond}_speed_minute.RData"))
+
+
+#boxplot(all_minute_df,
+#        ylim = c(0, 7),
+#        xlab = "Minutes",  # Customize the x-axis label
+#        ylab = "Mean Speed",  # Customize the y-axis label
+#        main = glue("Condition {cond}")  # Add a plot title
+#        #col = c("lightblue", "lightgreen", "lightpink")  # Specify box colors
+#)
