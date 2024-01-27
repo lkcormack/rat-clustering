@@ -5,9 +5,9 @@ library(tidyverse)
 
 # make the tibble of group size data
 sz_df <- tibble(
-  nRats = c(6, 9, 15),
-  means = c(3.23, 3.45, 3.81),
-  ses = c(0.012, 0.011, 0.017)
+  nRats = c(3, 6, 9, 15),
+  means = c(3, 3.23, 3.45, 3.81),
+  ses = c(0, 0.012, 0.011, 0.017)
 )
 
 # plot the group size data

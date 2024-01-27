@@ -1,6 +1,9 @@
 ###### Plot real data and boot data overlaid #########
 library(tidyverse)
 
+printBootStatsFlag <- FALSE # print boot stats to console?
+saveFigsAsImsFlag <- FALSE # save figures as images?
+
 ### Load files first! ####
 ## If the files are not in your working directory, you will need to 
 ## specify the path, or load the files "by hand" (and comment out the 
@@ -123,6 +126,13 @@ lifetm_summary <- lifetm_hist_boot_all %>%
 # strings for output
 title_str <- paste(n_rats, "Rats", n_reps, "Replicates") 
 
+# Set font sizes and such
+tickFontSize <- 16
+titleFontSize <- 20
+xlabFontSize <- 20
+xlabTxt = ""
+ylabTxt = ""
+
 # threshold for minimum group lifetime
 plt_lengths <- cluster_lengths_sizes[cluster_lengths_sizes$lengths > min_grp_len, ]
 plt_lengths$lengths <- (plt_lengths$lengths)/60 # convert to seconds
@@ -138,9 +148,9 @@ size_overlay <- ggplot() +
                     ymax = size_mean + size_sd),
                 width = 0.25  # Width of the error bars
   ) +
-  # geom_histogram(data = plt_lengths,
-  #                aes(x = values),
-  #                breaks = seq(0, 16), fill = "pink", alpha = 0.7) +
+  geom_histogram(data = plt_lengths,
+                 aes(x = values),
+                 breaks = seq(0, 16), fill = "blue", alpha = 0.5) +
   labs(y = "Counts", x = "Group Size", title = title_str) +
   theme_minimal()
 
@@ -159,18 +169,25 @@ len_overlay <- ggplot() +
   geom_bar(data = lifetm_summary, 
            aes(x = lifetm_mids, y = lifetm_mean), 
            stat="identity") +
- # geom_histogram(data = plt_lengths, aes(x = lengths),
- #                 breaks = seq(0, 20, 0.2), fill = "pink", alpha = 0.5) +
+ geom_histogram(data = plt_lengths, aes(x = lengths),
+                 breaks = seq(0, 20, 0.2), fill = "blue", alpha = 0.5) +
   xlim(0, 6) +
   labs(y = "Counts", x = "Group Lifetime (sec)", title = title_str) +
   theme_minimal() 
 print(len_overlay)
 
-print(paste("boot dur mean = ", mean(rle_boot_all$lengths)))
-print(paste("boot sz mean =", mean(rle_boot_all$values)))
+if(saveFigsAsImsFlag){
+  ggsave("size_overlay.png", size_overlay, width = 6, height = 4)
+  ggsave("len_overlay.png", len_overlay, width = 6, height = 4)
+}
 
-print(paste("boot dur sd = ", sd(rle_boot_all$lengths)))
-print(paste("boot sz sd =", sd(rle_boot_all$values)))
-
-print(paste("boot dur skew = ", skewness(rle_boot_all$lengths)))
-print(paste("boot sz skew =", skewness(rle_boot_all$values)))
+if(printBootStatsFlag){
+  print(paste("boot dur mean = ", mean(rle_boot_all$lengths)))
+  print(paste("boot sz mean =", mean(rle_boot_all$values)))
+  
+  print(paste("boot dur sd = ", sd(rle_boot_all$lengths)))
+  print(paste("boot sz sd =", sd(rle_boot_all$values)))
+  
+  print(paste("boot dur skew = ", skewness(rle_boot_all$lengths)))
+  print(paste("boot sz skew =", skewness(rle_boot_all$values)))
+}

@@ -32,17 +32,26 @@ for (i in 1:length(run_labels)) {
 avg_counts <- rowMeans(bin_counts, na.rm = TRUE)
 stderr <- apply(bin_counts, 1, function(x) sd(x, na.rm = TRUE) / sqrt(length(x)))
 
-# Actual Plotting
-
 # Prepare data for ggplot
 plot_data <- data.frame(bin_mid = size_hist_info$mids, avg_counts = avg_counts, stderr = stderr)
+
+###### Actual Plotting ######
+# Set font sizes and such
+tickFontSize <- 16
+titleFontSize <- 20
+xlabFontSize <- 20
+xlabTxt = ""
+ylabTxt = ""
 
 p <- ggplot(plot_data, aes(x = bin_mid, y = avg_counts)) +
   geom_bar(stat = "identity", fill = "blue", alpha = 0.7) +
   geom_errorbar(aes(ymin = avg_counts - stderr, ymax = avg_counts + stderr), width = 0.1) +
-  xlab("Group Size") +
-  ylab("Average Count") +
-  ggtitle(title_str)
+  xlab(xlabTxt) +
+  ylab(xlabTxt) +
+  theme(axis.text.x = element_text(size = tickFontSize),  
+        axis.text.y = element_text(size = tickFontSize)) + 
+  ggtitle(title_str) +
+  theme(plot.title = element_text(size = titleFontSize))
 show(p)
 
 ### make group duration histogram ###
@@ -73,8 +82,12 @@ p <- ggplot(plot_data, aes(x = bin_mid, y = avg_counts)) +
   geom_bar(stat = "identity", fill = "blue", alpha = 0.7) +
   geom_errorbar(aes(ymin = avg_counts - stderr, ymax = avg_counts + stderr), width = 0.1) +
   xlim(0, 6) +
-  xlab("Group Duration (sec)") +
-  ylab("Average Count") +
-  ggtitle(title_str)
+  xlab(xlabTxt) +
+  ylab(xlabTxt) +
+  theme(axis.text.x = element_text(size = tickFontSize),  
+        axis.text.y = element_text(size = tickFontSize)) + 
+  theme(axis.text.x = element_blank()) + # no x labels - comment out for bottom panel
+  ggtitle(title_str) +
+  theme(plot.title = element_text(size = titleFontSize))
 show(p)
 
