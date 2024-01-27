@@ -124,7 +124,7 @@ lifetm_summary <- lifetm_hist_boot_all %>%
 
 ################### PLOTTING ###############
 # strings for output
-title_str <- paste(n_rats, "Rats", n_reps, "Replicates") 
+title_str <- paste(n_rats, "Rats")  #, n_reps, "Replicates"
 
 # Set font sizes and such
 tickFontSize <- 16
@@ -151,8 +151,14 @@ size_overlay <- ggplot() +
   geom_histogram(data = plt_lengths,
                  aes(x = values),
                  breaks = seq(0, 16), fill = "blue", alpha = 0.5) +
-  labs(y = "Counts", x = "Group Size", title = title_str) +
-  theme_minimal()
+  xlab(xlabTxt) +
+  ylab(xlabTxt) +
+  theme(axis.text.x = element_text(size = tickFontSize),  
+        axis.text.y = element_text(size = tickFontSize)) + 
+#  theme(axis.text.x = element_blank()) + # no x labels - comment out for bottom panel
+  ggtitle(title_str) +
+  theme(plot.title = element_text(size = titleFontSize))
+#theme_minimal()
 
 print(size_overlay)
 
@@ -172,13 +178,19 @@ len_overlay <- ggplot() +
  geom_histogram(data = plt_lengths, aes(x = lengths),
                  breaks = seq(0, 20, 0.2), fill = "blue", alpha = 0.5) +
   xlim(0, 6) +
-  labs(y = "Counts", x = "Group Lifetime (sec)", title = title_str) +
-  theme_minimal() 
+  xlab(xlabTxt) +
+  ylab(xlabTxt) +
+  theme(axis.text.x = element_text(size = tickFontSize),  
+        axis.text.y = element_text(size = tickFontSize)) + 
+#  theme(axis.text.x = element_blank()) + # no x labels - comment out for bottom panel
+  ggtitle(title_str) +
+  theme(plot.title = element_text(size = titleFontSize))
+#theme_minimal() 
 print(len_overlay)
 
 if(saveFigsAsImsFlag){
-  ggsave("size_overlay.png", size_overlay, width = 6, height = 4)
-  ggsave("len_overlay.png", len_overlay, width = 6, height = 4)
+  ggsave(paste0(n_rats,"size_boot.png"), size_overlay, width = 6, height = 4)
+  ggsave(paste0(n_rats,"len_boot.png"), len_overlay, width = 6, height = 4)
 }
 
 if(printBootStatsFlag){

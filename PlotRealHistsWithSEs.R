@@ -50,6 +50,7 @@ p <- ggplot(plot_data, aes(x = bin_mid, y = avg_counts)) +
   ylab(xlabTxt) +
   theme(axis.text.x = element_text(size = tickFontSize),  
         axis.text.y = element_text(size = tickFontSize)) + 
+  theme(axis.text.x = element_blank()) + # no x labels - comment out for bottom panel
   ggtitle(title_str) +
   theme(plot.title = element_text(size = titleFontSize))
 show(p)
