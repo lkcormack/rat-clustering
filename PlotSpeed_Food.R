@@ -235,6 +235,17 @@ write.csv(anova, file = "/Users/michaelpasala/Research/MovementLab/plots/speed/n
 
 
 
+##scale speed
+## every entry in initial speed dataset is the average of a bin of 100 frames in pixels/frame
+## pixels/frame * 1 cm/ 7.06 pixels * 60 frames / second
+anova_speed_scaled <- read.csv("/Users/michaelpasala/Research/MovementLab/plots/speed/new/anova.csv")
+factor <- (1/7.06) * (60)
+anova_speed_scaled$Speed <- anova_speed_scaled$Speed * factor
+write.csv(anova_speed_scaled, file = "/Users/michaelpasala/Research/MovementLab/plots/speed/new/anova_speed_cm_sec.csv", row.names = FALSE)
+
+# unit now: cm/ sec
+
+
 ############# old mean calc
 
 #pre <- t(pre)
