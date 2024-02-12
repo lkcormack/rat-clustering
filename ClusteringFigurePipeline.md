@@ -33,7 +33,14 @@ A summary file (e.g. “3RatsClusterSummary.RData”), must be loaded prior to r
 
 Computes the mean, sd (se of the mean), and skew for the loaded summary file (e.g. “3RatsClusterSummary.RData”). The means and SEs are hardcoded into [makeNratMeansPlots.R](Box/MovementAnalysisMS/ClusteringAnalysisCode/makeNratMeansPlots.R) for plotting. The summary data (the outputs of this file for each condition) are in [DistributionStats.xlsx](Box/MovementAnalysisMS/DistributionStats.xlsx).
 
-## 5. Plot mean cluster lifetime and size vs. number of rats in the enclosure -[makeNratMeansPlots.R](Box/MovementAnalysisMS/ClusteringAnalysisCode/makeNratMeansPlots.R)
+## 5. Make pairwise quantile - quantile plots for all conditions - [MakeQQPlots.R](Box/MovementAnalysisMS/ClusteringAnalysisCode/MakeQQPlots.R)
+
+Makes a QQ plot of a pair of cluster size or cluster lifetime distribution. You must 
+
+* run [LoadAllSumData.R](Box/MovementAnalysisMS/ClusteringAnalysisCode/LoadAllSumData.R) first to load the summary data and create the necessary variables
+* enter the variable names corresponding to the distributions you wish to plot, e.g. ‘qqplot(n9Vals, n15Vals,…’
+
+## 6. Plot mean cluster lifetime and size vs. number of rats in the enclosure -[makeNratMeansPlots.R](Box/MovementAnalysisMS/ClusteringAnalysisCode/makeNratMeansPlots.R)
 
 Plots the 
 
