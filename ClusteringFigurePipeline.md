@@ -15,32 +15,35 @@ It then does some *optional* plotting, and, importantly, ***saves the summary fi
 
 These summary files (e.g. “*3RatsClusterSummary.RData*”) are used for all subsequent analysis and plotting for the clustering data.
 
+## 2. Plot space-time rat trajectories - [PlotOneRatPath.R](/Users/lkcormack/Library/CloudStorage/Box-Box/MovementAnalysisMS/CormackClusterFigureCode/PlotOneRatPath.R) and [PlotMultiRatPaths.R](Box/MovementAnalysisMS/CormackClusterFigureCode/PlotMultiRatPaths.R)
 
+* PlotOneRatPath.R asks you to select a .csv file and plots the path
+* PlotMultiRatPaths.R assumes you have an “xyt_dat” data frame loaded (from a …Summary.RData file) and plots the trajectories of all the rats in that run of that condition.
 
-## 2. Plot Histograms of the actual cluster sizes and durations -  [PlotRealHistsWithSEs.R](Box/MovementAnalysisMS/ClusteringAnalysisCode/PlotRealHistsWithSEs.R) 
+## 3. Plot Histograms of the actual cluster sizes and durations -  [PlotRealHistsWithSEs.R](Box/MovementAnalysisMS/ClusteringAnalysisCode/PlotRealHistsWithSEs.R)
 
 This script plots the histograms of the actual data for both cluster sizes and durations with error bars showing ± 1 standard error of the mean across the 15 runs in each condition. 
 
 A summary file (e.g. “3RatsClusterSummary.RData”), must be loaded prior to running the script!
 
-## 3. Plot duration and log(duration) vs. cluster size - [PlotDurVsClustSize.R](Box/MovementAnalysisMS/ClusteringAnalysisCode/PlotDurVsClustSize copy.R)
+## 4. Plot duration and log(duration) vs. cluster size - [PlotDurVsClustSize.R](Box/MovementAnalysisMS/ClusteringAnalysisCode/PlotDurVsClustSize copy.R)
 
 This script plots cluster lifetime and log(cluster lifetime) vs. cluster size. 
 
 A summary file (e.g. “3RatsClusterSummary.RData”), must be loaded prior to running the script!
 
-## 4. Compute the summary statistics for both lifetime and size distributions for a condition - [Comp_Summary_Stats.R](Box/MovementAnalysisMS/ClusteringAnalysisCode/Comp_Summary_Stats.R)
+## 5. Compute the summary statistics for both lifetime and size distributions for a condition - [Comp_Summary_Stats.R](Box/MovementAnalysisMS/ClusteringAnalysisCode/Comp_Summary_Stats.R)
 
 Computes the mean, sd (se of the mean), and skew for the loaded summary file (e.g. “3RatsClusterSummary.RData”). The means and SEs are hardcoded into [makeNratMeansPlots.R](Box/MovementAnalysisMS/ClusteringAnalysisCode/makeNratMeansPlots.R) for plotting. The summary data (the outputs of this file for each condition) are in [DistributionStats.xlsx](Box/MovementAnalysisMS/DistributionStats.xlsx).
 
-## 5. Make pairwise quantile - quantile plots for all conditions - [MakeQQPlots.R](Box/MovementAnalysisMS/ClusteringAnalysisCode/MakeQQPlots.R)
+## 6. Make pairwise quantile - quantile plots for all conditions - [MakeQQPlots.R](Box/MovementAnalysisMS/ClusteringAnalysisCode/MakeQQPlots.R)
 
 Makes a QQ plot of a pair of cluster size or cluster lifetime distribution. You must 
 
 * run [LoadAllSumData.R](Box/MovementAnalysisMS/ClusteringAnalysisCode/LoadAllSumData.R) first to load the summary data and create the necessary variables
 * enter the variable names corresponding to the distributions you wish to plot, e.g. ‘qqplot(n9Vals, n15Vals,…’
 
-## 6. Plot mean cluster lifetime and size vs. number of rats in the enclosure -[makeNratMeansPlots.R](Box/MovementAnalysisMS/ClusteringAnalysisCode/makeNratMeansPlots.R)
+## 7. Plot mean cluster lifetime and size vs. number of rats in the enclosure -[makeNratMeansPlots.R](Box/MovementAnalysisMS/ClusteringAnalysisCode/makeNratMeansPlots.R)
 
 Plots the 
 
